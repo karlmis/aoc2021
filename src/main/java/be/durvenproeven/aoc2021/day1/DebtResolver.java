@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BinaryOperator;
 
-public class DebthResolver {
+public class DebtResolver {
 	private static final BinaryOperator<Counter> IGNORED_COMBINER = (c1, c2) -> {
 		throw new IllegalArgumentException("do not use parallel");
 	};
 	private List<Integer> list;
 
-	public DebthResolver(List<Integer> list) {
+	public DebtResolver(List<Integer> list) {
 		this.list = list;
 	}
 

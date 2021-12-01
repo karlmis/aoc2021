@@ -21,45 +21,7 @@ public class DebtResolver {
 	private int getNrIncreased(List<Integer> list) {
 		Counter reduce = list.stream()
 				.reduce(Counter.startingCounter(), Counter::withNextValue, IGNORED_COMBINER);
-		return reduce.nrOfTimesIncreased;
-	}
-
-	private static class Counter {
-		private Counter(int nrOfTimesIncreased, int valueToCompareWith) {
-			this.nrOfTimesIncreased = nrOfTimesIncreased;
-			this.value = valueToCompareWith;
-		}
-
-		public static Counter startingCounter() {
-			return new Counter(-1, 0);
-		}
-
-		private boolean isStartingCounter() {
-			return nrOfTimesIncreased == -1;
-		}
-
-		int nrOfTimesIncreased;
-		int value;
-
-		Counter withNextValue(int newValue) {
-			if (isStartingCounter()) {
-				return new Counter(0, newValue);
-			}
-			if (newValue > value) {
-				return increasedWith(newValue);
-			}
-			return sameWith(newValue);
-		}
-
-		private Counter sameWith(int newValue) {
-			return new Counter(nrOfTimesIncreased, newValue);
-		}
-
-		private Counter increasedWith(int newValue) {
-			return new Counter(nrOfTimesIncreased + 1, newValue);
-		}
-
-
+		return reduce.getNrOfTimesIncreased();
 	}
 
 	public int getNrOfWindowsIncreased() {

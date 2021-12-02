@@ -29,11 +29,11 @@ public class Sub {
 		DOWN((sub, nr) -> new Sub(sub.depth + nr, sub.xPosition)),
 		UP((sub, nr) -> new Sub(sub.depth - nr, sub.xPosition));
 
-		private BiFunction<Sub, Integer, Sub> mover;
-
 		Mover(BiFunction<Sub, Integer, Sub> mover) {
 			this.mover = mover;
 		}
+
+		private final BiFunction<Sub, Integer, Sub> mover;
 
 		Sub Move(Sub sub, int nr) {
 			return mover.apply(sub, nr);
@@ -50,11 +50,11 @@ public class Sub {
 		DOWN((sub, nr) -> new Sub(sub.depth, sub.xPosition, sub.aim + nr)),
 		UP((sub, nr) ->new Sub(sub.depth, sub.xPosition, sub.aim - nr) );
 
-		private BiFunction<Sub, Integer, Sub> mover;
-
 		MoverWithAim(BiFunction<Sub, Integer, Sub> mover) {
 			this.mover = mover;
 		}
+
+		private final BiFunction<Sub, Integer, Sub> mover;
 
 		Sub move(Sub sub, int nr) {
 			return mover.apply(sub, nr);
@@ -95,7 +95,7 @@ public class Sub {
 		return depth;
 	}
 
-	public int getxPosition() {
+	public int getXPosition() {
 		return xPosition;
 	}
 

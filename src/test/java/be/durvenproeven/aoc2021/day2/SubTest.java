@@ -18,14 +18,14 @@ class SubTest {
 	void move_Forward() {
 		assertThat(new Sub().move("forward 1"))
 				.returns(0, Sub::getDepth)
-				.returns(1, Sub::getxPosition);
+				.returns(1, Sub::getXPosition);
 	}
 
 	@Test
 	void move_Down() {
 		assertThat(new Sub().move("down 3"))
 				.returns(3, Sub::getDepth)
-				.returns(0, Sub::getxPosition);
+				.returns(0, Sub::getXPosition);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ class SubTest {
 
 		assertThat(new Sub().move("down 3").move("up 2"))
 				.returns(1, Sub::getDepth)
-				.returns(0, Sub::getxPosition);
+				.returns(0, Sub::getXPosition);
 	}
 
 	@Test
@@ -60,21 +60,22 @@ class SubTest {
 				"forward 2"
 		).reduce(new Sub(), Sub::move, NO_COMBINER);
 
-		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(150);
+		assertThat(sub.getXPosition() * sub.getDepth()).isEqualTo(150);
 	}
 
 	@Test
 	void move_GivenInput() {
 		Sub sub = LineResolver.getStringStreamOfFile("day2.txt")
 				.reduce(new Sub(), Sub::move, NO_COMBINER);
-		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(2147104);
+		assertThat(sub.getXPosition() * sub.getDepth()).isEqualTo(2147104);
 	}
 
+	@SuppressWarnings("PointlessArithmeticExpression")
 	@Test
 	void moveWithAim_Forward() {
 		assertThat(new Sub().moveWithAim("down 3").moveWithAim("forward 1"))
 				.returns(3, Sub::getAim)
-				.returns(1, Sub::getxPosition)
+				.returns(1, Sub::getXPosition)
 				.returns(1*3, Sub::getDepth);
 	}
 
@@ -82,7 +83,7 @@ class SubTest {
 	void moveWithAim_Down() {
 		assertThat(new Sub().moveWithAim("down 3"))
 				.returns(3, Sub::getAim)
-				.returns(0, Sub::getxPosition)
+				.returns(0, Sub::getXPosition)
 				.returns(0, Sub::getDepth);
 	}
 
@@ -90,7 +91,7 @@ class SubTest {
 	void moveWithAim_Up() {
 		assertThat(new Sub().moveWithAim("down 3").moveWithAim("up 2"))
 				.returns(1, Sub::getAim)
-				.returns(0, Sub::getxPosition)
+				.returns(0, Sub::getXPosition)
 				.returns(0, Sub::getDepth);
 	}
 
@@ -115,14 +116,14 @@ class SubTest {
 				"down 8",
 				"forward 2"
 		).reduce(new Sub(), Sub::moveWithAim, NO_COMBINER);
-		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(900);
+		assertThat(sub.getXPosition() * sub.getDepth()).isEqualTo(900);
 	}
 
 	@Test
 	void moveWithAim_GivenInput() {
 		Sub sub = LineResolver.getStringStreamOfFile("day2.txt")
 				.reduce(new Sub(), Sub::moveWithAim, NO_COMBINER);
-		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(2044620088);
+		assertThat(sub.getXPosition() * sub.getDepth()).isEqualTo(2044620088);
 	}
 
 }

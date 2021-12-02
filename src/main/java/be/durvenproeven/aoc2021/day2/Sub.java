@@ -10,7 +10,12 @@ public class Sub {
 	public Sub() {
 	}
 
-	public void move(String input) {
+	private Sub(int depth, int xPosition) {
+		this.depth = depth;
+		this.xPosition = xPosition;
+	}
+
+	public Sub move(String input) {
 		String[] s = input.split(" ");
 		checkArgument(s.length==2);
 
@@ -18,16 +23,13 @@ public class Sub {
 		int nr = Integer.parseInt(s[1]);
 
 		if (direction.equals("forward")) {
-			this.xPosition += nr;
-			return;
+			return new Sub(depth, xPosition+nr);
 		}
 		if (direction.equals("down")) {
-			depth += nr;
-			return;
+			return new Sub(depth+nr, xPosition);
 		}
 		if (direction.equals("up")) {
-			depth -= nr;
-			return;
+			return new Sub(depth-nr, xPosition);
 		}
 		throw new UnsupportedOperationException();
 	}

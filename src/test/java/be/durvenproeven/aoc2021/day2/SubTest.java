@@ -72,74 +72,56 @@ class SubTest {
 
 	@Test
 	void moveWithAim_Forward() {
-		Sub sub = new Sub();
-
-		sub.moveWithAim("down 3");
-		sub.moveWithAim("forward 1");
-
-		assertThat(sub.getAim()).isEqualTo(3);
-		assertThat(sub.getxPosition()).isEqualTo(1);
-		assertThat(sub.getDepth()).isEqualTo(1 * 3);
+		assertThat(new Sub().moveWithAim("down 3").moveWithAim("forward 1"))
+				.returns(3, Sub::getAim)
+				.returns(1, Sub::getxPosition)
+				.returns(1*3, Sub::getDepth);
 	}
 
 	@Test
 	void moveWithAim_Down() {
-		Sub sub = new Sub();
-		sub.moveWithAim("down 3");
-
-		assertThat(sub.getAim()).isEqualTo(3);
-		assertThat(sub.getxPosition()).isZero();
-		assertThat(sub.getDepth()).isZero();
-
+		assertThat(new Sub().moveWithAim("down 3"))
+				.returns(3, Sub::getAim)
+				.returns(0, Sub::getxPosition)
+				.returns(0, Sub::getDepth);
 	}
 
 	@Test
 	void moveWithAim_Up() {
-		Sub sub = new Sub();
-
-		sub.moveWithAim("down 3");
-		sub.moveWithAim("up 2");
-
-		assertThat(sub.getAim()).isEqualTo(1);
-		assertThat(sub.getxPosition()).isZero();
-		assertThat(sub.getDepth()).isZero();
-
+		assertThat(new Sub().moveWithAim("down 3").moveWithAim("up 2"))
+				.returns(1, Sub::getAim)
+				.returns(0, Sub::getxPosition)
+				.returns(0, Sub::getDepth);
 	}
 
 	@Test
 	void moveWithAim_WrongInput() {
-		Sub sub = new Sub();
-
 		assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() ->
-				sub.moveWithAim("backward 1"));
+				new Sub().moveWithAim("backward 1"));
 		assertThatIllegalArgumentException().isThrownBy(() ->
-				sub.moveWithAim("forward 1 1"));
+				new Sub().moveWithAim("forward 1 1"));
 		assertThatIllegalArgumentException().isThrownBy(() ->
-				sub.moveWithAim("forward"));
+				new Sub().moveWithAim("forward"));
 		assertThatIllegalArgumentException().isThrownBy(() ->
-				sub.moveWithAim("forward A"));
+				new Sub().moveWithAim("forward A"));
 	}
 
 	@Test
 	void moveWithAim_GivenSimpleInput() {
-		Sub sub = new Sub();
-
-		Stream.of("forward 5",
+		Sub sub = Stream.of("forward 5",
 				"down 5",
 				"forward 8",
 				"up 3",
 				"down 8",
 				"forward 2"
-		).forEach(sub::moveWithAim);
+		).reduce(new Sub(), Sub::moveWithAim, NO_COMBINER);
 		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(900);
 	}
 
 	@Test
 	void moveWithAim_GivenInput() {
-
-		Sub sub = new Sub();
-		LineResolver.getStringStreamOfFile("day2.txt")
-				.forEach(sub::moveWithAim);
+		Sub sub = LineResolver.getStringStreamOfFile("day2.txt")
+				.reduce(new Sub(), Sub::moveWithAim, NO_COMBINER);
 		assertThat(sub.getxPosition() * sub.getDepth()).isEqualTo(2044620088);
 	}
 

@@ -15,6 +15,12 @@ public class Sub {
 		this.xPosition = xPosition;
 	}
 
+	public Sub(int depth, int xPosition, int aim) {
+		this.depth = depth;
+		this.xPosition = xPosition;
+		this.aim = aim;
+	}
+
 	public Sub move(String input) {
 		String[] s = input.split(" ");
 		checkArgument(s.length==2);
@@ -34,7 +40,7 @@ public class Sub {
 		throw new UnsupportedOperationException();
 	}
 
-	public void moveWithAim(String input) {
+	public Sub moveWithAim(String input) {
 		String[] s = input.split(" ");
 		checkArgument(s.length==2);
 
@@ -42,17 +48,13 @@ public class Sub {
 		int nr = Integer.parseInt(s[1]);
 
 		if (direction.equals("forward")) {
-			this.xPosition += nr;
-			depth += nr * aim;
-			return;
+			return new Sub(depth+nr * aim, xPosition+nr, aim);
 		}
 		if (direction.equals("down")) {
-			aim += nr;
-			return;
+			return new Sub(depth, xPosition, aim+nr);
 		}
 		if (direction.equals("up")) {
-			aim -= nr;
-			return;
+			return new Sub(depth, xPosition, aim - nr);
 		}
 		throw new UnsupportedOperationException();
 	}

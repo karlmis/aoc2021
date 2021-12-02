@@ -3,7 +3,7 @@ package be.durvenproeven.aoc2021.day1;
 import java.util.List;
 import java.util.function.BinaryOperator;
 
-public class DebtResolver {
+public class DepthResolver {
 	private static final BinaryOperator<Counter> IGNORED_COMBINER = (c1, c2) -> {
 		throw new IllegalArgumentException("do not use parallel");
 	};
@@ -12,7 +12,7 @@ public class DebtResolver {
 	};
 	private List<Integer> list;
 
-	public DebtResolver(List<Integer> list) {
+	public DepthResolver(List<Integer> list) {
 		this.list = list;
 	}
 

@@ -1,5 +1,7 @@
 package be.durvenproeven.aoc2021.day2;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class Sub {
 	private int depth = 0;
 	private int xPosition = 0;
@@ -10,6 +12,8 @@ public class Sub {
 
 	public void move(String input) {
 		String[] s = input.split(" ");
+		checkArgument(s.length==2);
+
 		String direction = s[0];
 		int nr = Integer.parseInt(s[1]);
 
@@ -30,8 +34,11 @@ public class Sub {
 
 	public void moveWithAim(String input) {
 		String[] s = input.split(" ");
+		checkArgument(s.length==2);
+
 		String direction = s[0];
 		int nr = Integer.parseInt(s[1]);
+
 		if (direction.equals("forward")) {
 			this.xPosition += nr;
 			depth += nr * aim;

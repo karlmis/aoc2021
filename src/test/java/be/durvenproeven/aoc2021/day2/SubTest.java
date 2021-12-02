@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class SubTest {
 
@@ -39,6 +41,20 @@ class SubTest {
 
 		assertThat(sub.getDepth()).isEqualTo(1);
 		assertThat(sub.getxPosition()).isZero();
+	}
+
+	@Test
+	void move_WrongInput() {
+		Sub sub = new Sub();
+
+		assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() ->
+				sub.move("backward 1"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.move("forward 1 1"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.move("forward"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.move("forward A"));
 	}
 
 	@Test
@@ -98,6 +114,20 @@ class SubTest {
 		assertThat(sub.getxPosition()).isZero();
 		assertThat(sub.getDepth()).isZero();
 
+	}
+
+	@Test
+	void moveWithAim_WrongInput() {
+		Sub sub = new Sub();
+
+		assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() ->
+				sub.moveWithAim("backward 1"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.moveWithAim("forward 1 1"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.moveWithAim("forward"));
+		assertThatIllegalArgumentException().isThrownBy(() ->
+				sub.moveWithAim("forward A"));
 	}
 
 	@Test

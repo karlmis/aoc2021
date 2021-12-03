@@ -4,7 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class BinaryDiagnostic {
 	private final int size;
@@ -22,58 +23,66 @@ public class BinaryDiagnostic {
 			long count = nrs.stream()
 					.filter(nr -> BigInteger.valueOf(nr).testBit(powerOf2))
 					.count();
-			if (count > binaries.size()/2){
-				gammaRate+=  powerOf2(powerOf2);
+			if (count > binaries.size() / 2) {
+				gammaRate += powerOf2(powerOf2);
 			}
 		}
-
 
 
 	}
 
 	private int getSize(List<Integer> integers) {
-		if (integers==null){
+		if (integers == null) {
 			return 0;
 		}
 		return integers.size();
 	}
 
-	public int getOgyGeneratorRating(){
-		List<Integer> nrs1= new ArrayList<>(nrs);
-		int downwardCounter= size-1;
-		while(nrs1.size()>1) {
-			int bitNr= downwardCounter;
-			Map<Boolean, List<Integer>> collect = nrs1.stream().collect(Collectors.groupingBy(nr -> BigInteger.valueOf(nr).testBit(bitNr)));
-			if ( getSize(collect.get(false)) > getSize(collect.get(true))){
-				nrs1= collect.get(false);
-			} else {
-				nrs1= collect.get(true);
-			}
+	public int getOgyGeneratorRating() {
+		List<Integer> nrs1 = new ArrayList<>(nrs);
+		int downwardCounter = size - 1;
+		while (nrs1.size() > 1) {
+			Map<Boolean, List<Integer>> mappedByBit = groupByBitIndex(nrs1, downwardCounter);
+			nrs1 = selectMostFrequentOrTrue(mappedByBit);
 			downwardCounter--;
 		}
 		return nrs1.get(0);
 	}
 
-	public int getCo2ScrubberRating(){
-		List<Integer> nrs1= new ArrayList<>(nrs);
-		int downwardCounter= size-1;
-		while(nrs1.size()>1) {
-			int bitNr= downwardCounter;
-			Map<Boolean, List<Integer>> collect = nrs1.stream().collect(Collectors.groupingBy(nr -> BigInteger.valueOf(nr).testBit(bitNr)));
-			if ( getSize(collect.get(true)) < getSize(collect.get(false))){
-				nrs1= collect.get(true);
-			} else {
-				nrs1= collect.get(false);
-			}
+	private Map<Boolean, List<Integer>> groupByBitIndex(List<Integer> nrs1, int downwardCounter) {
+		return nrs1.stream()
+				.collect(groupingBy(nr -> BigInteger.valueOf(nr).testBit(downwardCounter)));
+	}
+
+	private List<Integer> selectMostFrequentOrTrue(Map<Boolean, List<Integer>> collect) {
+		if (getSize(collect.get(false)) > getSize(collect.get(true))) {
+			return collect.get(false);
+		}
+		return collect.get(true);
+	}
+
+	public int getCo2ScrubberRating() {
+		List<Integer> nrs1 = new ArrayList<>(nrs);
+		int downwardCounter = size - 1;
+		while (nrs1.size() > 1) {
+			Map<Boolean, List<Integer>> mappedByBit = groupByBitIndex(nrs1, downwardCounter);
+			nrs1 = selectLeastCommonOrFalse(mappedByBit);
 			downwardCounter--;
 		}
 		return nrs1.get(0);
+	}
+
+	private List<Integer> selectLeastCommonOrFalse(Map<Boolean, List<Integer>> collect) {
+		if (getSize(collect.get(true)) < getSize(collect.get(false))) {
+			return collect.get(true);
+		}
+		return collect.get(false);
 	}
 
 	private int powerOf2(int powerOf2) {
-		int res= 1;
+		int res = 1;
 		for (int i = 0; i < powerOf2; i++) {
-			res*=2;
+			res *= 2;
 		}
 		return res;
 	}
@@ -82,7 +91,7 @@ public class BinaryDiagnostic {
 		return gammaRate;
 	}
 
-	public int getEpsilonRate(){
-		return powerOf2(size)-1-gammaRate;
+	public int getEpsilonRate() {
+		return powerOf2(size) - 1 - gammaRate;
 	}
 }

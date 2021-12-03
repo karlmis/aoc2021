@@ -46,7 +46,7 @@ class BinaryDiagnosticTest {
 
 	@Test
 	void getOgyGeneratorRating() {
-		assertThat(new BinaryDiagnostic(List.of("100","001","011"),3).getOgyGeneratorRating()).isEqualTo(3);
+		assertThat(new BinaryDiagnostic(List.of("100","001","011"),3).getOxyGeneratorRating()).isEqualTo(3);
 	}
 	@Test
 	void getCo2ScrubberRating() {
@@ -67,9 +67,9 @@ class BinaryDiagnosticTest {
 				"11001",
 				"00010",
 				"01010"), 5);
-		assertThat(binaryDiagnostic.getOgyGeneratorRating()).isEqualTo(23);
+		assertThat(binaryDiagnostic.getOxyGeneratorRating()).isEqualTo(23);
 		assertThat(binaryDiagnostic.getCo2ScrubberRating()).isEqualTo(10);
-		assertThat(binaryDiagnostic.getOgyGeneratorRating()* binaryDiagnostic.getCo2ScrubberRating()).isEqualTo(230);
+		assertThat(binaryDiagnostic.getOxyGeneratorRating()* binaryDiagnostic.getCo2ScrubberRating()).isEqualTo(230);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class BinaryDiagnosticTest {
 				.toList();
 
 		BinaryDiagnostic binaryDiagnostic = new BinaryDiagnostic(inputNrs, 12);
-		assertThat(binaryDiagnostic.getOgyGeneratorRating()* binaryDiagnostic.getCo2ScrubberRating()).isEqualTo(5852595);
+		assertThat(binaryDiagnostic.getOxyGeneratorRating()* binaryDiagnostic.getCo2ScrubberRating()).isEqualTo(5852595);
 	}
 
 }

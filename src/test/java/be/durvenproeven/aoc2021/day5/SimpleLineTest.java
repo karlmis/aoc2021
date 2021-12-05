@@ -26,16 +26,26 @@ class SimpleLineTest {
 
 	@Test
 	void getCoordinatesOnLine() {
-		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_20).get().getCoordinatesOnLine())
+		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_20)).get()
+				.extracting(SimpleLine::getCoordinatesOnLine).asList()
 				.containsExactly(COORDINATES_20, new Coordinates(2, 1), COORDINATES_22);
-		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_02).get().getCoordinatesOnLine())
+		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_02)).get()
+				.extracting(SimpleLine::getCoordinatesOnLine).asList()
 				.containsExactly(COORDINATES_02, new Coordinates(1, 2), COORDINATES_22);
-		assertThat(SimpleLine.create(COORDINATES_00, COORDINATES_22).get().getCoordinatesOnLine())
+	}
+
+	@Test
+	void getCoordinatesOnLine_Diagonal() {
+		assertThat(SimpleLine.create(COORDINATES_00, COORDINATES_22)).get()
+				.extracting(SimpleLine::getCoordinatesOnLine).asList()
 				.containsExactly(COORDINATES_00, new Coordinates(1, 1), COORDINATES_22);
-		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_00).get().getCoordinatesOnLine())
+
+		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_00)).get()
+				.extracting(SimpleLine::getCoordinatesOnLine).asList()
 				.containsExactly(COORDINATES_22, new Coordinates(1, 1), COORDINATES_00);
 
-		assertThat(SimpleLine.create(COORDINATES_02, COORDINATES_20).get().getCoordinatesOnLine())
+		assertThat(SimpleLine.create(COORDINATES_02, COORDINATES_20)).get()
+				.extracting(SimpleLine::getCoordinatesOnLine).asList()
 				.containsExactly(COORDINATES_02, new Coordinates(1, 1), COORDINATES_20);
 	}
 }

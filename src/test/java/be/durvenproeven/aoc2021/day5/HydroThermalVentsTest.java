@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HydroThermalVentsTest {
+	private static final Predicate<SimpleLine> ONLY_HORIZONTAL_OR_VERTICAL =
+			sl -> List.of(Direction.HORIZONTAL, Direction.VERTICAL).contains(sl.getDirection());
 
 	@Test
 	void getNrOfOverlaps_SimpleExample() {
@@ -27,12 +30,11 @@ class HydroThermalVentsTest {
 				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
 		)
 				.flatMap(Optional::stream)
-				.filter(l -> l.getDirection() == Direction.HORIZONTAL || l.getDirection() == Direction.VERTICAL)
 				.toList();
 
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(lines);
 
-		assertThat(hydroThermalVents.getNrOfOverlaps()).isEqualTo(5);
+		assertThat(hydroThermalVents.getNrOfOverlaps(ONLY_HORIZONTAL_OR_VERTICAL)).isEqualTo(5);
 	}
 
 	@Test
@@ -40,11 +42,10 @@ class HydroThermalVentsTest {
 		List<SimpleLine> simpleLineFollowingAxes = LineResolver.getStringStreamOfFile("day5.txt")
 				.map(this::toOptionalLineFollowingAxes)
 				.flatMap(Optional::stream)
-				.filter(l -> l.getDirection() == Direction.HORIZONTAL || l.getDirection() == Direction.VERTICAL)
 				.toList();
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(simpleLineFollowingAxes);
 
-		assertThat(hydroThermalVents.getNrOfOverlaps()).isEqualTo(4873);
+		assertThat(hydroThermalVents.getNrOfOverlaps(ONLY_HORIZONTAL_OR_VERTICAL)).isEqualTo(4873);
 	}
 
 	@Test

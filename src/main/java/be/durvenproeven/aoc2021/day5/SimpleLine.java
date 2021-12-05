@@ -13,17 +13,29 @@ public class SimpleLine {
 
 	private enum Direction{HORIZONTAL, VERTICAL, DIAGONAL};
 
-	private SimpleLine(Coordinates first, Coordinates second) {
+	private SimpleLine(Coordinates first, Coordinates second, Direction direction) {
 		this.first = first;
 		this.second = second;
-		direction = first.getY() == second.getY()? Direction.HORIZONTAL: Direction.VERTICAL;
+		this.direction = direction;
 	}
 
 	public static Optional<SimpleLine> create(Coordinates first, Coordinates second) {
-		if (first.getX() != second.getX() && first.getY() != second.getY()) {
+		Direction direction = getDirection(first, second);
+		if (direction== null){
 			return Optional.empty();
 		}
-		return Optional.of(new SimpleLine(first, second));
+		return Optional.of(new SimpleLine(first, second, direction));
+	}
+
+	private static Direction getDirection(Coordinates first, Coordinates second) {
+		Direction direction= null;
+		if (first.getX() == second.getX()){
+			direction= Direction.VERTICAL;
+		}
+		if (first.getY() == second.getY()) {
+			direction= Direction.HORIZONTAL;
+		}
+		return direction;
 	}
 
 	public List<Coordinates> getCoordinatesOnLine() {

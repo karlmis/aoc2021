@@ -3,24 +3,31 @@ package be.durvenproeven.aoc2021.day5;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 public class HydroThermalVents {
-
-
-	private final Map<Coordinates, Long> collect;
+	private final List<SimpleLine> lines;
 
 	public HydroThermalVents(List<SimpleLine> lines) {
-		collect = lines.stream().flatMap(l -> l.getCoordinatesOnLine().stream())
-				.collect(Collectors.groupingBy(Function.identity(), counting()));
+		this.lines = lines;
 	}
 
-	public int getNrOfOverlaps(){
+	public int getNrOfOverlaps() {
+		return getNrOfOverlaps(sl -> true);
+	}
+
+	public int getNrOfOverlaps(Predicate<SimpleLine> predicate) {
+		Map<Coordinates, Long> collect = lines.stream()
+				.filter(predicate)
+				.flatMap(l -> l.getCoordinatesOnLine().stream())
+				.collect(groupingBy(Function.identity(), counting()));
 		return (int) collect.entrySet().stream()
-				.filter(e -> e.getValue()>1)
+				.filter(e -> e.getValue() > 1)
 				.count();
-
 	}
+
+
 }

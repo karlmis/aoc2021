@@ -20,24 +20,21 @@ public class SimpleLine {
 	}
 
 	public static Optional<SimpleLine> create(Coordinates first, Coordinates second) {
-		Direction direction = getDirection(first, second);
-		if (direction == null) {
-			return Optional.empty();
-		}
-		return Optional.of(new SimpleLine(first, second, direction));
+		return getDirection(first, second)
+				.map(d -> new SimpleLine(first, second, d));
 	}
 
-	private static Direction getDirection(Coordinates first, Coordinates second) {
+	private static Optional<Direction> getDirection(Coordinates first, Coordinates second) {
 		if (first.getX() == second.getX()) {
-			return Direction.VERTICAL;
+			return Optional.of(Direction.VERTICAL);
 		}
 		if (first.getY() == second.getY()) {
-			return Direction.HORIZONTAL;
+			return Optional.of(Direction.HORIZONTAL);
 		}
 		if (Math.abs(first.getX() - second.getX()) == Math.abs(first.getY() - second.getY())) {
-			return Direction.DIAGONAL;
+			return Optional.of(Direction.DIAGONAL);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	public List<Coordinates> getCoordinatesOnLine() {

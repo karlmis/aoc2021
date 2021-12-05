@@ -25,8 +25,7 @@ class HydroThermalVentsTest {
 				SimpleLine.create(new Coordinates(3, 4), new Coordinates(1, 4)),
 				SimpleLine.create(new Coordinates(0, 0), new Coordinates(8, 8)),
 				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
-		).filter(Optional::isPresent)
-				.map(Optional::get)
+		).flatMap(Optional::stream)
 				.filter(l -> l.getDirection()== SimpleLine.Direction.HORIZONTAL || l.getDirection()== SimpleLine.Direction.VERTICAL)
 				.toList();
 
@@ -39,8 +38,7 @@ class HydroThermalVentsTest {
 	void getNrOfOverlaps_RealExample() {
 		List<SimpleLine> simpleLineFollowingAxes = LineResolver.getStringStreamOfFile("day5.txt")
 				.map(this::toOptionalLineFollowingAxes)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
+				.flatMap(Optional::stream)
 				.filter(l -> l.getDirection()== SimpleLine.Direction.HORIZONTAL || l.getDirection()== SimpleLine.Direction.VERTICAL)
 				.toList();
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(simpleLineFollowingAxes);
@@ -61,8 +59,7 @@ class HydroThermalVentsTest {
 				SimpleLine.create(new Coordinates(3, 4), new Coordinates(1, 4)),
 				SimpleLine.create(new Coordinates(0, 0), new Coordinates(8, 8)),
 				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
-		).filter(Optional::isPresent)
-				.map(Optional::get)
+		).flatMap(Optional::stream)
 				.toList();
 
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(lines);
@@ -74,8 +71,7 @@ class HydroThermalVentsTest {
 	void getNrOfOverlaps_Part2_RealExample() {
 		List<SimpleLine> simpleLineFollowingAxes = LineResolver.getStringStreamOfFile("day5.txt")
 				.map(this::toOptionalLineFollowingAxes)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
+				.flatMap(Optional::stream)
 				.toList();
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(simpleLineFollowingAxes);
 

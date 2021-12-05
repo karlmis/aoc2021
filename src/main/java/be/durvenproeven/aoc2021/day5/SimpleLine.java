@@ -1,11 +1,12 @@
 package be.durvenproeven.aoc2021.day5;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class SimpleLine {
 	private final Coordinates first;
@@ -50,15 +51,18 @@ public class SimpleLine {
 					.mapToObj(y -> new Coordinates(first.getX(), y))
 					.toList();
 		}
-		List<Coordinates> coordinates = new ArrayList<>();
+		return getCoordinatesOnLineForDiagonal();
+
+	}
+
+	private List<Coordinates> getCoordinatesOnLineForDiagonal() {
 		int dif = second.getX() - first.getX();
 		int signX = dif > 0 ? 1 : -1;
 		int signY = second.getY() > first.getY() ? 1 : -1;
-		for (int i = 0; i <= Math.abs(dif); i++) {
-			coordinates.add(new Coordinates(first.getX() + (i * signX), first.getY() + (i * signY)));
-		}
-		return coordinates;
 
+		return IntStream.rangeClosed(0, Math.abs(dif))
+				.mapToObj(i -> new Coordinates(first.getX() + (i * signX), first.getY() + (i * signY)))
+				.collect(toList());
 	}
 
 	private IntStream getIntStream(ToIntFunction<Coordinates> a) {

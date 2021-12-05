@@ -6,26 +6,28 @@ import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class LineFollowingAxes {
+public class SimpleLine {
 	private final Coordinates first;
 	private final Coordinates second;
-	private boolean isHorizontal = false;
+	private Direction direction;
 
-	private LineFollowingAxes(Coordinates first, Coordinates second) {
+	private enum Direction{HORIZONTAL, VERTICAL, DIAGONAL};
+
+	private SimpleLine(Coordinates first, Coordinates second) {
 		this.first = first;
 		this.second = second;
-		isHorizontal = first.getY() == second.getY();
+		direction = first.getY() == second.getY()? Direction.HORIZONTAL: Direction.VERTICAL;
 	}
 
-	public static Optional<LineFollowingAxes> createLineFollowingAxes(Coordinates first, Coordinates second) {
+	public static Optional<SimpleLine> create(Coordinates first, Coordinates second) {
 		if (first.getX() != second.getX() && first.getY() != second.getY()) {
 			return Optional.empty();
 		}
-		return Optional.of(new LineFollowingAxes(first, second));
+		return Optional.of(new SimpleLine(first, second));
 	}
 
 	public List<Coordinates> getCoordinatesOnLine() {
-		if (isHorizontal){
+		if (direction== Direction.HORIZONTAL){
 			return getIntStream(Coordinates::getX)
 					.mapToObj(x -> new Coordinates(x, first.getY()))
 					.toList();

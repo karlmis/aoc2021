@@ -25,7 +25,10 @@ class HydroThermalVentsTest {
 				SimpleLine.create(new Coordinates(3, 4), new Coordinates(1, 4)),
 				SimpleLine.create(new Coordinates(0, 0), new Coordinates(8, 8)),
 				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
-		).filter(Optional::isPresent).map(Optional::get).toList();
+		).filter(Optional::isPresent)
+				.map(Optional::get)
+				.filter(l -> l.getDirection()== SimpleLine.Direction.HORIZONTAL || l.getDirection()== SimpleLine.Direction.VERTICAL)
+				.toList();
 
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(lines);
 
@@ -38,6 +41,7 @@ class HydroThermalVentsTest {
 				.map(this::toOptionalLineFollowingAxes)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
+				.filter(l -> l.getDirection()== SimpleLine.Direction.HORIZONTAL || l.getDirection()== SimpleLine.Direction.VERTICAL)
 				.toList();
 		HydroThermalVents hydroThermalVents = new HydroThermalVents(simpleLineFollowingAxes);
 

@@ -13,10 +13,15 @@ class SimpleLineTest {
 
 	@Test
 	void createLineFollowingAxes() {
-		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_00)).isEmpty();
+		assertThat(SimpleLine.create(COORDINATES_22, new Coordinates(0, 1))).isEmpty();
+
+		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_00)).isPresent();
+		assertThat(SimpleLine.create(COORDINATES_00, COORDINATES_22)).isPresent();
+
 		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_20)).isPresent();
 		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_02)).isPresent();
-		assertThat(SimpleLine.create(COORDINATES_02, COORDINATES_20)).isEmpty();
+
+		assertThat(SimpleLine.create(COORDINATES_02, COORDINATES_20)).isPresent();
 	}
 
 	@Test

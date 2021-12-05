@@ -11,7 +11,7 @@ public class SimpleLine {
 	private final Coordinates second;
 	private Direction direction;
 
-	private enum Direction{HORIZONTAL, VERTICAL, DIAGONAL};
+	enum Direction{HORIZONTAL, VERTICAL, DIAGONAL};
 
 	private SimpleLine(Coordinates first, Coordinates second, Direction direction) {
 		this.first = first;
@@ -28,14 +28,16 @@ public class SimpleLine {
 	}
 
 	private static Direction getDirection(Coordinates first, Coordinates second) {
-		Direction direction= null;
 		if (first.getX() == second.getX()){
-			direction= Direction.VERTICAL;
+			return Direction.VERTICAL;
 		}
 		if (first.getY() == second.getY()) {
-			direction= Direction.HORIZONTAL;
+			return Direction.HORIZONTAL;
 		}
-		return direction;
+		if (Math.abs(first.getX()- second.getX()) == Math.abs(first.getY()- second.getY())){
+			return Direction.DIAGONAL;
+		}
+		return null;
 	}
 
 	public List<Coordinates> getCoordinatesOnLine() {
@@ -55,5 +57,9 @@ public class SimpleLine {
 				.sorted()
 				.toArray();
 		return IntStream.rangeClosed(ints[0], ints[1]);
+	}
+
+	public Direction getDirection() {
+		return direction;
 	}
 }

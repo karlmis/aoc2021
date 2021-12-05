@@ -30,5 +30,12 @@ class SimpleLineTest {
 				.containsExactly(COORDINATES_20, new Coordinates(2, 1), COORDINATES_22);
 		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_02).get().getCoordinatesOnLine())
 				.containsExactly(COORDINATES_02, new Coordinates(1, 2), COORDINATES_22);
+		assertThat(SimpleLine.create(COORDINATES_00, COORDINATES_22).get().getCoordinatesOnLine())
+				.containsExactly(COORDINATES_00, new Coordinates(1, 1), COORDINATES_22);
+		assertThat(SimpleLine.create(COORDINATES_22, COORDINATES_00).get().getCoordinatesOnLine())
+				.containsExactly(COORDINATES_22, new Coordinates(1, 1), COORDINATES_00);
+
+		assertThat(SimpleLine.create(COORDINATES_02, COORDINATES_20).get().getCoordinatesOnLine())
+				.containsExactly(COORDINATES_02, new Coordinates(1, 1), COORDINATES_20);
 	}
 }

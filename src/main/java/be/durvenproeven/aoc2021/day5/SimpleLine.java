@@ -12,10 +12,6 @@ public class SimpleLine {
 	private final Coordinates second;
 	private final Direction direction;
 
-	enum Direction {HORIZONTAL, VERTICAL, DIAGONAL}
-
-	;
-
 	private SimpleLine(Coordinates first, Coordinates second, Direction direction) {
 		this.first = first;
 		this.second = second;

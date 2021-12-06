@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,8 +40,6 @@ class LanternFishSchoolTest {
 			lanternFishSchool.nextGeneration();
 		}
 		assertThat(lanternFishSchool.getNrOfFish()).isEqualTo(5934);
-
-
 	}
 
 	@Test

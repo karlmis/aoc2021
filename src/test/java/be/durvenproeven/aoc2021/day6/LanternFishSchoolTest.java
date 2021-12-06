@@ -57,4 +57,17 @@ class LanternFishSchoolTest {
 		}
 		assertThat(lanternFishSchool.getNrOfFish()).isEqualTo(374994);
 	}
+
+	@Test
+	void nextGeneration_RealExample_Part2() {
+		String line = LineResolver.getStringStreamOfFile("day6.txt").findFirst().orElseThrow();
+		List<Integer> integers = Arrays.stream(line.split(",")).map(Integer::parseInt).toList();
+
+		LanternFishSchool lanternFishSchool = new LanternFishSchool(integers);
+
+		for (int i = 0; i < 256; i++) {
+			lanternFishSchool.nextGeneration();
+		}
+		assertThat(lanternFishSchool.getNrOfFish()).isEqualTo(1686252324092L);
+	}
 }

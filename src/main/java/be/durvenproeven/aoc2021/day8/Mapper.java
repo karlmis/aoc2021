@@ -10,11 +10,15 @@ import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 
 public class Mapper {
 
-	private HashMap<String, Integer> map;
+	private final HashMap<String, Integer> map;
+	private final DisplayLine displayLine;
 
-
+	int getOutputValue(){
+		return displayLine.getSum(map);
+	}
 
 	Mapper(DisplayLine displayLine) {
+		this.displayLine = displayLine;
 		this.map = new HashMap<>();
 		List<String> strings = displayLine.getCodes();
 		if (!map.containsValue(8)) {
@@ -100,7 +104,7 @@ public class Mapper {
 	private String getString(Map<String, Integer> map, int nr) {
 		return map.entrySet().stream()
 				.filter(e -> nr == e.getValue())
-				.map(e -> e.getKey())
+				.map(Map.Entry::getKey)
 				.findFirst().orElseThrow();
 
 	}

@@ -1,12 +1,6 @@
 package be.durvenproeven.aoc2021.day8;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 
 public class SevenSegmentSearch {
 
@@ -26,21 +20,9 @@ public class SevenSegmentSearch {
 
 	public int getOuputNr(){
 		return diplays.stream()
-				.mapToInt(d -> d.getSum(new Mapper(d).getMap()))
+				.mapToInt(d -> new Mapper(d).getOutputValue())
 				.sum();
 	}
-
-
-	//TODO
-	public Map<String, Integer> getMapping() {
-		for (DisplayLine displayLine : diplays) {
-			Map<String, Integer> map = new Mapper(displayLine).getMap();
-			if (map != null) return map;
-		}
-		return null;
-	}
-
-
 
 
 }

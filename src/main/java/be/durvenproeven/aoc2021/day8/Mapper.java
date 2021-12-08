@@ -5,103 +5,161 @@ import org.apache.commons.lang.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 
 public class Mapper {
 
-	private final HashMap<String, Integer> map;
+	private final Map<String, Integer> map;
 	private final DisplayLine displayLine;
 
-	int getOutputValue(){
+	int getOutputValue() {
 		return displayLine.getSum(map);
 	}
 
 	Mapper(DisplayLine displayLine) {
 		this.displayLine = displayLine;
-		this.map = new HashMap<>();
-		List<String> strings = displayLine.getCodes();
-		if (!map.containsValue(8)) {
-			strings.stream().filter(s1 -> s1.length() == 7).findFirst()
-					.ifPresent(x -> map.put(normalize(x), 8));
-		}
-		if (!map.containsValue(4)) {
-			strings.stream().filter(s1 -> s1.length() == 4).findFirst()
-					.ifPresent(x -> map.put(normalize(x), 4));
-		}
-		if (!map.containsValue(1)) {
-			strings.stream().filter(s1 -> s1.length() == 2).findFirst()
-					.ifPresent(x -> map.put(normalize(x), 1));
-		}
-		if (!map.containsValue(7)) {
-			strings.stream().filter(s1 -> s1.length() == 3).findFirst()
-					.ifPresent(x -> map.put(normalize(x), 7));
-		}
-		if (!map.containsValue(9) && map.containsValue(1)) {//nr 9
-			strings.stream()
-					.filter(s1 -> s1.length() == 6)
-					.filter(s1 -> matches(s1, getString(map, 4)))
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 9));
-		}
-		if (!map.containsValue(6) && map.containsValue(1)) {//nr 6
-			strings.stream()
-					.filter(s1 -> s1.length() == 6)
-					.filter(s1 -> !matches(s1, getString(map, 1)))
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 6));
-		}
-		if (!map.containsValue(0) && map.containsValue(1) && map.containsValue(6) && map.containsValue(4)) {//nr 6
-			strings.stream()
-					.filter(s1 -> s1.length() == 6)
-					.filter(s1 -> !matches(s1, getString(map, 4)))
-					.filter(s1 -> !matches(s1, getString(map, 6)))
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 0));
-		}
-		if (!map.containsValue(3) && map.containsValue(1)) {//nr 3
-			strings.stream()
-					.filter(s1 -> s1.length() == 5)
-					.filter(s1 -> matches(s1, getString(map, 1)))
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 3));
-		}
-		if (!map.containsValue(5) && map.containsValue(6) && map.containsValue(3)) {//nr 3
-			strings.stream()
-					.filter(s1 -> s1.length() == 5)
-					.filter(s1 -> !matches(s1, getString(map, 3)))
-					.filter(s1 -> match(s1, getString(map, 6)) == 5)
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 5));
-		}
-		if (!map.containsValue(2) && map.containsValue(6) && map.containsValue(3)) {//nr 3
-			strings.stream()
-					.filter(s1 -> s1.length() == 5)
-					.filter(s1 -> !matches(s1, getString(map, 3)))
-					.filter(s1 -> match(s1, getString(map, 6)) == 4)
-					.findFirst()
-					.ifPresent(x -> map.put(normalize(x), 2));
-		}
-
+		map = calculateMap(displayLine);
 	}
 
-	public HashMap<String, Integer> getMap() {
+	private enum Digits {
+		ONE(1, 2),
+		FOUR(4, 4),
+		SEVEN(7, 3),
+		EIGHT(8, 7),
+		SIX(6, 6) {
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(1);
+			}
+
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> !matches(s1, getString(map, 1))).findFirst();
+			}
+		},
+		NINE(9, 6) {
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(4);
+			}
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> matches(s1, getString(map, 4)))
+						.findFirst();
+			}
+		},
+		ZERO(0, 6){
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(4) && map.containsValue(6);
+			}
+
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> !matches(s1, getString(map, 4)))
+						.filter(s1 -> !matches(s1, getString(map, 6)))
+						.findFirst();
+			}
+		},
+		THREE(3, 5){
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(1);
+			}
+
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> matches(s1, getString(map, 1))).findFirst();
+			}
+		},
+		TWO(2, 5){
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(3) && map.containsValue(6);
+			}
+
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> !matches(s1, getString(map, 3)))
+						.filter(s1 -> match(s1, getString(map, 6)) == 4)
+						.findFirst();
+			}
+		},
+		FIVE(5, 5){
+			@Override
+			boolean canCalculate(Map<String, Integer> map) {
+				return map.containsValue(3) && map.containsValue(6);
+			}
+
+			@Override
+			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+				return getCodesWithCorrectLength(codes)
+						.filter(s1 -> !matches(s1, getString(map, 3)))
+						.filter(s1 -> match(s1, getString(map, 6)) == 5)
+						.findFirst();
+			}
+		};
+
+		private final int nr;
+		private final int nrOfSegments;
+
+		Digits(int nr, int nrOfSegments) {
+			this.nr = nr;
+			this.nrOfSegments = nrOfSegments;
+		}
+
+		public int getNr() {
+			return nr;
+		}
+
+		boolean canCalculate(Map<String, Integer> map) {
+			return true;
+		}
+
+		Stream<String> getCodesWithCorrectLength(List<String> codes){
+			return codes.stream().filter(s -> s.length() == nrOfSegments);
+		}
+
+		Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+			return getCodesWithCorrectLength(codes).findFirst();
+		}
+	}
+
+	private Map<String, Integer> calculateMap(DisplayLine displayLine) {
+		Map<String, Integer> map = new HashMap<>();
+		for (Digits digits : Digits.values()) {
+			if (digits.canCalculate(map)) {
+				digits.getCodeFrom(displayLine.getCodes(), map).ifPresent(code -> map.put(normalize(code), digits.getNr()));
+			}
+		}
 		return map;
 	}
 
-	private boolean matches(String s, String toMatchCharacters) {
+	public Map<String, Integer> getMap() {
+		return map;
+	}
+
+	private static boolean matches(String s, String toMatchCharacters) {
 		return toMatchCharacters.chars()
 				.allMatch(c -> StringUtils.contains(s, (char) c));
 	}
 
-	private int match(String s, String toMatchCharacters) {
+	private static int match(String s, String toMatchCharacters) {
 		return (int) toMatchCharacters.chars()
 				.filter(c -> StringUtils.contains(s, (char) c))
 				.count();
 
 	}
 
-	private String getString(Map<String, Integer> map, int nr) {
+	private static String getString(Map<String, Integer> map, int nr) {
 		return map.entrySet().stream()
 				.filter(e -> nr == e.getValue())
 				.map(Map.Entry::getKey)

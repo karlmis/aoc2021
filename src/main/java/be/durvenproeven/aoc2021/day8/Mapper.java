@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
+import static be.durvenproeven.aoc2021.day8.StringHelper.countMatch;
+import static be.durvenproeven.aoc2021.day8.StringHelper.matches;
 import static java.util.Collections.emptyList;
 
 
@@ -22,87 +24,6 @@ public class Mapper {
 	Mapper(DisplayLine displayLine) {
 		this.displayLine = displayLine;
 		map = calculateMap(displayLine);
-	}
-
-	private enum Digits {
-		ONE(1, 2, emptyList()),
-		FOUR(4, 4, emptyList()),
-		SEVEN(7, 3, emptyList()),
-		EIGHT(8, 7, emptyList()),
-		SIX(6, 6, List.of(1)) {
-			@Override
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !StringHelper.matches(s1, getString(map, 1))).findFirst();
-			}
-		},
-		NINE(9, 6, List.of(1)) {
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> StringHelper.matches(s1, getString(map, 4)))
-						.findFirst();
-			}
-		},
-		ZERO(0, 6, List.of(4,6)){
-			@Override
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !StringHelper.matches(s1, getString(map, 4)))
-						.filter(s1 -> !StringHelper.matches(s1, getString(map, 6)))
-						.findFirst();
-			}
-		},
-		THREE(3, 5, List.of(1)){
-			@Override
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> StringHelper.matches(s1, getString(map, 1))).findFirst();
-			}
-		},
-		TWO(2, 5, List.of(3,6)){
-			@Override
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !StringHelper.matches(s1, getString(map, 3)))
-						.filter(s1 -> StringHelper.countMatch(s1, getString(map, 6)) == 4)
-						.findFirst();
-			}
-		},
-		FIVE(5, 5, List.of(3,6)){
-			@Override
-			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !StringHelper.matches(s1, getString(map, 3)))
-						.filter(s1 -> StringHelper.countMatch(s1, getString(map, 6)) == 5)
-						.findFirst();
-			}
-		};
-
-		private final int nr;
-		private final int nrOfSegments;
-		private List<Integer> needsValues;
-
-		Digits(int nr, int nrOfSegments, List<Integer> needsValues) {
-			this.nr = nr;
-			this.nrOfSegments = nrOfSegments;
-			this.needsValues = needsValues;
-		}
-
-		public int getNr() {
-			return nr;
-		}
-
-		boolean canCalculate(Map<String, Integer> map) {
-			return needsValues.stream().allMatch(map::containsValue);
-		}
-
-		Stream<String> getCodesWithCorrectLength(List<String> codes){
-			return codes.stream().filter(s -> s.length() == nrOfSegments);
-		}
-
-		Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
-			return getCodesWithCorrectLength(codes).findFirst();
-		}
 	}
 
 	private Map<String, Integer> calculateMap(DisplayLine displayLine) {
@@ -127,7 +48,80 @@ public class Mapper {
 				.filter(e -> nr == e.getValue())
 				.map(Map.Entry::getKey)
 				.findFirst().orElseThrow();
+	}
 
+	private enum Digits {
+		ONE(1, 2, emptyList()),
+		FOUR(4, 4, emptyList()),
+		SEVEN(7, 3, emptyList()),
+		EIGHT(8, 7, emptyList()),
+		SIX(6, 6, List.of(1)) {
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> !matches(s1, getString(map, 1));
+			}
+		},
+		NINE(9, 6, List.of(4)) {
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> matches(s1, getString(map, 4));
+			}
+		},
+		ZERO(0, 6, List.of(4,6)){
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> !matches(s1, getString(map, 4))
+						&& !matches(s1, getString(map, 6));
+			}
+		},
+		THREE(3, 5, List.of(1)){
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> matches(s1, getString(map, 1));
+			}
+		},
+		TWO(2, 5, List.of(3,6)){
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> !matches(s1, getString(map, 3))
+						&& countMatch(s1, getString(map, 6)) == 4;
+			}
+		},
+		FIVE(5, 5, List.of(3,6)){
+			@Override
+			public Predicate<String> getPredicate(Map<String, Integer> map) {
+				return s1 -> !matches(s1, getString(map, 3))
+						&& countMatch(s1, getString(map, 6)) == 5;
+			}
+		};
+
+		private final int nr;
+		private final int nrOfSegments;
+		private final List<Integer> needsValues;
+
+		Digits(int nr, int nrOfSegments, List<Integer> needsValues) {
+			this.nr = nr;
+			this.nrOfSegments = nrOfSegments;
+			this.needsValues = needsValues;
+		}
+
+		public Predicate<String> getPredicate(Map<String, Integer> map){
+			return t-> true;
+		}
+
+		public int getNr() {
+			return nr;
+		}
+
+		boolean canCalculate(Map<String, Integer> map) {
+			return needsValues.stream().allMatch(map::containsValue);
+		}
+
+		Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
+			return codes.stream().filter(s -> s.length() == nrOfSegments)
+					.filter(getPredicate(map))
+					.findFirst();
+		}
 	}
 
 }

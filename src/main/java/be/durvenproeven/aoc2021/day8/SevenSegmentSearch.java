@@ -1,6 +1,5 @@
 package be.durvenproeven.aoc2021.day8;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ public class SevenSegmentSearch {
 
 	public int getKnownNrs() {
 		return (int) nrsPart.stream()
-				.map(d -> d.secondPart)
+				.map(d -> d.getSecondPart())
 				.flatMap(s -> Arrays.stream(s.split(" ")))
 				.filter(s -> List.of(2, 3, 4, 7).contains(s.length()))
 				.count();
@@ -45,8 +44,7 @@ public class SevenSegmentSearch {
 
 	private Map<String, Integer> getMapping(Display display) {
 		Map<String, Integer> map = new HashMap<>();
-		String s = display.firstPart + " " + display.secondPart;
-		List<String> strings = Arrays.stream((s.split(" "))).toList();
+		List<String> strings = display.getCodes();
 		if (!map.containsValue(8)) {
 			strings.stream().filter(s1 -> s1.length() == 7).findFirst()
 					.ifPresent(x -> map.put(normalize(x), 8));
@@ -130,26 +128,6 @@ public class SevenSegmentSearch {
 				.map(e -> e.getKey())
 				.findFirst().orElseThrow();
 
-	}
-
-	private static class Display {
-		private String firstPart;
-		private String secondPart;
-
-		public Display(String s) {
-			String[] split = s.split("\\|");
-			Preconditions.checkArgument(split.length == 2);
-			firstPart = split[0].trim();
-			secondPart = split[1].trim();
-		}
-
-		public int getSum(Map<String, Integer> map){
-			return Arrays.stream((secondPart.split(" ")))
-					.map(StringHelper::normalize)
-					.map(map::get)
-					.mapToInt(Integer::intValue)
-					.reduce(0, (a, b) -> a * 10 + b);
-		}
 	}
 
 }

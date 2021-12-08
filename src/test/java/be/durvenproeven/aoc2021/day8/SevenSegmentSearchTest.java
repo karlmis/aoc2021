@@ -1,10 +1,13 @@
 package be.durvenproeven.aoc2021.day8;
 
 import be.durvenproeven.aoc2021.LineResolver;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
+import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SevenSegmentSearchTest {
@@ -37,15 +40,15 @@ class SevenSegmentSearchTest {
 	@Test
 	void getKnownNrs_GivenSimpleExample() {
 		assertThat(new SevenSegmentSearch(List.of(
-				"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe" ,
-				"edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc" ,
-				"fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg" ,
-				"fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb" ,
-				"aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga | gecf egdcabf bgf bfgea" ,
-				"fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf | gebdcfa ecba ca fadegcb" ,
-				"dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbcadfe" ,
-				"bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef" ,
-				"egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb" ,
+				"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
+				"edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc",
+				"fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg",
+				"fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb",
+				"aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga | gecf egdcabf bgf bfgea",
+				"fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf | gebdcfa ecba ca fadegcb",
+				"dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbcadfe",
+				"bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef",
+				"egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb",
 				"gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce")
 		).getKnownNrs()).isEqualTo(26);
 	}
@@ -56,4 +59,56 @@ class SevenSegmentSearchTest {
 
 		assertThat(new SevenSegmentSearch(stringList).getKnownNrs()).isEqualTo(274);
 	}
+
+	@Test
+	void getMapping_SimpleExample() {
+		assertThat(new SevenSegmentSearch(List.of(
+				"acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
+		)
+		).getMapping()).containsAllEntriesOf(Map.of(
+				normalize("acedgfb"), 8,
+				normalize("cdfbe"), 5,
+				normalize("gcdfa"), 2,
+				normalize("fbcad"), 3,
+				normalize("dab"), 7,
+				normalize("cefabd"), 9,
+				normalize("cdfgeb"), 6,
+				normalize("eafb"), 4,
+				normalize("cagedb"), 0,
+				normalize("ab"), 1
+				)
+		);
+	}
+	@Test
+	void getOutputNr() {
+		assertThat(new SevenSegmentSearch(List.of(
+				"acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
+		)).getOuputNr()).isEqualTo(5353);
+
+	}
+
+	@Test
+	void getOutputNr_GivenSimpleExample() {
+		assertThat(new SevenSegmentSearch(List.of(
+				"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
+				"edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc",
+				"fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg",
+				"fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb",
+				"aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga | gecf egdcabf bgf bfgea",
+				"fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf | gebdcfa ecba ca fadegcb",
+				"dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbcadfe",
+				"bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef",
+				"egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb",
+				"gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce")
+		).getOuputNr()).isEqualTo(61229);
+	}
+
+
+	@Test
+	void getOutputNr_RealExample() {
+		List<String> stringList = LineResolver.getStringStreamOfFile("day8.txt").toList();
+
+		assertThat(new SevenSegmentSearch(stringList).getOuputNr()).isEqualTo(1012089);
+	}
+
 }

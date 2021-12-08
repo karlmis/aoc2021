@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-class Display {
+class DisplayLine {
 	private final List<String> firstCodes;
 	private final List<String> secondCodes;
 
-	public Display(String s) {
+	public DisplayLine(String s) {
 		String[] split = s.split("\\|");
 		Preconditions.checkArgument(split.length == 2);
 

@@ -10,38 +10,38 @@ import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 
 public class SevenSegmentSearch {
 
-	private final List<Display> nrsPart;
+	private final List<DisplayLine> diplays;
 
 	public SevenSegmentSearch(List<String> inputLines) {
-		nrsPart = inputLines.stream()
-				.map(Display::new)
+		diplays = inputLines.stream()
+				.map(DisplayLine::new)
 				.toList();
 
 	}
 
 	public int getKnownNrs() {
-		return nrsPart.stream()
-				.mapToInt(display -> display.getKnownNrs(List.of(2, 3, 4, 7)))
+		return diplays.stream()
+				.mapToInt(displayLine -> displayLine.getKnownNrs(List.of(2, 3, 4, 7)))
 				.sum();
 	}
 
 	public int getOuputNr(){
-		return nrsPart.stream().mapToInt(d -> d.getSum(getMapping(d))).sum();
+		return diplays.stream().mapToInt(d -> d.getSum(getMapping(d))).sum();
 	}
 
 
 	//TODO
 	public Map<String, Integer> getMapping() {
-		for (Display display : nrsPart) {
-			Map<String, Integer> map = getMapping(display);
+		for (DisplayLine displayLine : diplays) {
+			Map<String, Integer> map = getMapping(displayLine);
 			if (map != null) return map;
 		}
 		return null;
 	}
 
-	private Map<String, Integer> getMapping(Display display) {
+	private Map<String, Integer> getMapping(DisplayLine displayLine) {
 		Map<String, Integer> map = new HashMap<>();
-		List<String> strings = display.getCodes();
+		List<String> strings = displayLine.getCodes();
 		if (!map.containsValue(8)) {
 			strings.stream().filter(s1 -> s1.length() == 7).findFirst()
 					.ifPresent(x -> map.put(normalize(x), 8));

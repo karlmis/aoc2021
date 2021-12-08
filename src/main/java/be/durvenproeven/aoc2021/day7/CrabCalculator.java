@@ -19,4 +19,17 @@ public class CrabCalculator {
 		}
 		return index;
 	}
+
+	public int getLeastFuelPart2Position(){
+		int minDistance= Integer.MAX_VALUE;
+		int index= -1;
+		for (int i = crabSwarm.getMin(); i < crabSwarm.getMax(); i++) {
+			int distance = crabSwarm.getSecondDistance(i);
+			if (distance < minDistance){
+				minDistance= distance;
+				index= i;
+			}
+		}
+		return index;
+	}
 }

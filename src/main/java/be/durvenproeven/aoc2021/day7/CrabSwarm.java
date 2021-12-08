@@ -1,6 +1,7 @@
 package be.durvenproeven.aoc2021.day7;
 
 import java.util.List;
+import java.util.function.ToIntFunction;
 
 public class CrabSwarm {
 	private List<Integer> positions;
@@ -10,8 +11,21 @@ public class CrabSwarm {
 	}
 
 	public int getDistance(int toNr){
+		return getDistance(x -> Math.abs(x - toNr));
+	}
+
+	public int getSecondDistance(int toNr){
+		return getDistance(x-> neededFule(x, toNr));
+	}
+
+	private int neededFule(Integer x, int toNr) {
+		int abs = Math.abs(toNr - x);
+		return abs*(abs+1)/2;
+	}
+
+	private int getDistance(ToIntFunction<Integer> integerToIntFunction) {
 		return positions.stream()
-				.mapToInt(x -> Math.abs(x-toNr))
+				.mapToInt(integerToIntFunction)
 				.sum();
 	}
 

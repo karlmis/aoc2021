@@ -17,4 +17,11 @@ class CrabSwarmTest {
 		assertThat(crabSwarm.getDistance(1)).isEqualTo(41);
 		assertThat(crabSwarm.getDistance(3)).isEqualTo(39);
 	}
+
+	@Test
+	void getSecondDistance() {
+		CrabSwarm crabSwarm = new CrabSwarm(List.of(16, 1, 2, 0, 4, 2, 7, 1, 2, 14));
+
+		assertThat(crabSwarm.getSecondDistance(5)).isEqualTo(168);
+	}
 }

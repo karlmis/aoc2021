@@ -2,7 +2,6 @@ package be.durvenproeven.aoc2021.day8;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +20,9 @@ public class SevenSegmentSearch {
 	}
 
 	public int getKnownNrs() {
-		return (int) nrsPart.stream()
-				.map(d -> d.getSecondPart())
-				.flatMap(s -> Arrays.stream(s.split(" ")))
-				.filter(s -> List.of(2, 3, 4, 7).contains(s.length()))
-				.count();
+		return nrsPart.stream()
+				.mapToInt(display -> display.getKnownNrs(List.of(2, 3, 4, 7)))
+				.sum();
 	}
 
 	public int getOuputNr(){

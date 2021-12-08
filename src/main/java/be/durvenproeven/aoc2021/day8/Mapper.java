@@ -1,14 +1,12 @@
 package be.durvenproeven.aoc2021.day8;
 
-import org.apache.commons.lang.StringUtils;
-
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static be.durvenproeven.aoc2021.day8.StringHelper.normalize;
 
 public class Mapper {
 
@@ -38,7 +36,7 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !matches(s1, getString(map, 1))).findFirst();
+						.filter(s1 -> !StringHelper.matches(s1, getString(map, 1))).findFirst();
 			}
 		},
 		NINE(9, 6) {
@@ -49,7 +47,7 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> matches(s1, getString(map, 4)))
+						.filter(s1 -> StringHelper.matches(s1, getString(map, 4)))
 						.findFirst();
 			}
 		},
@@ -62,8 +60,8 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !matches(s1, getString(map, 4)))
-						.filter(s1 -> !matches(s1, getString(map, 6)))
+						.filter(s1 -> !StringHelper.matches(s1, getString(map, 4)))
+						.filter(s1 -> !StringHelper.matches(s1, getString(map, 6)))
 						.findFirst();
 			}
 		},
@@ -76,7 +74,7 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> matches(s1, getString(map, 1))).findFirst();
+						.filter(s1 -> StringHelper.matches(s1, getString(map, 1))).findFirst();
 			}
 		},
 		TWO(2, 5){
@@ -88,8 +86,8 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !matches(s1, getString(map, 3)))
-						.filter(s1 -> match(s1, getString(map, 6)) == 4)
+						.filter(s1 -> !StringHelper.matches(s1, getString(map, 3)))
+						.filter(s1 -> StringHelper.countMatch(s1, getString(map, 6)) == 4)
 						.findFirst();
 			}
 		},
@@ -102,8 +100,8 @@ public class Mapper {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
-						.filter(s1 -> !matches(s1, getString(map, 3)))
-						.filter(s1 -> match(s1, getString(map, 6)) == 5)
+						.filter(s1 -> !StringHelper.matches(s1, getString(map, 3)))
+						.filter(s1 -> StringHelper.countMatch(s1, getString(map, 6)) == 5)
 						.findFirst();
 			}
 		};
@@ -135,28 +133,19 @@ public class Mapper {
 
 	private Map<String, Integer> calculateMap(DisplayLine displayLine) {
 		Map<String, Integer> map = new HashMap<>();
-		for (Digits digits : Digits.values()) {
-			if (digits.canCalculate(map)) {
-				digits.getCodeFrom(displayLine.getCodes(), map).ifPresent(code -> map.put(normalize(code), digits.getNr()));
-			}
-		}
+		Arrays.stream(Digits.values())
+				.filter(digits -> digits.canCalculate(map))
+				.forEach(digits -> addDigitToMapIfPossible(map, displayLine, digits));
 		return map;
+	}
+
+	private void addDigitToMapIfPossible(Map<String, Integer> map, DisplayLine displayLine, Digits digits) {
+		digits.getCodeFrom(displayLine.getCodes(), map)
+				.ifPresent(code -> map.put(code, digits.getNr()));
 	}
 
 	public Map<String, Integer> getMap() {
 		return map;
-	}
-
-	private static boolean matches(String s, String toMatchCharacters) {
-		return toMatchCharacters.chars()
-				.allMatch(c -> StringUtils.contains(s, (char) c));
-	}
-
-	private static int match(String s, String toMatchCharacters) {
-		return (int) toMatchCharacters.chars()
-				.filter(c -> StringUtils.contains(s, (char) c))
-				.count();
-
 	}
 
 	private static String getString(Map<String, Integer> map, int nr) {

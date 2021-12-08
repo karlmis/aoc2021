@@ -16,8 +16,12 @@ class DisplayLine {
 		Preconditions.checkArgument(split.length == 2);
 
 		//remove and make sure alphabetic
-		firstCodes = Arrays.stream((split[0].trim().split(" "))).toList();
-		secondCodes = Arrays.stream((split[1].trim().split(" "))).toList();
+		firstCodes = Arrays.stream((split[0].trim().split(" ")))
+				.map(StringHelper::normalize)
+				.toList();
+		secondCodes = Arrays.stream((split[1].trim().split(" ")))
+				.map(StringHelper::normalize)
+				.toList();
 	}
 
 	List<String> getCodes() {
@@ -26,7 +30,6 @@ class DisplayLine {
 
 	public int getSum(Map<String, Integer> map) {
 		return secondCodes.stream()
-				.map(StringHelper::normalize)
 				.map(map::get)
 				.mapToInt(Integer::intValue)
 				.reduce(0, (a, b) -> a * 10 + b);

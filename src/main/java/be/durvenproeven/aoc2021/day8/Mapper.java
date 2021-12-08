@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+
 
 public class Mapper {
 
@@ -23,40 +25,25 @@ public class Mapper {
 	}
 
 	private enum Digits {
-		ONE(1, 2),
-		FOUR(4, 4),
-		SEVEN(7, 3),
-		EIGHT(8, 7),
-		SIX(6, 6) {
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(1);
-			}
-
+		ONE(1, 2, emptyList()),
+		FOUR(4, 4, emptyList()),
+		SEVEN(7, 3, emptyList()),
+		EIGHT(8, 7, emptyList()),
+		SIX(6, 6, List.of(1)) {
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
 						.filter(s1 -> !StringHelper.matches(s1, getString(map, 1))).findFirst();
 			}
 		},
-		NINE(9, 6) {
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(4);
-			}
-			@Override
+		NINE(9, 6, List.of(1)) {
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
 						.filter(s1 -> StringHelper.matches(s1, getString(map, 4)))
 						.findFirst();
 			}
 		},
-		ZERO(0, 6){
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(4) && map.containsValue(6);
-			}
-
+		ZERO(0, 6, List.of(4,6)){
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
@@ -65,24 +52,14 @@ public class Mapper {
 						.findFirst();
 			}
 		},
-		THREE(3, 5){
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(1);
-			}
-
+		THREE(3, 5, List.of(1)){
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
 						.filter(s1 -> StringHelper.matches(s1, getString(map, 1))).findFirst();
 			}
 		},
-		TWO(2, 5){
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(3) && map.containsValue(6);
-			}
-
+		TWO(2, 5, List.of(3,6)){
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
@@ -91,12 +68,7 @@ public class Mapper {
 						.findFirst();
 			}
 		},
-		FIVE(5, 5){
-			@Override
-			boolean canCalculate(Map<String, Integer> map) {
-				return map.containsValue(3) && map.containsValue(6);
-			}
-
+		FIVE(5, 5, List.of(3,6)){
 			@Override
 			Optional<String> getCodeFrom(List<String> codes, Map<String, Integer> map) {
 				return getCodesWithCorrectLength(codes)
@@ -108,10 +80,12 @@ public class Mapper {
 
 		private final int nr;
 		private final int nrOfSegments;
+		private List<Integer> needsValues;
 
-		Digits(int nr, int nrOfSegments) {
+		Digits(int nr, int nrOfSegments, List<Integer> needsValues) {
 			this.nr = nr;
 			this.nrOfSegments = nrOfSegments;
+			this.needsValues = needsValues;
 		}
 
 		public int getNr() {
@@ -119,7 +93,7 @@ public class Mapper {
 		}
 
 		boolean canCalculate(Map<String, Integer> map) {
-			return true;
+			return needsValues.stream().allMatch(map::containsValue);
 		}
 
 		Stream<String> getCodesWithCorrectLength(List<String> codes){

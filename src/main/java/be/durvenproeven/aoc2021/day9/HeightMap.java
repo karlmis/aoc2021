@@ -2,6 +2,7 @@ package be.durvenproeven.aoc2021.day9;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class HeightMap {
 
 	private final int[][] nrs;
 	private final Map<Coordinates, Integer> lowPoints;
+	private final Coordinates maxCoordinate;
 
 	public HeightMap(List<String> input) {
 		nrs = new int[input.size()][];
@@ -21,6 +23,7 @@ public class HeightMap {
 			nrs[i]= toArray(input.get(i));
 		}
 		lowPoints = calculateLowPoints();
+		maxCoordinate = new Coordinates(input.size(), input.get(0).length());
 	}
 
 	private int[] toArray(String l) {
@@ -49,7 +52,7 @@ public class HeightMap {
 	public List<Integer> getBasinSizes(){
 		List<Integer> res = new ArrayList<>();
 		for (Map.Entry<Coordinates, Integer> entry : lowPoints.entrySet()) {
-			HashSet<Coordinates> basin = new HashSet<>();
+			Set<Coordinates> basin = new HashSet<>();
 
 			for (Direction value : Direction.values()) {
 				basin.addAll(getBasinSize(entry.getKey().getNeighbour(value), Set.of(entry.getKey())));
@@ -59,35 +62,30 @@ public class HeightMap {
 		return res;
 	}
 
+	private Set<Coordinates> getBasinSize(Coordinates coordinates, Set<Coordinates> alreadyDone){
+		if (!coordinates.isInFirstQuadrant() || !coordinates.isSmallerThen(maxCoordinate)){
+			return alreadyDone;
+		}
+		if (nrs[coordinates.getX()][coordinates.getY()] ==9){
+			return alreadyDone;
+		}
+		HashSet<Coordinates> newAlreadyDone = new HashSet<>(alreadyDone);
+		newAlreadyDone.add(coordinates);
+
+		Arrays.stream(Direction.values())
+				.map(coordinates::getNeighbour)
+				.filter(neighbour -> !newAlreadyDone.contains(neighbour))
+				.forEach(neighbour -> newAlreadyDone.addAll(getBasinSize(neighbour, newAlreadyDone)));
+		return newAlreadyDone;
+
+	}
+
 	public int getBasinNumber(){
 		Comparator<Integer> compare = Integer::compare;
 		return getBasinSizes().stream()
 				.sorted(compare.reversed())
 				.limit(3)
 				.reduce(1, (a, b) -> a * b);
-	}
-
-	private Set<Coordinates> getBasinSize(Coordinates coordinates, Set<Coordinates> alreadyDone){
-		if (coordinates.getX()<0 || coordinates.getY()<0 ||
-				coordinates.getX() >= nrs.length || coordinates.getY() >= nrs[coordinates.getX()].length){
-			return alreadyDone;
-		}
-		int value= nrs[coordinates.getX()][coordinates.getY()];
-		if (value ==9){
-			return alreadyDone;
-		}
-		HashSet<Coordinates> newAlreadyDone = new HashSet<>(alreadyDone);
-		newAlreadyDone.add(coordinates);
-		for (Direction dir : Direction.values()) {
-
-			Coordinates neighbour = coordinates.getNeighbour(dir);
-			if (!newAlreadyDone.contains(neighbour)){
-				newAlreadyDone.addAll(getBasinSize(neighbour, newAlreadyDone));
-			}
-
-		}
-		return newAlreadyDone;
-
 	}
 
 	public int getSumRiskLevel(){

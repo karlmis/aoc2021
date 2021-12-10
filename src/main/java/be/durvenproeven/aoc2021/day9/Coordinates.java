@@ -10,6 +10,14 @@ public class Coordinates {
 		this.y = y;
 	}
 
+	boolean isInFirstQuadrant() {
+		return getX() >= 0 && getY() >= 0;
+	}
+
+	boolean isSmallerThen(Coordinates maxCoordinate){
+		return x < maxCoordinate.x && y < maxCoordinate.y;
+	}
+
 	public int getX() {
 		return x;
 	}

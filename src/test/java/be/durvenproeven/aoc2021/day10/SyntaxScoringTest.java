@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.ClosingCharacters.BRACES;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.ClosingCharacters.BRACKET;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.ClosingCharacters.PARENTHESIS;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.ClosingCharacters.SMALLER_GREATER;
+import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.BRACES;
+import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.BRACKET;
+import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.PARENTHESIS;
+import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.SMALLER_GREATER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SyntaxScoringTest {
@@ -108,10 +108,10 @@ class SyntaxScoringTest {
 
 	}
 
-		private Condition<? super Optional<List<SyntaxScoring.ClosingCharacters>>> closing(String s) {
-		List<SyntaxScoring.ClosingCharacters> closing = s.chars()
+		private Condition<? super Optional<List<SyntaxScoring.Delimiter>>> closing(String s) {
+		List<SyntaxScoring.Delimiter> closing = s.chars()
 				.mapToObj(Character::toString)
-				.map(SyntaxScoring.ClosingCharacters::isClosing)
+				.map(SyntaxScoring.Delimiter::fromClosing)
 				.map(Optional::orElseThrow)
 				.toList();
 		return new Condition<>(t -> t.isPresent() && t.get().equals(closing), "%s: %s", s, closing);

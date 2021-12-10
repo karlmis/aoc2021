@@ -17,7 +17,7 @@ public class SyntaxScoring {
 
 	long getCompletionScore() {
 		return findMissing()
-				.map(ClosingCharacters::getCompletionScore)
+				.map(Delimiter::getCompletionScore)
 				.orElse(0L);
 
 	}
@@ -31,23 +31,23 @@ public class SyntaxScoring {
 		return longs[longs.length / 2];
 	}
 
-	public Optional<List<ClosingCharacters>> findMissing() {
+	public Optional<List<Delimiter>> findMissing() {
 		if (findError().isPresent()) {
 			return Optional.empty();
 		}
 		List<String> strings = getStringListWithoutCouples();
 		Collections.reverse(strings);
 		return Optional.of(strings.stream()
-				.map(s -> ClosingCharacters.isOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
+				.map(s -> Delimiter.fromOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
 				.toList());
 	}
 
 	public Optional<ErrorResult> findError() {
 		List<String> strings = getStringListWithoutCouples();
 		for (int i = 1; i < strings.size(); i++) {
-			Optional<ClosingCharacters> closing = ClosingCharacters.isClosing(strings.get(i));
+			Optional<Delimiter> closing = Delimiter.fromClosing(strings.get(i));
 			if (closing.isPresent()) {
-				return Optional.of(new ErrorResult(ClosingCharacters.isOpening(strings.get(i - 1)).get(), closing.get()));
+				return Optional.of(new ErrorResult(Delimiter.fromOpening(strings.get(i - 1)).get(), closing.get()));
 			}
 		}
 		return Optional.empty();
@@ -80,7 +80,7 @@ public class SyntaxScoring {
 		System.out.println("before:" + strings);
 		List<Integer> toRemove = new ArrayList<>();
 		for (int i = 1; i < strings.size(); i++) {
-			if (isClosing(strings.get(i - 1), strings.get(i))) {
+			if (Delimiter.isPair(strings.get(i - 1), strings.get(i))) {
 				toRemove.add(0, i - 1);
 				toRemove.add(0, i);
 			}
@@ -88,14 +88,10 @@ public class SyntaxScoring {
 		toRemove.forEach(index -> strings.remove(index.intValue()));
 	}
 
-	private boolean isClosing(String first, String second) {
-		return ClosingCharacters.isPair(first, second);
-	}
-
 	static class ErrorResult {
-		ClosingCharacters expected, found;
+		Delimiter expected, found;
 
-		public ErrorResult(ClosingCharacters expected, ClosingCharacters found) {
+		public ErrorResult(Delimiter expected, Delimiter found) {
 			this.expected = expected;
 			this.found = found;
 		}
@@ -126,7 +122,7 @@ public class SyntaxScoring {
 		}
 	}
 
-	enum ClosingCharacters {
+	enum Delimiter {
 		PARENTHESIS("(", ")", 3, 1),
 		BRACKET("[", "]", 57, 2),
 		BRACES("{", "}", 1197, 3),
@@ -137,7 +133,7 @@ public class SyntaxScoring {
 		private final int errorScore;
 		private final int completionScore;
 
-		ClosingCharacters(String leftSign, String rightSign, int errorScore, int completionScore) {
+		Delimiter(String leftSign, String rightSign, int errorScore, int completionScore) {
 			this.leftSign = leftSign;
 			this.rightSign = rightSign;
 			this.errorScore = errorScore;
@@ -157,21 +153,21 @@ public class SyntaxScoring {
 					.anyMatch(v -> v.leftSign.equals(first) && v.rightSign.equals(second));
 		}
 
-		public static Optional<ClosingCharacters> isClosing(String first) {
+		public static Optional<Delimiter> fromClosing(String first) {
 			return Arrays.stream(values())
 					.filter(v -> v.rightSign.equals(first))
 					.findFirst();
 		}
 
-		public static Optional<ClosingCharacters> isOpening(String first) {
+		public static Optional<Delimiter> fromOpening(String first) {
 			return Arrays.stream(values())
 					.filter(v -> v.leftSign.equals(first))
 					.findFirst();
 		}
 
-		public static long getCompletionScore(List<ClosingCharacters> list) {
+		public static long getCompletionScore(List<Delimiter> list) {
 			return list.stream()
-					.mapToLong(ClosingCharacters::getCompletionScore)
+					.mapToLong(Delimiter::getCompletionScore)
 					.reduce(0, (pr, nr) -> pr * 5 + nr);
 
 		}

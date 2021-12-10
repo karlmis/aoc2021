@@ -20,7 +20,7 @@ public class HeightMap {
 	public HeightMap(List<String> input) {
 		nrs = new int[input.size()][];
 		for (int i = 0; i < input.size(); i++) {
-			nrs[i]= toArray(input.get(i));
+			nrs[i] = toArray(input.get(i));
 		}
 		lowPoints = calculateLowPoints();
 		maxCoordinate = new Coordinates(input.size(), input.get(0).length());
@@ -37,7 +37,7 @@ public class HeightMap {
 		Map<Coordinates, Integer> res = new HashMap<>();
 		for (int i = 0; i < nrs.length; i++) {
 			for (int i1 = 0; i1 < nrs[i].length; i1++) {
-				if (nrs[i][i1]< minOfNeighbours(i, i1)){
+				if (nrs[i][i1] < minOfNeighbours(i, i1)) {
 					res.put(new Coordinates(i, i1), nrs[i][i1]);
 				}
 			}
@@ -45,28 +45,27 @@ public class HeightMap {
 		return res;
 	}
 
-	public Collection<Integer> getLowPoints(){
+	public Collection<Integer> getLowPoints() {
 		return lowPoints.values();
 	}
 
-	public List<Integer> getBasinSizes(){
-		List<Integer> res = new ArrayList<>();
-		for (Map.Entry<Coordinates, Integer> entry : lowPoints.entrySet()) {
-			Set<Coordinates> basin = new HashSet<>();
-
-			for (Direction value : Direction.values()) {
-				basin.addAll(getBasinSize(entry.getKey().getNeighbour(value), Set.of(entry.getKey())));
-			}
-			res.add(basin.size());
-		}
-		return res;
+	public List<Integer> getBasinSizes() {
+		return lowPoints.keySet().stream()
+				.map(entry -> getBasin(entry, mutableSetOf(entry)).size())
+				.toList();
 	}
 
-	private Set<Coordinates> getBasinSize(Coordinates coordinates, Set<Coordinates> alreadyDone){
-		if (!coordinates.isInFirstQuadrant() || !coordinates.isSmallerThen(maxCoordinate)){
+	private Set<Coordinates> mutableSetOf(Coordinates value) {
+		Set<Coordinates> basin = new HashSet<>();
+		basin.add(value);
+		return basin;
+	}
+
+	private Set<Coordinates> getBasin(Coordinates coordinates, Set<Coordinates> alreadyDone) {
+		if (!coordinates.isInFirstQuadrant() || !coordinates.isSmallerThen(maxCoordinate)) {
 			return alreadyDone;
 		}
-		if (nrs[coordinates.getX()][coordinates.getY()] ==9){
+		if (nrs[coordinates.getX()][coordinates.getY()] == 9) {
 			return alreadyDone;
 		}
 		HashSet<Coordinates> newAlreadyDone = new HashSet<>(alreadyDone);
@@ -75,12 +74,12 @@ public class HeightMap {
 		Arrays.stream(Direction.values())
 				.map(coordinates::getNeighbour)
 				.filter(neighbour -> !newAlreadyDone.contains(neighbour))
-				.forEach(neighbour -> newAlreadyDone.addAll(getBasinSize(neighbour, newAlreadyDone)));
+				.forEach(neighbour -> newAlreadyDone.addAll(getBasin(neighbour, newAlreadyDone)));
 		return newAlreadyDone;
 
 	}
 
-	public int getBasinNumber(){
+	public int getBasinNumber() {
 		Comparator<Integer> compare = Integer::compare;
 		return getBasinSizes().stream()
 				.sorted(compare.reversed())
@@ -88,33 +87,31 @@ public class HeightMap {
 				.reduce(1, (a, b) -> a * b);
 	}
 
-	public int getSumRiskLevel(){
+	public int getSumRiskLevel() {
 		return lowPoints.values().stream()
 				.mapToInt(Integer::intValue)
-				.map(i -> i+1)
+				.map(i -> i + 1)
 				.sum();
 	}
 
 	private int minOfNeighbours(int i, int i1) {
-		List<Integer> neighourValues= new ArrayList<>();
-		if (i >0){
-			neighourValues.add(nrs[i-1][i1]);
+		List<Integer> neighourValues = new ArrayList<>();
+		if (i > 0) {
+			neighourValues.add(nrs[i - 1][i1]);
 		}
-		if (i < nrs.length-1){
-			neighourValues.add(nrs[i+1][i1]);
+		if (i < nrs.length - 1) {
+			neighourValues.add(nrs[i + 1][i1]);
 		}
-		if (i1 >0){
-			neighourValues.add(nrs[i][i1-1]);
+		if (i1 > 0) {
+			neighourValues.add(nrs[i][i1 - 1]);
 		}
-		if (i1 < nrs[i].length-1){
-			neighourValues.add(nrs[i][i1+1]);
+		if (i1 < nrs[i].length - 1) {
+			neighourValues.add(nrs[i][i1 + 1]);
 		}
 		return neighourValues.stream()
 				.mapToInt(Integer::intValue)
 				.min().orElseThrow();
 	}
-
-
 
 
 }

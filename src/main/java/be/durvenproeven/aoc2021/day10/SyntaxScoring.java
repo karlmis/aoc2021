@@ -17,6 +17,16 @@ public class SyntaxScoring {
 		error = getError();
 	}
 
+	public Optional<List<Delimiter>> findMissing() {
+		if (error.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(
+				reverse(strings).stream()
+						.map(s -> Delimiter.fromOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
+						.toList());
+	}
+
 	long getCompletionScore() {
 		return findMissing()
 				.map(Delimiter::getCompletionScore)
@@ -31,16 +41,6 @@ public class SyntaxScoring {
 				.filter(i -> i != 0)
 				.sorted().toArray();
 		return longs[longs.length / 2];
-	}
-
-	public Optional<List<Delimiter>> findMissing() {
-		if (error.isPresent()) {
-			return Optional.empty();
-		}
-		return Optional.of(
-				reverse(strings).stream()
-						.map(s -> Delimiter.fromOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
-						.toList());
 	}
 
 	private List<String> reverse(List<String> strings) {
@@ -72,9 +72,19 @@ public class SyntaxScoring {
 		while (strings.size() < previousSize) {
 			previousSize = strings.size();
 			removePairs(strings);
-			System.out.println("after:" + strings);
 		}
 		return strings;
+	}
+
+	private void removePairs(List<String> strings) {
+		List<Integer> toRemove = new ArrayList<>();
+		for (int i = 1; i < strings.size(); i++) {
+			if (Delimiter.isPair(strings.get(i - 1), strings.get(i))) {
+				toRemove.add(0, i - 1);
+				toRemove.add(0, i);
+			}
+		}
+		toRemove.forEach(index -> strings.remove(index.intValue()));
 	}
 
 	static int getScore(List<String> list) {
@@ -84,18 +94,6 @@ public class SyntaxScoring {
 				.flatMap(Optional::stream)
 				.mapToInt(ErrorResult::getScore)
 				.sum();
-	}
-
-	private void removePairs(List<String> strings) {
-		System.out.println("before:" + strings);
-		List<Integer> toRemove = new ArrayList<>();
-		for (int i = 1; i < strings.size(); i++) {
-			if (Delimiter.isPair(strings.get(i - 1), strings.get(i))) {
-				toRemove.add(0, i - 1);
-				toRemove.add(0, i);
-			}
-		}
-		toRemove.forEach(index -> strings.remove(index.intValue()));
 	}
 
 }

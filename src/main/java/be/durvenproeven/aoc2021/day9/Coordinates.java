@@ -1,6 +1,9 @@
 package be.durvenproeven.aoc2021.day9;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Coordinates {
 	private int x, y;
@@ -8,6 +11,18 @@ public class Coordinates {
 	public Coordinates(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
+		return IntStream.range(0, maxCoordinate.getX())
+				.mapToObj(xco -> toCoordinates(xco, maxCoordinate))
+				.flatMap(Stream::distinct)
+				.toList();
+	}
+
+	private static Stream<Coordinates> toCoordinates(int xco, Coordinates maxCoordinate) {
+		return IntStream.range(0, maxCoordinate.getY())
+				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
 	boolean isInFirstQuadrant() {

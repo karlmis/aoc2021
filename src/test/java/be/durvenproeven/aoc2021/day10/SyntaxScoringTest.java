@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.BRACES;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.BRACKET;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.PARENTHESIS;
-import static be.durvenproeven.aoc2021.day10.SyntaxScoring.Delimiter.SMALLER_GREATER;
+import static be.durvenproeven.aoc2021.day10.Delimiter.BRACES;
+import static be.durvenproeven.aoc2021.day10.Delimiter.BRACKET;
+import static be.durvenproeven.aoc2021.day10.Delimiter.PARENTHESIS;
+import static be.durvenproeven.aoc2021.day10.Delimiter.SMALLER_GREATER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SyntaxScoringTest {
@@ -19,26 +19,26 @@ class SyntaxScoringTest {
 	@Test
 	void findError() {
 		assertThat(new SyntaxScoring("(]").findError()).get()
-				.isEqualTo(new SyntaxScoring.ErrorResult(PARENTHESIS, BRACKET));
+				.isEqualTo(new ErrorResult(PARENTHESIS, BRACKET));
 		assertThat(new SyntaxScoring("{()()()>").findError()).get()
-				.isEqualTo(new SyntaxScoring.ErrorResult(BRACES, SMALLER_GREATER));
+				.isEqualTo(new ErrorResult(BRACES, SMALLER_GREATER));
 		assertThat(new SyntaxScoring("(((()))}").findError()).get()
-				.isEqualTo(new SyntaxScoring.ErrorResult(PARENTHESIS, BRACES));
+				.isEqualTo(new ErrorResult(PARENTHESIS, BRACES));
 		assertThat(new SyntaxScoring("<([]){()}[{}])").findError()).get()
-				.isEqualTo(new SyntaxScoring.ErrorResult(SMALLER_GREATER, PARENTHESIS));
+				.isEqualTo(new ErrorResult(SMALLER_GREATER, PARENTHESIS));
 	}
 
 	@Test
 	void findError_GivenExample() {
 		assertThat(new SyntaxScoring("[({(<(())[]>[[{[]{<()<>>").findError()).isEmpty();
 		assertThat(new SyntaxScoring("[(()[<>])]({[<{<<[]>>(").findError()).isEmpty();
-		assertThat(new SyntaxScoring("{([(<{}[<>[]}>{[]{[(<()>").findError()).get().isEqualTo(new SyntaxScoring.ErrorResult(BRACKET, BRACES));
+		assertThat(new SyntaxScoring("{([(<{}[<>[]}>{[]{[(<()>").findError()).get().isEqualTo(new ErrorResult(BRACKET, BRACES));
 		assertThat(new SyntaxScoring("(((({<>}<{<{<>}{[]{[]{}").findError()).isEmpty();
-		assertThat(new SyntaxScoring("[[<[([]))<([[{}[[()]]]").findError()).get().isEqualTo(new SyntaxScoring.ErrorResult(BRACKET, PARENTHESIS));
-		assertThat(new SyntaxScoring("[{[{({}]{}}([{[{{{}}([]").findError()).get().isEqualTo(new SyntaxScoring.ErrorResult(PARENTHESIS, BRACKET));
+		assertThat(new SyntaxScoring("[[<[([]))<([[{}[[()]]]").findError()).get().isEqualTo(new ErrorResult(BRACKET, PARENTHESIS));
+		assertThat(new SyntaxScoring("[{[{({}]{}}([{[{{{}}([]").findError()).get().isEqualTo(new ErrorResult(PARENTHESIS, BRACKET));
 		assertThat(new SyntaxScoring("{<[[]]>}<{[{[{[]{()[[[]").findError()).isEmpty();
-		assertThat(new SyntaxScoring("[<(<(<(<{}))><([]([]()").findError()).get().isEqualTo(new SyntaxScoring.ErrorResult(SMALLER_GREATER, PARENTHESIS));
-		assertThat(new SyntaxScoring("<{([([[(<>()){}]>(<<{{").findError()).get().isEqualTo(new SyntaxScoring.ErrorResult(BRACKET, SMALLER_GREATER));
+		assertThat(new SyntaxScoring("[<(<(<(<{}))><([]([]()").findError()).get().isEqualTo(new ErrorResult(SMALLER_GREATER, PARENTHESIS));
+		assertThat(new SyntaxScoring("<{([([[(<>()){}]>(<<{{").findError()).get().isEqualTo(new ErrorResult(BRACKET, SMALLER_GREATER));
 		assertThat(new SyntaxScoring("<{([{{}}[<[[[<>{}]]]>[]]").findError()).isEmpty();
 	}
 
@@ -108,10 +108,10 @@ class SyntaxScoringTest {
 
 	}
 
-		private Condition<? super Optional<List<SyntaxScoring.Delimiter>>> closing(String s) {
-		List<SyntaxScoring.Delimiter> closing = s.chars()
+		private Condition<? super Optional<List<Delimiter>>> closing(String s) {
+		List<Delimiter> closing = s.chars()
 				.mapToObj(Character::toString)
-				.map(SyntaxScoring.Delimiter::fromClosing)
+				.map(Delimiter::fromClosing)
 				.map(Optional::orElseThrow)
 				.toList();
 		return new Condition<>(t -> t.isPresent() && t.get().equals(closing), "%s: %s", s, closing);

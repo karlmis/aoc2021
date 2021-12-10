@@ -8,9 +8,13 @@ import java.util.stream.Collectors;
 
 public class SyntaxScoring {
 	private final String line;
+	private final List<String> strings;
+	private Optional<ErrorResult> error;
 
 	public SyntaxScoring(String line) {
 		this.line = line;
+		strings = getStringListWithoutCouples();
+		error = getError();
 	}
 
 	long getCompletionScore() {
@@ -30,18 +34,26 @@ public class SyntaxScoring {
 	}
 
 	public Optional<List<Delimiter>> findMissing() {
-		if (findError().isPresent()) {
+		if (error.isPresent()) {
 			return Optional.empty();
 		}
-		List<String> strings = getStringListWithoutCouples();
-		Collections.reverse(strings);
-		return Optional.of(strings.stream()
-				.map(s -> Delimiter.fromOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
-				.toList());
+		return Optional.of(
+				reverse(strings).stream()
+						.map(s -> Delimiter.fromOpening(s).orElseThrow(() -> new IllegalArgumentException("nothing found for " + s)))
+						.toList());
+	}
+
+	private List<String> reverse(List<String> strings) {
+		List<String> strings1 = new ArrayList<>(strings);
+		Collections.reverse(strings1);
+		return strings1;
 	}
 
 	public Optional<ErrorResult> findError() {
-		List<String> strings = getStringListWithoutCouples();
+		return error;
+	}
+
+	private Optional<ErrorResult> getError() {
 		for (int i = 1; i < strings.size(); i++) {
 			Optional<Delimiter> closing = Delimiter.fromClosing(strings.get(i));
 			if (closing.isPresent()) {

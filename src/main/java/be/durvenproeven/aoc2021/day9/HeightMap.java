@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class HeightMap {
 
+	private static final int MAX_HEIGHT = 9;
 	private final int[][] nrs;
 	private final Map<Coordinates, Integer> lowPoints;
 	private final Coordinates maxCoordinate;
@@ -62,10 +63,7 @@ public class HeightMap {
 	}
 
 	private Set<Coordinates> getBasin(Coordinates coordinates, Set<Coordinates> alreadyDone) {
-		if (!coordinates.isInFirstQuadrant() || !coordinates.isSmallerThen(maxCoordinate)) {
-			return alreadyDone;
-		}
-		if (nrs[coordinates.getX()][coordinates.getY()] == 9) {
+		if (getValue(coordinates) == MAX_HEIGHT) {
 			return alreadyDone;
 		}
 		HashSet<Coordinates> newAlreadyDone = new HashSet<>(alreadyDone);
@@ -73,10 +71,19 @@ public class HeightMap {
 
 		Arrays.stream(Direction.values())
 				.map(coordinates::getNeighbour)
+				.filter(this::isValid)
 				.filter(neighbour -> !newAlreadyDone.contains(neighbour))
 				.forEach(neighbour -> newAlreadyDone.addAll(getBasin(neighbour, newAlreadyDone)));
 		return newAlreadyDone;
 
+	}
+
+	private int getValue(Coordinates coordinates) {
+		return nrs[coordinates.getX()][coordinates.getY()];
+	}
+
+	private boolean isValid(Coordinates coordinates1) {
+		return coordinates1.isInFirstQuadrant() && coordinates1.isSmallerThen(maxCoordinate);
 	}
 
 	public int getBasinNumber() {

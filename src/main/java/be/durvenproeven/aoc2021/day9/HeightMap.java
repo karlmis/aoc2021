@@ -1,21 +1,22 @@
 package be.durvenproeven.aoc2021.day9;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class HeightMap {
 
 	private static final int MAX_HEIGHT = 9;
+	private static final Comparator<Integer> INTEGER_COMPARATOR = Integer::compare;
 	private final int[][] nrs;
-	private final Map<Coordinates, Integer> lowPoints;
+	private final List<Coordinates> lowPoints;
 	private final Coordinates maxCoordinate;
 
 	public HeightMap(List<String> input) {
@@ -23,8 +24,8 @@ public class HeightMap {
 		for (int i = 0; i < input.size(); i++) {
 			nrs[i] = toArray(input.get(i));
 		}
-		lowPoints = calculateLowPoints();
 		maxCoordinate = new Coordinates(input.size(), input.get(0).length());
+		lowPoints = calculateLowPoints();
 	}
 
 	private int[] toArray(String l) {
@@ -34,24 +35,28 @@ public class HeightMap {
 				.toArray();
 	}
 
-	private Map<Coordinates, Integer> calculateLowPoints() {
-		Map<Coordinates, Integer> res = new HashMap<>();
-		for (int i = 0; i < nrs.length; i++) {
-			for (int i1 = 0; i1 < nrs[i].length; i1++) {
-				if (nrs[i][i1] < minOfNeighbours(i, i1)) {
-					res.put(new Coordinates(i, i1), nrs[i][i1]);
-				}
-			}
-		}
-		return res;
+	private List<Coordinates> calculateLowPoints() {
+		return IntStream.range(0, maxCoordinate.getX())
+				.mapToObj(this::toCoordinates)
+				.flatMap(Stream::distinct)
+				.filter(co -> getValue(co) < minOfNeighbours(co))
+				.toList();
+
+	}
+
+	private Stream<Coordinates> toCoordinates(int xco) {
+		return IntStream.range(0, maxCoordinate.getY())
+				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
 	public Collection<Integer> getLowPoints() {
-		return lowPoints.values();
+		return lowPoints.stream()
+				.map(this::getValue)
+				.toList();
 	}
 
 	public List<Integer> getBasinSizes() {
-		return lowPoints.keySet().stream()
+		return lowPoints.stream()
 				.map(entry -> getBasin(entry, mutableSetOf(entry)).size())
 				.toList();
 	}
@@ -75,7 +80,6 @@ public class HeightMap {
 				.filter(neighbour -> !newAlreadyDone.contains(neighbour))
 				.forEach(neighbour -> newAlreadyDone.addAll(getBasin(neighbour, newAlreadyDone)));
 		return newAlreadyDone;
-
 	}
 
 	private int getValue(Coordinates coordinates) {
@@ -87,37 +91,38 @@ public class HeightMap {
 	}
 
 	public int getBasinNumber() {
-		Comparator<Integer> compare = Integer::compare;
 		return getBasinSizes().stream()
-				.sorted(compare.reversed())
+				.sorted(INTEGER_COMPARATOR.reversed())
 				.limit(3)
 				.reduce(1, (a, b) -> a * b);
 	}
 
 	public int getSumRiskLevel() {
-		return lowPoints.values().stream()
-				.mapToInt(Integer::intValue)
+		return lowPoints.stream()
+				.mapToInt(this::getValue)
 				.map(i -> i + 1)
 				.sum();
 	}
 
-	private int minOfNeighbours(int i, int i1) {
-		List<Integer> neighourValues = new ArrayList<>();
-		if (i > 0) {
-			neighourValues.add(nrs[i - 1][i1]);
-		}
-		if (i < nrs.length - 1) {
-			neighourValues.add(nrs[i + 1][i1]);
-		}
-		if (i1 > 0) {
-			neighourValues.add(nrs[i][i1 - 1]);
-		}
-		if (i1 < nrs[i].length - 1) {
-			neighourValues.add(nrs[i][i1 + 1]);
-		}
-		return neighourValues.stream()
-				.mapToInt(Integer::intValue)
+	private int minOfNeighbours(Coordinates co) {
+		return getNeighbours(co).stream()
+				.mapToInt(this::getValue)
 				.min().orElseThrow();
+	}
+
+	private List<Coordinates> getNeighbours(Coordinates co) {
+		return Stream.of(getCoordinate(co.getX() + 1, co.getY()), getCoordinate(co.getX(), co.getY() + 1),
+				getCoordinate(co.getX() - 1, co.getY()), getCoordinate(co.getX(), co.getY() - 1))
+				.flatMap(Optional::stream)
+				.toList();
+	}
+
+	Optional<Coordinates> getCoordinate(int x, int y) {
+		Coordinates coordinates = new Coordinates(x, y);
+		if (isValid(coordinates)) {
+			return Optional.of(coordinates);
+		}
+		return Optional.empty();
 	}
 
 

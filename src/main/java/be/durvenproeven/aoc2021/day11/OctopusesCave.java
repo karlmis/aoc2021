@@ -10,14 +10,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 public class OctopusesCave {
-	private static final int MAX_HEIGHT = 9;
 	private final int[][] nrs;
 	private final Coordinates maxCoordinate;
 
@@ -42,7 +40,7 @@ public class OctopusesCave {
 	}
 
 	int nextStep() {
-		Coordinates.getAllCoordinates(maxCoordinate).stream()
+		Coordinates.getAllCoordinates(maxCoordinate)
 				.forEach(co -> setValue(co, getValue(co)+1));
 		List<Coordinates> lightningCoordinates = new ArrayList<>();
 		List<Coordinates> allChanged = new ArrayList<>();

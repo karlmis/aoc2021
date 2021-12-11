@@ -48,28 +48,34 @@ public class OctopusesCave {
 				.filter(co -> !allLightenedUp.contains(co))
 				.collect(groupingBy(identity(), counting()));
 
-		neighboursWithNrToAdd
-				.forEach((coordinates, valueToAdd) -> setValue(coordinates, getValue(coordinates) + valueToAdd.intValue()));
+		neighboursWithNrToAdd.forEach(this::addToValue);
 
 		List<Coordinates> newChanged = neighboursWithNrToAdd.keySet().stream()
-				.filter(co -> getValue(co) > 9)
+				.filter(this::isLightingUp)
 				.toList();
 
 		return getAllLightenedUp(newChanged, allLightenedUp);
 	}
 
+	private boolean isLightingUp(Coordinates co) {
+		return getValue(co) > 9;
+	}
+
+	private void addToValue(Coordinates coordinates, Long toAdd){
+		addToValue(coordinates, toAdd.intValue());
+	}
+
 	int nextStep() {
 		Coordinates.getAllCoordinates(maxCoordinate)
-				.forEach(co -> setValue(co, getValue(co) + 1));
+				.forEach(co -> addToValue(co, 1));
 
 		List<Coordinates> lightningCoordinates = Coordinates.getAllCoordinates(maxCoordinate).stream()
-				.filter(co -> getValue(co) > 9)
+				.filter(this::isLightingUp)
 				.toList();
 
-		List<Coordinates> allChanged = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
-
-		allChanged.forEach(co -> setValue(co, 0));
-		return allChanged.size();
+		List<Coordinates> allLightenedUp = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
+		allLightenedUp.forEach(this::resetValue);
+		return allLightenedUp.size();
 	}
 
 	private List<Coordinates> getNeighbours(Coordinates co) {
@@ -86,8 +92,12 @@ public class OctopusesCave {
 		return nrs[co.getX()][co.getY()];
 	}
 
-	private void setValue(Coordinates co, int i) {
-		nrs[co.getX()][co.getY()] = i;
+	private void resetValue(Coordinates co) {
+		nrs[co.getX()][co.getY()] = 0;
+	}
+
+	private void addToValue(Coordinates co, int i) {
+		nrs[co.getX()][co.getY()] += i;
 	}
 
 	@Override

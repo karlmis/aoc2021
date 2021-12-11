@@ -189,9 +189,6 @@ class OctopusesCaveTest {
 				"0032240000")
 		));
 
-//		int sum = IntStream.range(0, 10)
-//				.map(i -> octopusesCave.nextStep())
-//				.sum();
 		assertThat(nr).isEqualTo(204);
 	}
 

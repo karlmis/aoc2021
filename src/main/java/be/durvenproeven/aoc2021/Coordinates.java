@@ -48,7 +48,7 @@ public class Coordinates {
 	}
 
 	public List<Coordinates> getCardinalNeighbours(){
-		return Arrays.stream(Direction.values())
+		return Direction.getCardinals().stream()
 				.map(this::getNeighbour)
 				.toList();
 	}

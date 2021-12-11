@@ -1,17 +1,15 @@
 package be.durvenproeven.aoc2021.day11;
 
-import be.durvenproeven.aoc2021.NumberUtils;
 import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -31,7 +29,7 @@ public class OctopusesCave {
 	public boolean allFlash() {
 		for (int[] nr : nrs) {
 			for (int i : nr) {
-				if (i!= 0){
+				if (i != 0) {
 					return false;
 				}
 			}
@@ -39,35 +37,40 @@ public class OctopusesCave {
 		return true;
 	}
 
+	List<Coordinates> getAllLightenedUp(List<Coordinates> newLightenedUp, List<Coordinates> allLightenedUp) {
+		if (newLightenedUp.isEmpty()) {
+			return allLightenedUp;
+		}
+		allLightenedUp.addAll(newLightenedUp);
+
+		Map<Coordinates, Long> neighboursWithNrToAdd = newLightenedUp.stream()
+				.flatMap(co -> getNeighbours(co).stream())
+				.filter(o -> !allLightenedUp.contains(o))
+				.collect(groupingBy(identity(), counting()));
+
+		List<Coordinates> newChanged = new ArrayList<>();
+		for (Map.Entry<Coordinates, Long> entry : neighboursWithNrToAdd.entrySet()) {
+			int newValue = getValue(entry.getKey()) + entry.getValue().intValue();
+			setValue(entry.getKey(), newValue);
+			if (newValue > 9) {
+				newChanged.add(entry.getKey());
+			}
+		}
+		return getAllLightenedUp(newChanged, allLightenedUp);
+	}
+
 	int nextStep() {
 		Coordinates.getAllCoordinates(maxCoordinate)
-				.forEach(co -> setValue(co, getValue(co)+1));
+				.forEach(co -> setValue(co, getValue(co) + 1));
+
 		List<Coordinates> lightningCoordinates = new ArrayList<>();
-		List<Coordinates> allChanged = new ArrayList<>();
 		Coordinates.getAllCoordinates(maxCoordinate).stream()
 				.filter(co -> getValue(co) > 9)
 				.forEach(lightningCoordinates::add);
-		allChanged.addAll(lightningCoordinates);
-		while (!lightningCoordinates.isEmpty()) {
-			Map<Coordinates, Long> neighbours = lightningCoordinates.stream()
-					.flatMap(co -> getNeighbours(co).stream())
-					.filter(o -> !allChanged.contains(o))
-					.filter(co -> getValue(co)<=9)
-					.collect(groupingBy(Function.identity(), counting()));
 
-			lightningCoordinates.clear();
-			for (Map.Entry<Coordinates, Long> entry : neighbours.entrySet()) {
-				int newValue = getValue(entry.getKey()) + entry.getValue().intValue();
-				setValue(entry.getKey(), newValue);
-				if (newValue > 9 && !allChanged.contains(entry.getKey())) {
-					lightningCoordinates.add(entry.getKey());
-				}
-			}
-			allChanged.addAll(lightningCoordinates);
-		}
-		Coordinates.getAllCoordinates(maxCoordinate).stream()
-				.filter(co -> getValue(co) > 9)
-				.forEach(co -> setValue(co, 0));
+		List<Coordinates> allChanged = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
+
+		allChanged.forEach(co -> setValue(co, 0));
 		return allChanged.size();
 	}
 
@@ -85,8 +88,8 @@ public class OctopusesCave {
 		return nrs[co.getX()][co.getY()];
 	}
 
-	private int setValue(Coordinates co, int i) {
-		return nrs[co.getX()][co.getY()] = i;
+	private void setValue(Coordinates co, int i) {
+		nrs[co.getX()][co.getY()] = i;
 	}
 
 	@Override
@@ -100,7 +103,7 @@ public class OctopusesCave {
 	@Override
 	public int hashCode() {
 		int result = Objects.hash(maxCoordinate);
-		result = 31 * result + Arrays.hashCode(nrs);
+		result = 31 * result + Arrays.deepHashCode(nrs);
 		return result;
 	}
 

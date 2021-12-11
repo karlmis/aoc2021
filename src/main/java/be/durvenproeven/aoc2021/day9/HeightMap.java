@@ -2,6 +2,8 @@ package be.durvenproeven.aoc2021.day9;
 
 
 import be.durvenproeven.aoc2021.CollectionUtils;
+import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.Direction;
 import be.durvenproeven.aoc2021.NumberUtils;
 
 import java.util.Arrays;

@@ -1,5 +1,6 @@
 package be.durvenproeven.aoc2021.day5;
 
+import be.durvenproeven.aoc2021.Coordinates;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

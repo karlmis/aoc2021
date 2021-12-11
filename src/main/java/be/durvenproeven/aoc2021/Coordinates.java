@@ -1,4 +1,4 @@
-package be.durvenproeven.aoc2021.day9;
+package be.durvenproeven.aoc2021;
 
 import java.util.List;
 import java.util.Objects;

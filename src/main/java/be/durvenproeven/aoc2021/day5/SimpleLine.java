@@ -1,5 +1,7 @@
 package be.durvenproeven.aoc2021.day5;
 
+import be.durvenproeven.aoc2021.Coordinates;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.ToIntFunction;

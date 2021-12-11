@@ -1,7 +1,5 @@
 package be.durvenproeven.aoc2021;
 
-import be.durvenproeven.aoc2021.day9.Coordinates;
-
 import java.util.HashSet;
 import java.util.Set;
 

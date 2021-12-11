@@ -1,7 +1,7 @@
 package be.durvenproeven.aoc2021.day11;
 
 import be.durvenproeven.aoc2021.NumberUtils;
-import be.durvenproeven.aoc2021.day9.Coordinates;
+import be.durvenproeven.aoc2021.Coordinates;
 
 import java.util.ArrayList;
 import java.util.Arrays;

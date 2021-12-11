@@ -1,4 +1,4 @@
-package be.durvenproeven.aoc2021.day9;
+package be.durvenproeven.aoc2021;
 
 public enum Direction {
 	NORTH, EAST, SOUTH, WEST;

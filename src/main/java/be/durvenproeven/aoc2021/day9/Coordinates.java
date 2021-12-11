@@ -13,7 +13,7 @@ public class Coordinates {
 		this.y = y;
 	}
 
-	static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
+	public static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
 		return IntStream.range(0, maxCoordinate.getX())
 				.mapToObj(xco -> toCoordinates(xco, maxCoordinate))
 				.flatMap(Stream::distinct)
@@ -25,11 +25,11 @@ public class Coordinates {
 				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
-	boolean isInFirstQuadrant() {
+	public boolean isInFirstQuadrant() {
 		return getX() >= 0 && getY() >= 0;
 	}
 
-	boolean isSmallerThen(Coordinates maxCoordinate){
+	public boolean isSmallerThen(Coordinates maxCoordinate){
 		return x < maxCoordinate.x && y < maxCoordinate.y;
 	}
 

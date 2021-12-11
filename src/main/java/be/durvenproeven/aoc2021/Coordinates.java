@@ -6,7 +6,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Coordinates {
-	private int x, y;
+	private final int x;
+	private final int y;
 
 	public Coordinates(int x, int y) {
 		this.x = x;
@@ -42,21 +43,7 @@ public class Coordinates {
 	}
 
 	public Coordinates getNeighbour(Direction direction) {
-		switch (direction) {
-			case NORTH -> {
-				return new Coordinates(x, y + 1);
-			}
-			case EAST -> {
-				return new Coordinates(x + 1, y);
-			}
-			case SOUTH -> {
-				return new Coordinates(x, y - 1);
-			}
-			case WEST -> {
-				return new Coordinates(x - 1, y);
-			}
-		}
-		throw new IllegalArgumentException();
+		return new Coordinates(x+ direction.getxDelta(), y+ direction.getyDelta());
 	}
 
 	@Override

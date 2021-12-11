@@ -40,4 +40,15 @@ class CoordinatesTest {
 	void getNeighbour_Null() {
 		assertThatNullPointerException().isThrownBy(() -> new Coordinates(2, 5).getNeighbour(null));
 	}
+
+	@Test
+	void getCardinalNeighbours() {
+		assertThat(new Coordinates(2, 5).getCardinalNeighbours()).containsExactly(
+				new Coordinates(2, 5 + 1),
+				new Coordinates(2 + 1, 5),
+				new Coordinates(2, 5 - 1),
+				new Coordinates(2 - 1, 5)
+		);
+
+	}
 }

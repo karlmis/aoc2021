@@ -1,5 +1,6 @@
 package be.durvenproeven.aoc2021;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -44,6 +45,12 @@ public class Coordinates {
 
 	public Coordinates getNeighbour(Direction direction) {
 		return new Coordinates(x+ direction.getxDelta(), y+ direction.getyDelta());
+	}
+
+	public List<Coordinates> getCardinalNeighbours(){
+		return Arrays.stream(Direction.values())
+				.map(this::getNeighbour)
+				.toList();
 	}
 
 	@Override

@@ -10,9 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public class HeightMap {
 
@@ -38,26 +36,11 @@ public class HeightMap {
 	}
 
 	private int minOfNeighbours(Coordinates co) {
-		return getNeighbours(co).stream()
+		return co.getCardinalNeighbours().stream()
+				.filter(this::isValid)
 				.mapToInt(this::getValue)
 				.min().orElseThrow();
 	}
-
-	private List<Coordinates> getNeighbours(Coordinates co) {
-		return Stream.of(getCoordinate(co.getX() + 1, co.getY()), getCoordinate(co.getX(), co.getY() + 1),
-				getCoordinate(co.getX() - 1, co.getY()), getCoordinate(co.getX(), co.getY() - 1))
-				.flatMap(Optional::stream)
-				.toList();
-	}
-
-	private Optional<Coordinates> getCoordinate(int x, int y) {
-		Coordinates coordinates = new Coordinates(x, y);
-		if (isValid(coordinates)) {
-			return Optional.of(coordinates);
-		}
-		return Optional.empty();
-	}
-
 
 	public Collection<Integer> getLowPoints() {
 		return lowPoints.stream()
@@ -77,8 +60,7 @@ public class HeightMap {
 		}
 		Set<Coordinates> newAlreadyDone = CollectionUtils.createMutableSetWith(alreadyDone, coordinates);
 
-		Arrays.stream(Direction.values())
-				.map(coordinates::getNeighbour)
+		coordinates.getCardinalNeighbours().stream()
 				.filter(this::isValid)
 				.filter(neighbour -> !newAlreadyDone.contains(neighbour))
 				.forEach(neighbour -> newAlreadyDone.addAll(getBasin(neighbour, newAlreadyDone)));

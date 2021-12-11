@@ -51,4 +51,19 @@ class CoordinatesTest {
 		);
 
 	}
+
+	@Test
+	void getAllNeighbours() {
+		assertThat(new Coordinates(2, 5).getAllNeighbours()).containsExactly(
+				new Coordinates(2, 5 + 1),
+				new Coordinates(2 + 1, 5 + 1),
+				new Coordinates(2 + 1, 5),
+				new Coordinates(2 + 1, 5 - 1),
+				new Coordinates(2, 5 - 1),
+				new Coordinates(2 - 1, 5 - 1),
+				new Coordinates(2 - 1, 5),
+				new Coordinates(2 - 1, 5 + 1)
+		);
+
+	}
 }

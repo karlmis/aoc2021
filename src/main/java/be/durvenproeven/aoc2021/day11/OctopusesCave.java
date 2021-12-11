@@ -72,25 +72,9 @@ public class OctopusesCave {
 	}
 
 	private List<Coordinates> getNeighbours(Coordinates co) {
-		return Stream.of(
-				getCoordinate(co.getX() + 1, co.getY() - 1),
-				getCoordinate(co.getX() + 1, co.getY()),
-				getCoordinate(co.getX() + 1, co.getY() + 1),
-				getCoordinate(co.getX(), co.getY() + 1),
-				getCoordinate(co.getX() - 1, co.getY() - 1),
-				getCoordinate(co.getX() - 1, co.getY()),
-				getCoordinate(co.getX() - 1, co.getY() + 1),
-				getCoordinate(co.getX(), co.getY() - 1))
-				.flatMap(Optional::stream)
+		return co.getAllNeighbours().stream()
+				.filter(this::isValid)
 				.toList();
-	}
-
-	private Optional<Coordinates> getCoordinate(int x, int y) {
-		Coordinates coordinates = new Coordinates(x, y);
-		if (isValid(coordinates)) {
-			return Optional.of(coordinates);
-		}
-		return Optional.empty();
 	}
 
 	private boolean isValid(Coordinates coordinates1) {

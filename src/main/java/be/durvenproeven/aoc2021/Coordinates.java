@@ -53,6 +53,13 @@ public class Coordinates {
 				.toList();
 	}
 
+	public List<Coordinates> getAllNeighbours(){
+		return Arrays.stream(Direction.values())
+				.map(this::getNeighbour)
+				.toList();
+	}
+
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

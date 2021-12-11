@@ -37,7 +37,7 @@ public class OctopusesCave {
 		return true;
 	}
 
-	List<Coordinates> getAllLightenedUp(List<Coordinates> newLightenedUp, List<Coordinates> allLightenedUp) {
+	private List<Coordinates> getAllLightenedUp(List<Coordinates> newLightenedUp, List<Coordinates> allLightenedUp) {
 		if (newLightenedUp.isEmpty()) {
 			return allLightenedUp;
 		}
@@ -45,17 +45,16 @@ public class OctopusesCave {
 
 		Map<Coordinates, Long> neighboursWithNrToAdd = newLightenedUp.stream()
 				.flatMap(co -> getNeighbours(co).stream())
-				.filter(o -> !allLightenedUp.contains(o))
+				.filter(co -> !allLightenedUp.contains(co))
 				.collect(groupingBy(identity(), counting()));
 
-		List<Coordinates> newChanged = new ArrayList<>();
-		for (Map.Entry<Coordinates, Long> entry : neighboursWithNrToAdd.entrySet()) {
-			int newValue = getValue(entry.getKey()) + entry.getValue().intValue();
-			setValue(entry.getKey(), newValue);
-			if (newValue > 9) {
-				newChanged.add(entry.getKey());
-			}
-		}
+		neighboursWithNrToAdd
+				.forEach((coordinates, valueToAdd) -> setValue(coordinates, getValue(coordinates) + valueToAdd.intValue()));
+
+		List<Coordinates> newChanged = neighboursWithNrToAdd.keySet().stream()
+				.filter(co -> getValue(co) > 9)
+				.toList();
+
 		return getAllLightenedUp(newChanged, allLightenedUp);
 	}
 
@@ -63,10 +62,9 @@ public class OctopusesCave {
 		Coordinates.getAllCoordinates(maxCoordinate)
 				.forEach(co -> setValue(co, getValue(co) + 1));
 
-		List<Coordinates> lightningCoordinates = new ArrayList<>();
-		Coordinates.getAllCoordinates(maxCoordinate).stream()
+		List<Coordinates> lightningCoordinates = Coordinates.getAllCoordinates(maxCoordinate).stream()
 				.filter(co -> getValue(co) > 9)
-				.forEach(lightningCoordinates::add);
+				.toList();
 
 		List<Coordinates> allChanged = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
 

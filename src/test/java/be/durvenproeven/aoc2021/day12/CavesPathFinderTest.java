@@ -22,6 +22,7 @@ class CavesPathFinderTest {
 		));
 
 		assertThat(cavesPathFinder.getPaths("start", "end")).hasSize(10);
+		assertThat(cavesPathFinder.getPaths1("start", "end")).hasSize(36);
 	}
 
 	@Test
@@ -40,6 +41,7 @@ class CavesPathFinderTest {
 		));
 
 		assertThat(cavesPathFinder.getPaths("start", "end")).hasSize(19);
+		assertThat(cavesPathFinder.getPaths1("start", "end")).hasSize(103);
 	}
 
 	@Test
@@ -66,6 +68,7 @@ class CavesPathFinderTest {
 		));
 
 		assertThat(cavesPathFinder.getPaths("start", "end")).hasSize(226);
+		assertThat(cavesPathFinder.getPaths1("start", "end")).hasSize(3509);
 	}
 
 	@Test
@@ -77,5 +80,6 @@ class CavesPathFinderTest {
 		CavesPathFinder cavesPathFinder = new CavesPathFinder(cavesConnections);
 
 		assertThat(cavesPathFinder.getPaths("start", "end")).hasSize(4186);
+		assertThat(cavesPathFinder.getPaths1("start", "end")).hasSize(92111);
 	}
 }

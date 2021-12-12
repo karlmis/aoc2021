@@ -15,21 +15,21 @@ public class CavesPath {
 	private final String from;
 	private final String end;
 
-	private List<ConnectionWithDirection> connections= new ArrayList<>();
-	private Map<String, Integer> smallCaves= new HashMap<>();
+	private List<ConnectionWithDirection> connections = new ArrayList<>();
+	private Map<String, Integer> smallCaves = new HashMap<>();
 
 	public CavesPath(String from, String end, CavesConnection connection) {
 		this.from = from;
 		this.end = end;
-		if (connection.getFirst().equals(from)){
+		if (connection.getFirst().equals(from)) {
 			connections.add(new ConnectionWithDirection(connection, false));
-		}else if (connection.getSecond().equals(from)){
+		} else if (connection.getSecond().equals(from)) {
 			connections.add(new ConnectionWithDirection(connection, true));
-		}else {
+		} else {
 			throw new IllegalArgumentException();
 		}
-		if (StringUtils.isAllLowerCase(connections.get(0).getTo())){
-			smallCaves.put(connections.get(0).getTo(),1);
+		if (StringUtils.isAllLowerCase(connections.get(0).getTo())) {
+			smallCaves.put(connections.get(0).getTo(), 1);
 		}
 	}
 
@@ -40,23 +40,23 @@ public class CavesPath {
 		this.smallCaves = smallCaves;
 	}
 
-	public Optional<CavesPath> addConnection(CavesConnection connection){
-		if (!connection.contains(getEndPoint().getTo())){
+	public Optional<CavesPath> addConnection(CavesConnection connection) {
+		if (!connection.contains(getEndPoint().getTo())) {
 			return Optional.empty();
 		}
-		if (connection.contains(from)){//niet terug naar start
+		if (connection.contains(from)) {//niet terug naar start
 			return Optional.empty();
 		}
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
-		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())){
-			if (smallCaves.containsKey(connectionWithDirection.getTo())){
+		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
+			if (smallCaves.containsKey(connectionWithDirection.getTo())) {
 				return Optional.empty();
-			}else{
+			} else {
 				return Optional.of(
 						new CavesPath(from, end,
 								createListWith(connections, connectionWithDirection),
-								createMapWith(smallCaves, connectionWithDirection.getTo(),1)
+								createMapWith(smallCaves, connectionWithDirection.getTo(), 1)
 						));
 			}
 		} else {
@@ -68,7 +68,38 @@ public class CavesPath {
 		}
 	}
 
-	boolean isFinished(){
+	public Optional<CavesPath> addConnectionExtended(CavesConnection connection) {
+		if (!connection.contains(getEndPoint().getTo())) {
+			return Optional.empty();
+		}
+		if (connection.contains(from)) {//niet terug naar start
+			return Optional.empty();
+		}
+		ConnectionWithDirection connectionWithDirection =
+				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
+		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
+			Integer nrOfPasses = smallCaves.getOrDefault(connectionWithDirection.getTo(), 0);
+			if (nrOfPasses == 2) {
+				return Optional.empty();
+			}
+			if (nrOfPasses == 1 && smallCaves.containsValue(2)) {
+				return Optional.empty();
+			}
+			return Optional.of(
+					new CavesPath(from, end,
+							createListWith(connections, connectionWithDirection),
+							createMapWith(smallCaves, connectionWithDirection.getTo(), nrOfPasses + 1)
+					));
+		} else {
+			return Optional.of(
+					new CavesPath(from, end,
+							createListWith(connections, connectionWithDirection),
+							smallCaves
+					));
+		}
+	}
+
+	boolean isFinished() {
 		ConnectionWithDirection cavesConnection = getEndPoint();
 		return cavesConnection.getTo().equals(end);
 	}
@@ -77,8 +108,8 @@ public class CavesPath {
 		return connections.get(connections.size() - 1);
 	}
 
-	public List<String> getConnectionStrings(){
-		List<String> res= new ArrayList<>();
+	public List<String> getConnectionStrings() {
+		List<String> res = new ArrayList<>();
 		res.add(from);
 		connections.stream()
 				.map(ConnectionWithDirection::getTo)
@@ -86,7 +117,7 @@ public class CavesPath {
 		return res;
 	}
 
-	private static class ConnectionWithDirection{
+	private static class ConnectionWithDirection {
 		private CavesConnection connection;
 		private boolean reversed;
 
@@ -95,15 +126,15 @@ public class CavesPath {
 			this.reversed = reversed;
 		}
 
-		String getFrom(){
-			if (reversed){
+		String getFrom() {
+			if (reversed) {
 				return connection.getSecond();
 			}
 			return connection.getFirst();
 		}
 
-		String getTo(){
-			if (reversed){
+		String getTo() {
+			if (reversed) {
 				return connection.getFirst();
 			}
 			return connection.getSecond();

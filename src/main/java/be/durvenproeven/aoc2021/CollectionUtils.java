@@ -1,8 +1,10 @@
 package be.durvenproeven.aoc2021;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CollectionUtils {
@@ -22,5 +24,11 @@ public class CollectionUtils {
 		List<T> newAlreadyDone = new ArrayList<>(alreadyDone);
 		newAlreadyDone.add(coordinates);
 		return newAlreadyDone;
+	}
+
+	public static <K, V> Map<K, V> createMapWith(Map<K, V> alreadyDone, K key, V value) {
+		Map<K, V> res = new HashMap<>(alreadyDone);
+		res.put(key, value);
+		return res;
 	}
 }

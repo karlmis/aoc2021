@@ -3,17 +3,20 @@ package be.durvenproeven.aoc2021.day12;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static be.durvenproeven.aoc2021.CollectionUtils.createListWith;
+import static be.durvenproeven.aoc2021.CollectionUtils.createMapWith;
 
 public class CavesPath {
 	private final String from;
 	private final String end;
 
 	private List<ConnectionWithDirection> connections= new ArrayList<>();
-	private List<String> smallCaves= new ArrayList<>();
+	private Map<String, Integer> smallCaves= new HashMap<>();
 
 	public CavesPath(String from, String end, CavesConnection connection) {
 		this.from = from;
@@ -26,11 +29,11 @@ public class CavesPath {
 			throw new IllegalArgumentException();
 		}
 		if (StringUtils.isAllLowerCase(connections.get(0).getTo())){
-			smallCaves.add(connections.get(0).getTo());
+			smallCaves.put(connections.get(0).getTo(),1);
 		}
 	}
 
-	private CavesPath(String from, String end, List<ConnectionWithDirection> connections, List<String> smallCaves) {
+	private CavesPath(String from, String end, List<ConnectionWithDirection> connections, Map<String, Integer> smallCaves) {
 		this.from = from;
 		this.end = end;
 		this.connections = connections;
@@ -47,13 +50,13 @@ public class CavesPath {
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
 		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())){
-			if (smallCaves.contains(connectionWithDirection.getTo())){
+			if (smallCaves.containsKey(connectionWithDirection.getTo())){
 				return Optional.empty();
 			}else{
 				return Optional.of(
 						new CavesPath(from, end,
 								createListWith(connections, connectionWithDirection),
-								createListWith(smallCaves, connectionWithDirection.getTo())
+								createMapWith(smallCaves, connectionWithDirection.getTo(),1)
 						));
 			}
 		} else {

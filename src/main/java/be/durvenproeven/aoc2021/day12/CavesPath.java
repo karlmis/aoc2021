@@ -73,37 +73,6 @@ public class CavesPath {
 		}
 	}
 
-	public Optional<CavesPath> addConnectionExtended(CavesConnection connection) {
-		if (!connection.contains(getEndPoint().getTo())) {
-			return Optional.empty();
-		}
-		if (connection.contains(from)) {//niet terug naar start
-			return Optional.empty();
-		}
-		BiPredicate<SmallCaves, String> notAllowedPredicate= (sc, s)-> sc.getNrOfOccurences(s)==2 ||
-				(sc.getNrOfOccurences(s)==1 && smallCaves.getMaximumNrOfOccurences() == 2);
-		ConnectionWithDirection connectionWithDirection =
-				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
-		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
-			Integer nrOfPasses = smallCaves.getNrOfOccurences(connectionWithDirection.getTo());
-			if (notAllowedPredicate.test(smallCaves, connectionWithDirection.getTo())){
-					//nrOfPasses == 2 || nrOfPasses == 1 && smallCaves.getMaximumNrOfOccurences() == 2) {
-				return Optional.empty();
-			}
-			return Optional.of(
-					new CavesPath(from, end,
-							createListWith(connections, connectionWithDirection),
-							smallCaves.add(connectionWithDirection.getTo())
-					));
-		} else {
-			return Optional.of(
-					new CavesPath(from, end,
-							createListWith(connections, connectionWithDirection),
-							smallCaves
-					));
-		}
-	}
-
 	boolean isFinished() {
 		ConnectionWithDirection cavesConnection = getEndPoint();
 		return cavesConnection.getTo().equals(end);

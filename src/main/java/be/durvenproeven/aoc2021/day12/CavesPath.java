@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 
 import static be.durvenproeven.aoc2021.CollectionUtils.createListWith;
 
@@ -44,7 +45,7 @@ public class CavesPath {
 		this.smallCaves = smallCaves;
 	}
 
-	public Optional<CavesPath> addConnection(CavesConnection connection) {
+	public Optional<CavesPath> addConnection(CavesConnection connection, BiPredicate<SmallCaves, String> notAllowedPredicate) {
 		if (!connection.contains(getEndPoint().getTo())) {
 			return Optional.empty();
 		}
@@ -54,7 +55,7 @@ public class CavesPath {
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
 		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
-			if (smallCaves.contains(connectionWithDirection.getTo())) {
+			if (notAllowedPredicate.test(smallCaves, connectionWithDirection.getTo())) {
 				return Optional.empty();
 			} else {
 				return Optional.of(
@@ -79,11 +80,14 @@ public class CavesPath {
 		if (connection.contains(from)) {//niet terug naar start
 			return Optional.empty();
 		}
+		BiPredicate<SmallCaves, String> notAllowedPredicate= (sc, s)-> sc.getNrOfOccurences(s)==2 ||
+				(sc.getNrOfOccurences(s)==1 && smallCaves.getMaximumNrOfOccurences() == 2);
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
 		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
 			Integer nrOfPasses = smallCaves.getNrOfOccurences(connectionWithDirection.getTo());
-			if (nrOfPasses == 2 || nrOfPasses == 1 && smallCaves.getMaximumNrOfOccurences()==2) {
+			if (notAllowedPredicate.test(smallCaves, connectionWithDirection.getTo())){
+					//nrOfPasses == 2 || nrOfPasses == 1 && smallCaves.getMaximumNrOfOccurences() == 2) {
 				return Optional.empty();
 			}
 			return Optional.of(

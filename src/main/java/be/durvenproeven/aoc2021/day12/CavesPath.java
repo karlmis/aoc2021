@@ -3,20 +3,17 @@ package be.durvenproeven.aoc2021.day12;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static be.durvenproeven.aoc2021.CollectionUtils.createListWith;
-import static be.durvenproeven.aoc2021.CollectionUtils.createMapWith;
 
 public class CavesPath {
 	private final String from;
 	private final String end;
 
 	private List<ConnectionWithDirection> connections = new ArrayList<>();
-	private Map<String, Integer> smallCaves = new HashMap<>();
+	private final SmallCaves smallCaves;
 
 	public CavesPath(String from, String end, CavesConnection connection) {
 		this.from = from;
@@ -28,12 +25,19 @@ public class CavesPath {
 		} else {
 			throw new IllegalArgumentException();
 		}
-		if (StringUtils.isAllLowerCase(connections.get(0).getTo())) {
-			smallCaves.put(connections.get(0).getTo(), 1);
-		}
+
+		smallCaves = createSmallCaves(connections.get(0).getTo());
+
 	}
 
-	private CavesPath(String from, String end, List<ConnectionWithDirection> connections, Map<String, Integer> smallCaves) {
+	private SmallCaves createSmallCaves(String toCave) {
+		if (StringUtils.isAllLowerCase(toCave)) {
+			return new SmallCaves(toCave);
+		}
+		return new SmallCaves();
+	}
+
+	private CavesPath(String from, String end, List<ConnectionWithDirection> connections, SmallCaves smallCaves) {
 		this.from = from;
 		this.end = end;
 		this.connections = connections;
@@ -50,13 +54,13 @@ public class CavesPath {
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
 		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
-			if (smallCaves.containsKey(connectionWithDirection.getTo())) {
+			if (smallCaves.contains(connectionWithDirection.getTo())) {
 				return Optional.empty();
 			} else {
 				return Optional.of(
 						new CavesPath(from, end,
 								createListWith(connections, connectionWithDirection),
-								createMapWith(smallCaves, connectionWithDirection.getTo(), 1)
+								smallCaves.add(connectionWithDirection.getTo())
 						));
 			}
 		} else {
@@ -78,17 +82,14 @@ public class CavesPath {
 		ConnectionWithDirection connectionWithDirection =
 				new ConnectionWithDirection(connection, connection.getSecond().equals(getEndPoint().getTo()));
 		if (StringUtils.isAllLowerCase(connectionWithDirection.getTo())) {
-			Integer nrOfPasses = smallCaves.getOrDefault(connectionWithDirection.getTo(), 0);
-			if (nrOfPasses == 2) {
-				return Optional.empty();
-			}
-			if (nrOfPasses == 1 && smallCaves.containsValue(2)) {
+			Integer nrOfPasses = smallCaves.getNrOfOccurences(connectionWithDirection.getTo());
+			if (nrOfPasses == 2 || nrOfPasses == 1 && smallCaves.getMaximumNrOfOccurences()==2) {
 				return Optional.empty();
 			}
 			return Optional.of(
 					new CavesPath(from, end,
 							createListWith(connections, connectionWithDirection),
-							createMapWith(smallCaves, connectionWithDirection.getTo(), nrOfPasses + 1)
+							smallCaves.add(connectionWithDirection.getTo())
 					));
 		} else {
 			return Optional.of(

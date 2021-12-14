@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PolimerizationTest {
+class PolimerizationEngineTest {
 
 	@Test
 	void nextTurn() {
@@ -33,20 +33,18 @@ class PolimerizationTest {
 		insertionRules.put(new Pair("C", "N"), "C");
 
 
-		Polimerization polimerization = new Polimerization("NNCB",
-				insertionRules);
+		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(insertionRules);
+		assertThat(polimerizationEngine.afterNrOfSteps("NNCB",1).getInput())
+				.isEqualTo("NCNBCHB");
 
-		Polimerization polimerization_Turn1 = polimerization.nextTurn();
-		assertThat(polimerization_Turn1.getTemplate()).isEqualTo("NCNBCHB");
+		assertThat(polimerizationEngine.afterNrOfSteps("NNCB",2).getInput())
+				.isEqualTo("NBCCNBBBCBHCB");
 
-		Polimerization polimerization_Turn2 = polimerization_Turn1.nextTurn();
-		assertThat(polimerization_Turn2.getTemplate()).isEqualTo("NBCCNBBBCBHCB");
+		assertThat(polimerizationEngine.afterNrOfSteps("NNCB",3).getInput())
+				.isEqualTo("NBBBCNCCNBBNBNBBCHBHHBCHB");
 
-		Polimerization polimerization_Turn3 = polimerization_Turn2.nextTurn();
-		assertThat(polimerization_Turn3.getTemplate()).isEqualTo("NBBBCNCCNBBNBNBBCHBHHBCHB");
-
-		Polimerization polimerization_Turn4 = polimerization_Turn3.nextTurn();
-		assertThat(polimerization_Turn4.getTemplate()).isEqualTo("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB");
+		assertThat(polimerizationEngine.afterNrOfSteps("NNCB",4).getInput())
+				.isEqualTo("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB");
 
 	}
 
@@ -71,15 +69,12 @@ class PolimerizationTest {
 		insertionRules.put(new Pair("C", "N"), "C");
 
 
-		Polimerization polimerization = new Polimerization("NNCB",
+		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
 				insertionRules);
 
-		for (int i = 0; i < 10; i++) {
-			polimerization= polimerization.nextTurn();
-		}
-
-
-		assertThat(polimerization.getDifferenceMostAndLeastCommon()).isEqualTo(1588);
+		CharacterCounter nncb = polimerizationEngine.afterNrOfSteps("NNCB", 10);
+		assertThat(nncb.getMaxOccurences()- nncb.getMinOccurences())
+				.isEqualTo(1588);
 	}
 
 	@Disabled
@@ -104,15 +99,11 @@ class PolimerizationTest {
 		insertionRules.put(new Pair("C", "N"), "C");
 
 
-		Polimerization polimerization = new Polimerization("NNCB",
+		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
 				insertionRules);
 
-		for (int i = 0; i < 40; i++) {
-			polimerization= polimerization.nextTurn();
-		}
-
-
-		assertThat(polimerization.getDifferenceMostAndLeastCommon()).isEqualTo(2188189693529L);
+		CharacterCounter cc = polimerizationEngine.afterNrOfSteps("NNCB", 40);
+		assertThat(cc.getMaxOccurences()- cc.getMinOccurences()).isEqualTo(2188189693529L);
 	}
 
 	@Test
@@ -122,22 +113,11 @@ class PolimerizationTest {
 				.forEach(s -> insertionRules.put(pairOf(s), outputOf(s)));
 
 
-		Polimerization polimerization = new Polimerization("CPSSSFCFOFVFNVPKBFVN",
+		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
 				insertionRules);
 
-		Polimerization polimerization10 = polimerization
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn()
-				.nextTurn();
-
-		assertThat(polimerization10.getDifferenceMostAndLeastCommon()).isEqualTo(3697L);
+		CharacterCounter ccCounter = polimerizationEngine.afterNrOfSteps("CPSSSFCFOFVFNVPKBFVN", 10);
+		assertThat(ccCounter.getMaxOccurences()- ccCounter.getMinOccurences()).isEqualTo(3697L);
 
 	}
 

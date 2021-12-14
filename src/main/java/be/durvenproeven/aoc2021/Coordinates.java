@@ -31,7 +31,7 @@ public class Coordinates {
 		return getX() >= 0 && getY() >= 0;
 	}
 
-	public boolean isSmallerThen(Coordinates maxCoordinate){
+	public boolean isSmallerThen(Coordinates maxCoordinate) {
 		return x < maxCoordinate.x && y < maxCoordinate.y;
 	}
 
@@ -44,19 +44,32 @@ public class Coordinates {
 	}
 
 	public Coordinates getNeighbour(Direction direction) {
-		return new Coordinates(x+ direction.getxDelta(), y+ direction.getyDelta());
+		return new Coordinates(x + direction.getxDelta(), y + direction.getyDelta());
 	}
 
-	public List<Coordinates> getCardinalNeighbours(){
+	public List<Coordinates> getCardinalNeighbours() {
 		return Direction.getCardinals().stream()
 				.map(this::getNeighbour)
 				.toList();
 	}
 
-	public List<Coordinates> getAllNeighbours(){
+	public List<Coordinates> getAllNeighbours() {
 		return Arrays.stream(Direction.values())
 				.map(this::getNeighbour)
 				.toList();
+	}
+
+	public Coordinates withHorizontalReflection(int yReflection) {
+		if (y > yReflection) {
+			return new Coordinates(x, y - 2 * (y - yReflection));
+		}
+		return this;
+	}
+	public Coordinates withVerticalReflection(int xReflection) {
+		if (x > xReflection) {
+			return new Coordinates(x - 2 * (x - xReflection), y);
+		}
+		return this;
 	}
 
 

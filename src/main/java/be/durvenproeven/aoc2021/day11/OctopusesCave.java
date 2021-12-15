@@ -66,10 +66,10 @@ public class OctopusesCave {
 	}
 
 	int nextStep() {
-		Coordinates.getAllCoordinates(maxCoordinate)
+		Coordinates.getAllCoordinatesOld(maxCoordinate)
 				.forEach(co -> addToValue(co, 1));
 
-		List<Coordinates> lightningCoordinates = Coordinates.getAllCoordinates(maxCoordinate).stream()
+		List<Coordinates> lightningCoordinates = Coordinates.getAllCoordinatesOld(maxCoordinate).stream()
 				.filter(this::isLightingUp)
 				.toList();
 

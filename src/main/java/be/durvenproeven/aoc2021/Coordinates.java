@@ -15,15 +15,29 @@ public class Coordinates {
 		this.y = y;
 	}
 
-	public static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
+	@Deprecated
+	public static List<Coordinates> getAllCoordinatesOld(Coordinates maxCoordinate) {
 		return IntStream.range(0, maxCoordinate.getX())
+				.mapToObj(xco -> toCoordinatesOld(xco, maxCoordinate))
+				.flatMap(Stream::distinct)
+				.toList();
+	}
+
+	public static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
+		return IntStream.rangeClosed(0, maxCoordinate.getX())
 				.mapToObj(xco -> toCoordinates(xco, maxCoordinate))
 				.flatMap(Stream::distinct)
 				.toList();
 	}
 
-	private static Stream<Coordinates> toCoordinates(int xco, Coordinates maxCoordinate) {
+	@Deprecated
+	private static Stream<Coordinates> toCoordinatesOld(int xco, Coordinates maxCoordinate) {
 		return IntStream.range(0, maxCoordinate.getY())
+				.mapToObj(y -> new Coordinates(xco, y));
+	}
+
+	private static Stream<Coordinates> toCoordinates(int xco, Coordinates maxCoordinate) {
+		return IntStream.rangeClosed(0, maxCoordinate.getY())
 				.mapToObj(y -> new Coordinates(xco, y));
 	}
 

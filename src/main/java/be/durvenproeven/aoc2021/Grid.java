@@ -1,11 +1,11 @@
-package be.durvenproeven.aoc2021.day15;
-
-import be.durvenproeven.aoc2021.Coordinates;
-import be.durvenproeven.aoc2021.NumberUtils;
+package be.durvenproeven.aoc2021;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,12 @@ public class Grid {
 
 	public List<Coordinates> getCardinalNeighbours(Coordinates coordinates) {
 		return coordinates.getCardinalNeighbours().stream()
+				.filter(this::isValid)
+				.toList();
+	}
+
+	public List<Coordinates> getAllNeighbours(Coordinates coordinates) {
+		return coordinates.getAllNeighbours().stream()
 				.filter(this::isValid)
 				.toList();
 	}
@@ -98,5 +104,55 @@ public class Grid {
 
 	List<List<Integer>> getRiskLevels() {
 		return riskLevels;
+	}
+
+	public boolean allHaveLevel(int nr){
+		return riskLevels.stream()
+				.flatMap(Collection::stream)
+				.mapToInt(Integer::intValue)
+				.allMatch(i -> i==nr);
+	}
+
+	public List<Coordinates> withLevel(IntPredicate predicate){
+		return Coordinates.getAllCoordinates(maxCoordinates).stream()
+				.filter(c -> predicate.test(getValue(c)))
+				.toList();
+	}
+
+	public void apply(IntUnaryOperator operator){
+		for (List<Integer> riskLevel : riskLevels) {
+			for (int i = 0; i < riskLevel.size(); i++) {
+				riskLevel.set(i,operator.applyAsInt(riskLevel.get(i)));
+			}
+		}
+	}
+
+	public void setValue(Coordinates co, int nr){
+		if (!isValid(co)) {
+			throw new IllegalArgumentException();
+		}
+		riskLevels.get(co.getX()).set(co.getY(), nr);
+	}
+
+	public void updateValue(Coordinates co, IntUnaryOperator operator){
+		if (!isValid(co)) {
+			throw new IllegalArgumentException();
+		}
+		Integer oldValue = riskLevels.get(co.getX()).get(co.getY());
+		int newValue = operator.applyAsInt(oldValue);
+		riskLevels.get(co.getX()).set(co.getY(), newValue);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Grid grid = (Grid) o;
+		return Objects.equals(riskLevels, grid.riskLevels) && Objects.equals(maxCoordinates, grid.maxCoordinates);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(riskLevels, maxCoordinates);
 	}
 }

@@ -1,6 +1,7 @@
 package be.durvenproeven.aoc2021.day15;
 
 import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.Grid;
 
 import java.util.Comparator;
 import java.util.HashMap;

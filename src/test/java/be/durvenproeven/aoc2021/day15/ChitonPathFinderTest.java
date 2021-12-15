@@ -1,5 +1,6 @@
 package be.durvenproeven.aoc2021.day15;
 
+import be.durvenproeven.aoc2021.Grid;
 import be.durvenproeven.aoc2021.LineResolver;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class ChitonPathFinderTest {
 		assertThat(shortestPath.getRiskAfterFirst()).isEqualTo(720);
 	}
 
-
+    @Disabled//takes too long
 	@Test
 	void findShortestPathFromStartToEnd_SecondRealExample() {
 		List<String> listRiskLevels = LineResolver.getStringStreamOfFile("day15chitons.txt").toList();

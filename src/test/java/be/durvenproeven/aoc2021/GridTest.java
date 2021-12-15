@@ -1,6 +1,5 @@
-package be.durvenproeven.aoc2021.day15;
+package be.durvenproeven.aoc2021;
 
-import be.durvenproeven.aoc2021.Coordinates;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -32,6 +31,7 @@ class GridTest {
 
 	}
 
+	@SuppressWarnings("PointlessArithmeticExpression")
 	@Test
 	void increase_unaryOperator() {
 		Grid grid = new Grid(List.of("01", "23"));

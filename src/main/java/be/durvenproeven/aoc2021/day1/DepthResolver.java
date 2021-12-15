@@ -10,7 +10,7 @@ public class DepthResolver {
 	private static final BinaryOperator<WindowCounter> OTHER_IGNORED_COMBINER = (c1, c2) -> {
 		throw new IllegalArgumentException("do not use parallel");
 	};
-	private List<Integer> list;
+	private final List<Integer> list;
 
 	public DepthResolver(List<Integer> list) {
 		this.list = list;

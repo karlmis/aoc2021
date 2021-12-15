@@ -2,7 +2,6 @@ package be.durvenproeven.aoc2021.day14;
 
 import be.durvenproeven.aoc2021.LineResolver;
 import org.apache.commons.lang.StringUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

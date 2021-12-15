@@ -1,7 +1,7 @@
 package be.durvenproeven.aoc2021.day7;
 
 public class CrabCalculator {
-	private CrabSwarm crabSwarm;
+	private final CrabSwarm crabSwarm;
 
 	public CrabCalculator(CrabSwarm crabSwarm) {
 		this.crabSwarm = crabSwarm;

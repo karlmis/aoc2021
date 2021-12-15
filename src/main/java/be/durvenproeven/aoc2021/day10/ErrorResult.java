@@ -3,7 +3,7 @@ package be.durvenproeven.aoc2021.day10;
 import java.util.Objects;
 
 class ErrorResult {
-	Delimiter expected, found;
+	private final Delimiter expected, found;
 
 	public ErrorResult(Delimiter expected, Delimiter found) {
 		this.expected = expected;

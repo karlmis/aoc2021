@@ -48,6 +48,7 @@ class BinaryDiagnosticTest {
 	void getOgyGeneratorRating() {
 		assertThat(new BinaryDiagnostic(List.of("100","001","011"),3).getOxyGeneratorRating()).isEqualTo(3);
 	}
+
 	@Test
 	void getCo2ScrubberRating() {
 		assertThat(new BinaryDiagnostic(List.of("100","001","011"),3).getCo2ScrubberRating()).isEqualTo(4);

@@ -1,7 +1,6 @@
 package be.durvenproeven.aoc2021.day4;
 
 import be.durvenproeven.aoc2021.LineResolver;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

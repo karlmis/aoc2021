@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class SyntaxScoring {
 	private final String line;
 	private final List<String> strings;
-	private Optional<ErrorResult> error;
+	private final Optional<ErrorResult> error;
 
 	public SyntaxScoring(String line) {
 		this.line = line;

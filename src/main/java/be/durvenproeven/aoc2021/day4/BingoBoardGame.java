@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BingoBoardGame {
-	private List<BingoBoard> boards;
+	private final List<BingoBoard> boards;
 
 	public BingoBoardGame(List<BingoBoard> boards) {
 		this.boards = boards;

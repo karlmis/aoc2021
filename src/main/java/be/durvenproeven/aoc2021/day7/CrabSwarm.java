@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class CrabSwarm {
-	private List<Integer> positions;
+	private final List<Integer> positions;
 
 	public CrabSwarm(List<Integer> positions) {
 		this.positions = positions;

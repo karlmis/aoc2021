@@ -10,8 +10,8 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 
 public class BingoBoard {
-	private List<Integer> nrs;
-	private TreeSet<Integer> chosenNrs = new TreeSet<>();
+	private final List<Integer> nrs;
+	private final TreeSet<Integer> chosenNrs = new TreeSet<>();
 	private final int nrsInaRow;
 
 	public BingoBoard(List<Integer> nrs, int nrsInaRow) {

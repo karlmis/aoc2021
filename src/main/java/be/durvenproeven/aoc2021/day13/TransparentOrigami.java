@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TransparentOrigami {
-	private Set<Coordinates> coordinatesSet = new HashSet<>();
+	private final Set<Coordinates> coordinatesSet = new HashSet<>();
 
 	public TransparentOrigami(List<Coordinates> coordinatesList) {
 		this.coordinatesSet.addAll(coordinatesList);

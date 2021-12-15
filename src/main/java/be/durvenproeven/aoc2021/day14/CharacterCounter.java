@@ -1,19 +1,13 @@
 package be.durvenproeven.aoc2021.day14;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 
 public class CharacterCounter {
 
 	private final Map<String, Long> collect;
-	private String input;
+	private final String input;
 
 
 	public CharacterCounter(String s) {

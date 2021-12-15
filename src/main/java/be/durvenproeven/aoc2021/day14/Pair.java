@@ -1,21 +1,15 @@
 package be.durvenproeven.aoc2021.day14;
 
-import com.google.common.base.Preconditions;
 
 import java.util.Objects;
 
 public class Pair {
-	private String first, second;
+	private final String first;
+	private final String second;
 
 	public Pair(String first, String second) {
 		this.first = first;
 		this.second = second;
-	}
-
-	public Pair(String s) {
-		Preconditions.checkArgument(s.length()==2);
-		this.first = s.substring(0,1);
-		this.second= s.substring(1);
 	}
 
 	@Override

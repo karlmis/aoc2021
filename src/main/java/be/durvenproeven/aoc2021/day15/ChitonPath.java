@@ -38,10 +38,6 @@ public class ChitonPath {
 				.sum() - startValue;
 	}
 
-	public int getSize() {
-		return steps.size();
-	}
-
 	public Coordinates getLastCoordinates() {
 		return lastCoordinates;
 	}

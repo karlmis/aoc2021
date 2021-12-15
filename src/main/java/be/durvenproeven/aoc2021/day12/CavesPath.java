@@ -92,19 +92,12 @@ public class CavesPath {
 	}
 
 	private static class ConnectionWithDirection {
-		private CavesConnection connection;
-		private boolean reversed;
+		private final CavesConnection connection;
+		private final boolean reversed;
 
 		public ConnectionWithDirection(CavesConnection connection, boolean reversed) {
 			this.connection = connection;
 			this.reversed = reversed;
-		}
-
-		String getFrom() {
-			if (reversed) {
-				return connection.getSecond();
-			}
-			return connection.getFirst();
 		}
 
 		String getTo() {

@@ -1,6 +1,5 @@
 package be.durvenproeven.aoc2021.day14;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +9,9 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 
 public class PairCollection {
-	private Map<Pair, Long> pairs;
-	private Pair first;
-	private Pair last;
+	private final Map<Pair, Long> pairs;
+	private final Pair first;
+	private final Pair last;
 
 	public PairCollection(List<Pair> pairs) {
 		this.pairs = pairs.stream().collect(Collectors.groupingBy(identity(), counting()));

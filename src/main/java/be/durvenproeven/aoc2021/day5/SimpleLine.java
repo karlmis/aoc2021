@@ -32,12 +32,12 @@ public record SimpleLine(Coordinates first, Coordinates second, Direction direct
 
 	public List<Coordinates> getCoordinatesOnLine() {
 		if (direction == Direction.HORIZONTAL) {
-			return getIntStream(coordinates -> coordinates.x())
+			return getIntStream(Coordinates::x)
 					.mapToObj(x -> new Coordinates(x, first.y()))
 					.toList();
 		}
 		if (direction == Direction.VERTICAL) {
-			return getIntStream(coordinates -> coordinates.y())
+			return getIntStream(Coordinates::y)
 					.mapToObj(y -> new Coordinates(first.x(), y))
 					.toList();
 		}

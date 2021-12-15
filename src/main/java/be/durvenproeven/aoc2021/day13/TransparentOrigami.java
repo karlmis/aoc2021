@@ -38,17 +38,17 @@ public class TransparentOrigami {
 
 	public void toPrettyString(){
 		Map<Integer, List<Coordinates>> collect = coordinatesSet.stream()
-				.collect(Collectors.groupingBy(coordinates2 -> coordinates2.y()));
+				.collect(Collectors.groupingBy(Coordinates::y));
 		int maxY = collect.keySet().stream()
 				.mapToInt(Integer::intValue)
 				.max().orElse(-1);
 		int maxX = collect.values().stream()
 				.flatMap(List::stream)
-				.mapToInt(coordinates1 -> coordinates1.x())
+				.mapToInt(Coordinates::x)
 				.max().orElse(-1);
 		for (int i = 0; i <= maxY; i++) {
 			List<Integer> xCoordinates = collect.get(i).stream()
-					.mapToInt(coordinates -> coordinates.x())
+					.mapToInt(Coordinates::x)
 					.sorted()
 					.boxed()
 					.toList();

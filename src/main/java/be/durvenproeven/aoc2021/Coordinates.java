@@ -2,31 +2,16 @@ package be.durvenproeven.aoc2021;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public record Coordinates(int x, int y) {
-
-	@Deprecated
-	public static List<Coordinates> getAllCoordinatesOld(Coordinates maxCoordinate) {
-		return IntStream.range(0, maxCoordinate.x())
-				.mapToObj(xco -> toCoordinatesOld(xco, maxCoordinate))
-				.flatMap(Stream::distinct)
-				.toList();
-	}
 
 	public static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
 		return IntStream.rangeClosed(0, maxCoordinate.x())
 				.mapToObj(xco -> toCoordinates(xco, maxCoordinate))
 				.flatMap(Stream::distinct)
 				.toList();
-	}
-
-	@Deprecated
-	private static Stream<Coordinates> toCoordinatesOld(int xco, Coordinates maxCoordinate) {
-		return IntStream.range(0, maxCoordinate.y())
-				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
 	private static Stream<Coordinates> toCoordinates(int xco, Coordinates maxCoordinate) {

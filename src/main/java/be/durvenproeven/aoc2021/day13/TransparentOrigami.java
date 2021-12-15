@@ -21,7 +21,7 @@ public class TransparentOrigami {
 
 	public TransparentOrigami foldHorizontal(int y) {
 		List<Coordinates> newCoordinates = coordinatesSet.stream()
-				.filter(co -> co.getY() != y)
+				.filter(co -> co.y() != y)
 				.map(co -> co.withHorizontalReflection(y))
 				.toList();
 		return new TransparentOrigami(newCoordinates);
@@ -30,7 +30,7 @@ public class TransparentOrigami {
 
 	public TransparentOrigami foldVertical(int x) {
 		List<Coordinates> newCoordinates = coordinatesSet.stream()
-				.filter(co -> co.getX() != x)
+				.filter(co -> co.x() != x)
 				.map(co -> co.withVerticalReflection(x))
 				.toList();
 		return new TransparentOrigami(newCoordinates);
@@ -38,17 +38,17 @@ public class TransparentOrigami {
 
 	public void toPrettyString(){
 		Map<Integer, List<Coordinates>> collect = coordinatesSet.stream()
-				.collect(Collectors.groupingBy(Coordinates::getY));
+				.collect(Collectors.groupingBy(coordinates2 -> coordinates2.y()));
 		int maxY = collect.keySet().stream()
 				.mapToInt(Integer::intValue)
 				.max().orElse(-1);
 		int maxX = collect.values().stream()
 				.flatMap(List::stream)
-				.mapToInt(Coordinates::getX)
+				.mapToInt(coordinates1 -> coordinates1.x())
 				.max().orElse(-1);
 		for (int i = 0; i <= maxY; i++) {
 			List<Integer> xCoordinates = collect.get(i).stream()
-					.mapToInt(Coordinates::getX)
+					.mapToInt(coordinates -> coordinates.x())
 					.sorted()
 					.boxed()
 					.toList();

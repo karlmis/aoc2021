@@ -3,24 +3,19 @@ package be.durvenproeven.aoc2021.day7;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-public class CrabSwarm {
-	private final List<Integer> positions;
+public record CrabSwarm(List<Integer> positions) {
 
-	public CrabSwarm(List<Integer> positions) {
-		this.positions = positions;
-	}
-
-	public int getDistance(int toNr){
+	public int getDistance(int toNr) {
 		return getDistance(x -> Math.abs(x - toNr));
 	}
 
-	public int getSecondDistance(int toNr){
-		return getDistance(x-> neededFule(x, toNr));
+	public int getSecondDistance(int toNr) {
+		return getDistance(x -> neededFule(x, toNr));
 	}
 
 	private int neededFule(Integer x, int toNr) {
 		int abs = Math.abs(toNr - x);
-		return abs*(abs+1)/2;
+		return abs * (abs + 1) / 2;
 	}
 
 	private int getDistance(ToIntFunction<Integer> integerToIntFunction) {
@@ -29,13 +24,13 @@ public class CrabSwarm {
 				.sum();
 	}
 
-	public int getMax(){
+	public int getMax() {
 		return positions.stream()
 				.mapToInt(Integer::intValue)
 				.max().orElseThrow();
 	}
 
-	public int getMin(){
+	public int getMin() {
 		return positions.stream()
 				.mapToInt(Integer::intValue)
 				.min().orElseThrow();

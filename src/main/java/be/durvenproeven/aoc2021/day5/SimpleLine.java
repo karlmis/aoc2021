@@ -10,16 +10,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class SimpleLine {
-	private final Coordinates first;
-	private final Coordinates second;
-	private final Direction direction;
-
-	private SimpleLine(Coordinates first, Coordinates second, Direction direction) {
-		this.first = first;
-		this.second = second;
-		this.direction = direction;
-	}
+public record SimpleLine(Coordinates first, Coordinates second, Direction direction) {
 
 	public static Optional<SimpleLine> create(Coordinates first, Coordinates second) {
 		return getDirection(first, second)
@@ -27,13 +18,13 @@ public class SimpleLine {
 	}
 
 	private static Optional<Direction> getDirection(Coordinates first, Coordinates second) {
-		if (first.getX() == second.getX()) {
+		if (first.x() == second.x()) {
 			return Optional.of(Direction.VERTICAL);
 		}
-		if (first.getY() == second.getY()) {
+		if (first.y() == second.y()) {
 			return Optional.of(Direction.HORIZONTAL);
 		}
-		if (Math.abs(first.getX() - second.getX()) == Math.abs(first.getY() - second.getY())) {
+		if (Math.abs(first.x() - second.x()) == Math.abs(first.y() - second.y())) {
 			return Optional.of(Direction.DIAGONAL);
 		}
 		return Optional.empty();
@@ -41,13 +32,13 @@ public class SimpleLine {
 
 	public List<Coordinates> getCoordinatesOnLine() {
 		if (direction == Direction.HORIZONTAL) {
-			return getIntStream(Coordinates::getX)
-					.mapToObj(x -> new Coordinates(x, first.getY()))
+			return getIntStream(coordinates -> coordinates.x())
+					.mapToObj(x -> new Coordinates(x, first.y()))
 					.toList();
 		}
 		if (direction == Direction.VERTICAL) {
-			return getIntStream(Coordinates::getY)
-					.mapToObj(y -> new Coordinates(first.getX(), y))
+			return getIntStream(coordinates -> coordinates.y())
+					.mapToObj(y -> new Coordinates(first.x(), y))
 					.toList();
 		}
 		return getCoordinatesOnLineForDiagonal();
@@ -55,12 +46,12 @@ public class SimpleLine {
 	}
 
 	private List<Coordinates> getCoordinatesOnLineForDiagonal() {
-		int dif = second.getX() - first.getX();
+		int dif = second.x() - first.x();
 		int signX = dif > 0 ? 1 : -1;
-		int signY = second.getY() > first.getY() ? 1 : -1;
+		int signY = second.y() > first.y() ? 1 : -1;
 
 		return IntStream.rangeClosed(0, Math.abs(dif))
-				.mapToObj(i -> new Coordinates(first.getX() + (i * signX), first.getY() + (i * signY)))
+				.mapToObj(i -> new Coordinates(first.x() + (i * signX), first.y() + (i * signY)))
 				.collect(toList());
 	}
 
@@ -72,7 +63,4 @@ public class SimpleLine {
 		return IntStream.rangeClosed(ints[0], ints[1]);
 	}
 
-	public Direction getDirection() {
-		return direction;
-	}
 }

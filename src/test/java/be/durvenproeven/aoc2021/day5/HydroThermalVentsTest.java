@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class HydroThermalVentsTest {
 	private static final Predicate<SimpleLine> ONLY_HORIZONTAL_OR_VERTICAL =
-			sl -> List.of(Direction.HORIZONTAL, Direction.VERTICAL).contains(sl.getDirection());
+			sl -> List.of(Direction.HORIZONTAL, Direction.VERTICAL).contains(sl.direction());
 
 	@Test
 	void getNrOfOverlaps_SimpleExample() {

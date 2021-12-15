@@ -6,25 +6,18 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Coordinates {
-	private final int x;
-	private final int y;
-
-	public Coordinates(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+public record Coordinates(int x, int y) {
 
 	@Deprecated
 	public static List<Coordinates> getAllCoordinatesOld(Coordinates maxCoordinate) {
-		return IntStream.range(0, maxCoordinate.getX())
+		return IntStream.range(0, maxCoordinate.x())
 				.mapToObj(xco -> toCoordinatesOld(xco, maxCoordinate))
 				.flatMap(Stream::distinct)
 				.toList();
 	}
 
 	public static List<Coordinates> getAllCoordinates(Coordinates maxCoordinate) {
-		return IntStream.rangeClosed(0, maxCoordinate.getX())
+		return IntStream.rangeClosed(0, maxCoordinate.x())
 				.mapToObj(xco -> toCoordinates(xco, maxCoordinate))
 				.flatMap(Stream::distinct)
 				.toList();
@@ -32,17 +25,17 @@ public class Coordinates {
 
 	@Deprecated
 	private static Stream<Coordinates> toCoordinatesOld(int xco, Coordinates maxCoordinate) {
-		return IntStream.range(0, maxCoordinate.getY())
+		return IntStream.range(0, maxCoordinate.y())
 				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
 	private static Stream<Coordinates> toCoordinates(int xco, Coordinates maxCoordinate) {
-		return IntStream.rangeClosed(0, maxCoordinate.getY())
+		return IntStream.rangeClosed(0, maxCoordinate.y())
 				.mapToObj(y -> new Coordinates(xco, y));
 	}
 
 	public boolean isInFirstQuadrant() {
-		return getX() >= 0 && getY() >= 0;
+		return this.x() >= 0 && this.y() >= 0;
 	}
 
 	public boolean isSmallerThen(Coordinates maxCoordinate) {
@@ -51,14 +44,6 @@ public class Coordinates {
 
 	public boolean isEqualOrSmallerThen(Coordinates maxCoordinate) {
 		return x <= maxCoordinate.x && y <= maxCoordinate.y;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
 	}
 
 	public Coordinates getNeighbour(Direction direction) {
@@ -83,6 +68,7 @@ public class Coordinates {
 		}
 		return this;
 	}
+
 	public Coordinates withVerticalReflection(int xReflection) {
 		if (x > xReflection) {
 			return new Coordinates(x - 2 * (x - xReflection), y);
@@ -90,32 +76,11 @@ public class Coordinates {
 		return this;
 	}
 
-	public List<Coordinates> getSmallerCoordinatesWithDistanceToOrigin(int distance){
+	public List<Coordinates> getSmallerCoordinatesWithDistanceToOrigin(int distance) {
 		return IntStream.rangeClosed(0, distance)
 				.mapToObj(i -> new Coordinates(i, distance - i))
 				.filter(co -> co.isEqualOrSmallerThen(this))
 				.toList();
 	}
 
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Coordinates that = (Coordinates) o;
-		return x == that.x && y == that.y;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(x, y);
-	}
-
-	@Override
-	public String toString() {
-		return "Coordinates{" +
-				"x=" + x +
-				", y=" + y +
-				'}';
-	}
 }

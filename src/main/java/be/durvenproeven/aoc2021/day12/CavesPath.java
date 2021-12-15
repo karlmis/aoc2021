@@ -91,14 +91,7 @@ public class CavesPath {
 		return res;
 	}
 
-	private static class ConnectionWithDirection {
-		private final CavesConnection connection;
-		private final boolean reversed;
-
-		public ConnectionWithDirection(CavesConnection connection, boolean reversed) {
-			this.connection = connection;
-			this.reversed = reversed;
-		}
+	private record ConnectionWithDirection(CavesConnection connection, boolean reversed) {
 
 		String getTo() {
 			if (reversed) {

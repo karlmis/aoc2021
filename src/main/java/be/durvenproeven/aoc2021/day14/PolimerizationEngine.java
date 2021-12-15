@@ -17,7 +17,7 @@ public class PolimerizationEngine {
 	}
 
 	private List<Pair> toPairs(Pair pair, String value) {
-		return List.of(new Pair(pair.getFirst(), value), new Pair(value, pair.getSecond()));
+		return List.of(new Pair(pair.first(), value), new Pair(value, pair.second()));
 	}
 
 	public PairCollection pairsAfterNrOfSteps(String input, int nr){

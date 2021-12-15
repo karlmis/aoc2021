@@ -38,13 +38,13 @@ public class PairCollection {
 	public Long getDiffInOccurences(){
 		Map<String, Long> count= new HashMap<>();
 		pairs.forEach((key, value) -> {
-			count.compute(key.getFirst(), (k,v)-> v== null? value: v+value);
-			count.compute(key.getSecond(), (k,v)-> v== null? value: v+value);
+			count.compute(key.first(), (k,v)-> v== null? value: v+value);
+			count.compute(key.second(), (k, v)-> v== null? value: v+value);
 		});
 
 		// all others are counted twice, so adding 1 extra will make sure that everything is counted twice
-		count.computeIfPresent(first.getFirst(), (k,v)-> v+1);
-		count.computeIfPresent(last.getSecond(), (k,v)-> v+1);
+		count.computeIfPresent(first.first(), (k, v)-> v+1);
+		count.computeIfPresent(last.second(), (k, v)-> v+1);
 
 		Long max = count.values().stream().max(Long::compareTo).orElseThrow()/2;
 		Long min = count.values().stream().min(Long::compareTo).orElseThrow()/2;

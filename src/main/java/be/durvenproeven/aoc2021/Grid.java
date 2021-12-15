@@ -32,7 +32,7 @@ public class Grid {
 
 	public int getValue(Coordinates coordinates) {
 		if (isValid(coordinates)) {
-			return riskLevels.get(coordinates.getX()).get(coordinates.getY());
+			return riskLevels.get(coordinates.x()).get(coordinates.y());
 		}
 		throw new IllegalArgumentException(coordinates.toString());
 	}
@@ -50,7 +50,7 @@ public class Grid {
 	}
 
 	public int getSize() {
-		return (maxCoordinates.getX() + 1) * (maxCoordinates.getY() + 1);
+		return (maxCoordinates.x() + 1) * (maxCoordinates.y() + 1);
 	}
 
 	public Coordinates getMaxCoordinates() {
@@ -69,7 +69,7 @@ public class Grid {
 			res.add(integers);
 
 		}
-		return new Grid(res, new Coordinates((maxCoordinates.getX() + 1) * horizontal - 1, (maxCoordinates.getY() + 1) * vertical - 1));
+		return new Grid(res, new Coordinates((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
 	}
 
 	public Grid increase(int horizontal, int vertical, IntUnaryOperator intUnaryOperator) {
@@ -88,7 +88,7 @@ public class Grid {
 			res.add(integers);
 
 		}
-		return new Grid(res, new Coordinates((maxCoordinates.getX() + 1) * horizontal - 1, (maxCoordinates.getY() + 1) * vertical - 1));
+		return new Grid(res, new Coordinates((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
 	}
 
 	private Function<Integer, Integer> times(IntUnaryOperator intUnaryOperator, int times) {
@@ -131,16 +131,16 @@ public class Grid {
 		if (!isValid(co)) {
 			throw new IllegalArgumentException();
 		}
-		riskLevels.get(co.getX()).set(co.getY(), nr);
+		riskLevels.get(co.x()).set(co.y(), nr);
 	}
 
 	public void updateValue(Coordinates co, IntUnaryOperator operator){
 		if (!isValid(co)) {
 			throw new IllegalArgumentException();
 		}
-		Integer oldValue = riskLevels.get(co.getX()).get(co.getY());
+		Integer oldValue = riskLevels.get(co.x()).get(co.y());
 		int newValue = operator.applyAsInt(oldValue);
-		riskLevels.get(co.getX()).set(co.getY(), newValue);
+		riskLevels.get(co.x()).set(co.y(), newValue);
 	}
 
 	@Override

@@ -19,6 +19,10 @@ public class ChitonPathFinder {
 		riskLevels= new Grid(listRiskLevels);
 	}
 
+	public ChitonPathFinder(Grid riskLevels) {
+		this.riskLevels = riskLevels;
+	}
+
 	public ChitonPath findShortestPathFromStartToEnd(){
 		ChitonPath chitonPath = new ChitonPath(new Coordinates(0, 0), riskLevels.getValue(new Coordinates(0, 0)));
 

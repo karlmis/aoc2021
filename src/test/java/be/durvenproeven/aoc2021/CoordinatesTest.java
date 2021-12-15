@@ -66,4 +66,25 @@ class CoordinatesTest {
 		);
 
 	}
+
+	@Test
+	void getSmallerCoordinatesWithDistanceToOrigin() {
+		assertThat(new Coordinates(3, 3).getSmallerCoordinatesWithDistanceToOrigin(0))
+				.containsExactly(new Coordinates(0, 0));
+		assertThat(new Coordinates(3, 3).getSmallerCoordinatesWithDistanceToOrigin(1))
+				.containsExactly(new Coordinates(0, 1), new Coordinates(1, 0));
+
+		assertThat(new Coordinates(3, 3).getSmallerCoordinatesWithDistanceToOrigin(4))
+				.containsExactly(
+						new Coordinates(1, 3),
+						new Coordinates(2, 2),
+						new Coordinates(3, 1)
+				).doesNotContain(
+				new Coordinates(0, 4),
+				new Coordinates(4, 0)
+
+		);
+
+
+	}
 }

@@ -35,6 +35,10 @@ public class Coordinates {
 		return x < maxCoordinate.x && y < maxCoordinate.y;
 	}
 
+	public boolean isEqualOrSmallerThen(Coordinates maxCoordinate) {
+		return x <= maxCoordinate.x && y <= maxCoordinate.y;
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -70,6 +74,13 @@ public class Coordinates {
 			return new Coordinates(x - 2 * (x - xReflection), y);
 		}
 		return this;
+	}
+
+	public List<Coordinates> getSmallerCoordinatesWithDistanceToOrigin(int distance){
+		return IntStream.rangeClosed(0, distance)
+				.mapToObj(i -> new Coordinates(i, distance - i))
+				.filter(co -> co.isEqualOrSmallerThen(this))
+				.toList();
 	}
 
 

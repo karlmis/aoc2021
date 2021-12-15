@@ -1,5 +1,7 @@
 package be.durvenproeven.aoc2021.day14;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Objects;
 
 public class Pair {
@@ -8,6 +10,12 @@ public class Pair {
 	public Pair(String first, String second) {
 		this.first = first;
 		this.second = second;
+	}
+
+	public Pair(String s) {
+		Preconditions.checkArgument(s.length()==2);
+		this.first = s.substring(0,1);
+		this.second= s.substring(1);
 	}
 
 	@Override
@@ -21,5 +29,18 @@ public class Pair {
 	@Override
 	public int hashCode() {
 		return Objects.hash(first, second);
+	}
+
+	public String getFirst() {
+		return first;
+	}
+
+	public String getSecond() {
+		return second;
+	}
+
+	@Override
+	public String toString() {
+		return "["+first +second+"]" ;
 	}
 }

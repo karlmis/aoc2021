@@ -77,7 +77,6 @@ class PolimerizationEngineTest {
 				.isEqualTo(1588);
 	}
 
-	@Disabled
 	@Test
 	void getDifferenceMostAndLeastCommon_GivenExample40() {
 		Map<Pair, String> insertionRules = new HashMap<>();
@@ -102,8 +101,9 @@ class PolimerizationEngineTest {
 		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
 				insertionRules);
 
-		CharacterCounter cc = polimerizationEngine.afterNrOfSteps("NNCB", 40);
-		assertThat(cc.getMaxOccurences()- cc.getMinOccurences()).isEqualTo(2188189693529L);
+		PairCollection nncb = polimerizationEngine.pairsAfterNrOfSteps("NNCB", 40);
+
+		assertThat(nncb.getDiffInOccurences()).isEqualTo(2188189693529L);
 	}
 
 	@Test
@@ -116,8 +116,25 @@ class PolimerizationEngineTest {
 		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
 				insertionRules);
 
+		PairCollection cpsssfcfofvfnvpkbfvn = polimerizationEngine.pairsAfterNrOfSteps("CPSSSFCFOFVFNVPKBFVN", 10);
+		assertThat(cpsssfcfofvfnvpkbfvn.getDiffInOccurences()).isEqualTo(3697L);
+
 		CharacterCounter ccCounter = polimerizationEngine.afterNrOfSteps("CPSSSFCFOFVFNVPKBFVN", 10);
 		assertThat(ccCounter.getMaxOccurences()- ccCounter.getMinOccurences()).isEqualTo(3697L);
+	}
+
+	@Test
+	void realExample40() {
+		HashMap<Pair, String> insertionRules = new HashMap<>();
+		LineResolver.getStringStreamOfFile("day14polymerization.txt")
+				.forEach(s -> insertionRules.put(pairOf(s), outputOf(s)));
+
+
+		PolimerizationEngine polimerizationEngine = new PolimerizationEngine(
+				insertionRules);
+
+		PairCollection pairCollection = polimerizationEngine.pairsAfterNrOfSteps("CPSSSFCFOFVFNVPKBFVN", 40);
+		assertThat(pairCollection.getDiffInOccurences()).isEqualTo(4371307836157L);
 
 	}
 

@@ -1,7 +1,6 @@
 package be.durvenproeven.aoc2021.day15;
 
 import be.durvenproeven.aoc2021.Coordinates;
-import be.durvenproeven.aoc2021.NumberUtils;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,20 +13,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ChitonPathFinder {
-	private final Coordinates maxCoordinate;
-	private final List<List<Integer>> riskLevels;
-	private final Coordinates coordinatesToReach;
+	private final Grid riskLevels;
 
 	public ChitonPathFinder(List<String> listRiskLevels) {
-		riskLevels= listRiskLevels.stream()
-				.map(NumberUtils::toIntList)
-				.collect(Collectors.toList());
-		maxCoordinate = new Coordinates(riskLevels.size(), riskLevels.get(0).size());
-		coordinatesToReach = new Coordinates(riskLevels.size() - 1, riskLevels.get(0).size() - 1);
+		riskLevels= new Grid(listRiskLevels);
 	}
 
 	public ChitonPath findShortestPathFromStartToEnd(){
-		ChitonPath chitonPath = new ChitonPath(new Coordinates(0, 0), getValue(new Coordinates(0, 0)));
+		ChitonPath chitonPath = new ChitonPath(new Coordinates(0, 0), riskLevels.getValue(new Coordinates(0, 0)));
 
 		Map<Coordinates, ChitonPath> shortestPath= new HashMap<>();
 		shortestPath.put(new Coordinates(0,0), chitonPath);
@@ -36,10 +29,9 @@ public class ChitonPathFinder {
 		queue.add(chitonPath);
 
 
-		while (shortestPath.size() < (coordinatesToReach.getY()+1)* (coordinatesToReach.getX()+1) && !shortestPath.containsKey(coordinatesToReach)) {
+		while (shortestPath.size() < riskLevels.getSize() && !shortestPath.containsKey(riskLevels.getMaxCoordinates())) {
 			ChitonPath nextShortestPath = queue.poll();
-			Map<Coordinates, ChitonPath> map = nextShortestPath.getLastCoordinates().getCardinalNeighbours().stream()
-					.filter(this::isValid)
+			Map<Coordinates, ChitonPath> map = riskLevels.getCardinalNeighbours(nextShortestPath.getLastCoordinates()).stream()
 					.filter(o -> !shortestPath.containsKey(o))
 					.collect(Collectors.toMap(Function.identity(), co -> getShortestPath(co, shortestPath), this::getSmallest));
 
@@ -47,7 +39,7 @@ public class ChitonPathFinder {
 			queue.addAll(map.values());
 		}
 
-		return shortestPath.get(coordinatesToReach);
+		return shortestPath.get(riskLevels.getMaxCoordinates());
 	}
 
 	private ChitonPath getSmallest(ChitonPath cp1, ChitonPath cp2) {
@@ -61,17 +53,7 @@ public class ChitonPathFinder {
 				.min(Comparator.comparing(ChitonPath::getRiskAfterFirst))
 				.orElseThrow();
 
-		return chitonPath.addStep(co, getValue(co));
+		return chitonPath.addStep(co, riskLevels.getValue(co));
 	}
 
-	private int getValue(Coordinates coordinates){
-		if (isValid(coordinates)){
-			return riskLevels.get(coordinates.getX()).get(coordinates.getY());
-		}
-		throw new IllegalArgumentException(coordinates.toString());
-	}
-
-	private boolean isValid(Coordinates coordinates) {
-		return coordinates.isInFirstQuadrant() && coordinates.isSmallerThen(maxCoordinate);
-	}
 }

@@ -32,6 +32,6 @@ class ChitonPathFinderTest {
 		ChitonPathFinder chitonPathFinder = new ChitonPathFinder(listRiskLevels);
 
 		ChitonPath shortestPath = chitonPathFinder.findShortestPathFromStartToEnd();
-		assertThat(shortestPath.getRiskAfterFirst()).isEqualTo(720);//not 722
+		assertThat(shortestPath.getRiskAfterFirst()).isEqualTo(720);
 	}
 }

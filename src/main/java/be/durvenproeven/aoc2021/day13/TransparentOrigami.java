@@ -2,11 +2,9 @@ package be.durvenproeven.aoc2021.day13;
 
 import be.durvenproeven.aoc2021.Coordinates;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 

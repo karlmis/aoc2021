@@ -70,7 +70,7 @@ class CavesPathFinderTest {
 
 	@Test
 	void getPaths_SmallCavesOnce_RealExample() {
-		List<CavesConnection> cavesConnections = LineResolver.getStringStreamOfFile("caves.txt")
+		List<CavesConnection> cavesConnections = LineResolver.getStringStreamOfFile("day12caves.txt")
 				.map(CavesConnection::new)
 				.toList();
 
@@ -140,7 +140,7 @@ class CavesPathFinderTest {
 
 	@Test
 	void getPaths_RealExample() {
-		List<CavesConnection> cavesConnections = LineResolver.getStringStreamOfFile("caves.txt")
+		List<CavesConnection> cavesConnections = LineResolver.getStringStreamOfFile("day12caves.txt")
 				.map(CavesConnection::new)
 				.toList();
 

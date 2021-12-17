@@ -23,8 +23,7 @@ public class Decoder {
 				int nextHex = Integer.parseInt(walker.getNextBits(4), 2);
 				value = value * 16 + nextHex;
 			}
-			LiteralValuePacket literalValuePacket = new LiteralValuePacket(version, value);
-			return literalValuePacket;
+			return new LiteralValuePacket(version, value);
 		}
 		boolean fixedSize = Integer.parseInt(walker.getNextBits(1), 2) == 0;
 		if (fixedSize) {

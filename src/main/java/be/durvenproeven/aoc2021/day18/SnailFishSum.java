@@ -47,35 +47,36 @@ public class SnailFishSum {
 		return new SnailFishSum(0, leftSum, 0, rightSum);
 	}
 
+	private static SnailFishSum create(String firstPart, String secondPart) {
+		SnailFishSum leftValue = create(firstPart);
+		SnailFishSum rightValue = create(secondPart);
+
+		return new SnailFishSum(
+				leftValue == null ? Integer.parseInt(firstPart) : 0,
+				leftValue,
+				rightValue == null ? Integer.parseInt(secondPart) : 0,
+				rightValue
+		);
+	}
+
 	public static SnailFishSum create(String s) {
+		if (StringUtils.countMatches(s, "[") == 0) {
+			return null;
+		}
 		if (StringUtils.countMatches(s, "[") == 1) {
 			List<Integer> nrs = Arrays.stream(StringUtils.substringBetween(s, "[", "]").trim().split(","))
 					.map(Integer::parseInt)
 					.toList();
 			return create(nrs.get(0), nrs.get(1));
 		}
+
 		String innerString = s.substring(1, s.length() - 1);
 		int indexCommaSeparator = getIndexAfterClosingInner(innerString);
 
 		String firstPart = innerString.substring(0, indexCommaSeparator);
 		String secondPart = innerString.substring(indexCommaSeparator + 1);
 
-		if (firstPart.contains("[")) {
-			SnailFishSum first = create(firstPart);
-			if (secondPart.contains("[")) {
-				return create(first, create(secondPart));
-			} else {
-				return create(first, Integer.parseInt(secondPart));
-			}
-		} else {
-			int first = Integer.parseInt(firstPart);
-			if (secondPart.contains("[")) {
-				return create(first, create(secondPart));
-			} else {
-				return create(first, Integer.parseInt(secondPart));
-			}
-
-		}
+		return create(firstPart, secondPart);
 
 	}
 
@@ -141,40 +142,9 @@ public class SnailFishSum {
 
 	Optional<ToAdd> reducePairs(int level) {
 		if (level == 1) {
-			if (leftSum != null) {
-				ToAdd toAddToHigher = new ToAdd(leftSum.leftValue, leftSum.rightValue);
-				leftSum = null;
-				leftValue = 0;
-				if (rightSum != null) {
-					rightSum.addToFirst(toAddToHigher);
-				} else {
-					rightValue += toAddToHigher.rightValue();
-				}
-				return Optional.of(toAddToHigher.withoutRight());
-			}/* else {
-				Optional<ToAdd> leftNrExceeded = changeLeftExceeded();
-				if (leftNrExceeded.isPresent()) {
-					return leftNrExceeded;
-				}
-			}*/
-			if (rightSum != null) {
-				ToAdd toAddToHigher = new ToAdd(rightSum.leftValue, rightSum.rightValue);
-				leftValue += rightSum.leftValue;
-				rightSum = null;
-				rightValue = 0;
-				return Optional.of(toAddToHigher.withoutLeft());
-			} /*else {
-				Optional<ToAdd> rightNrExceeded = changeRightExceeded();
-				if (rightNrExceeded.isPresent()) {
-					return rightNrExceeded;
-				}
-			}*/
-			return Optional.empty();
+			return reduceLastPair();
 		}
-//		Optional<ToAdd> leftNrExceeded = changeLeftExceeded();
-//		if (leftNrExceeded.isPresent()) {
-//			return leftNrExceeded;
-//		}
+
 		Optional<ToAdd> firstReduced = Optional.ofNullable(leftSum)
 				.flatMap(s -> s.reducePairs(level - 1));
 		if (firstReduced.isPresent()) {
@@ -185,11 +155,6 @@ public class SnailFishSum {
 			}
 			return firstReduced.map(ToAdd::withoutRight);
 		}
-
-//		Optional<ToAdd> rightNrExceeded = changeRightExceeded();
-//		if (rightNrExceeded.isPresent()) {
-//			return rightNrExceeded;
-//		}
 		Optional<ToAdd> rightReduced = Optional.ofNullable(rightSum)
 				.flatMap(s -> s.reducePairs(level - 1));
 		if (rightReduced.isPresent()) {
@@ -203,7 +168,29 @@ public class SnailFishSum {
 		return rightReduced;
 	}
 
-	Optional<ToAdd> reduceBigNr() {
+	private Optional<ToAdd> reduceLastPair() {
+		if (leftSum != null) {
+			ToAdd toAddToHigher = new ToAdd(leftSum.leftValue, leftSum.rightValue);
+			leftSum = null;
+			leftValue = 0;
+			if (rightSum != null) {
+				rightSum.addToFirst(toAddToHigher);
+			} else {
+				rightValue += toAddToHigher.rightValue();
+			}
+			return Optional.of(toAddToHigher.withoutRight());
+		}
+		if (rightSum != null) {
+			ToAdd toAddToHigher = new ToAdd(rightSum.leftValue, rightSum.rightValue);
+			leftValue += rightSum.leftValue;
+			rightSum = null;
+			rightValue = 0;
+			return Optional.of(toAddToHigher.withoutLeft());
+		}
+		return Optional.empty();
+	}
+
+	private Optional<ToAdd> reduceBigNr() {
 		if (leftSum == null) {
 			Optional<ToAdd> leftNrExceeded = changeLeftExceeded();
 			if (leftNrExceeded.isPresent()) {
@@ -274,11 +261,10 @@ public class SnailFishSum {
 		if (leftSum == null && rightSum == null) {
 			return StringUtils.rightPad("", nr) + "[" + leftValue + "," + rightValue + "]";
 		}
-		return new StringBuilder(StringUtils.rightPad("", nr)).append("[").append("\n")
-				.append(printOut(nr + 1, leftSum).orElse(StringUtils.rightPad("", nr + 1) + leftValue)).append(",\n")
-				.append(printOut(nr + 1, rightSum).orElse(StringUtils.rightPad("", nr + 1) + rightValue)).append("\n")
-				.append(StringUtils.rightPad("", nr)).append("]")
-				.toString();
+		return StringUtils.rightPad("", nr) + "[" + "\n" +
+				printOut(nr + 1, leftSum).orElse(StringUtils.rightPad("", nr + 1) + leftValue) + ",\n" +
+				printOut(nr + 1, rightSum).orElse(StringUtils.rightPad("", nr + 1) + rightValue) + "\n" +
+				StringUtils.rightPad("", nr) + "]";
 	}
 
 	public long getMagnitude() {
@@ -309,10 +295,5 @@ public class SnailFishSum {
 		boolean hasRight() {
 			return 0 != rightValue;
 		}
-
-		boolean isDone() {
-			return !hasLeft() && !hasRight();
-		}
-
 	}
 }

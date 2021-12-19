@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day13;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TransparentOrigami {
-	private final Set<Coordinates> coordinatesSet = new HashSet<>();
+	private final Set<CoordinatesXY> coordinatesSet = new HashSet<>();
 
-	public TransparentOrigami(List<Coordinates> coordinatesList) {
+	public TransparentOrigami(List<CoordinatesXY> coordinatesList) {
 		this.coordinatesSet.addAll(coordinatesList);
 	}
 
@@ -20,7 +20,7 @@ public class TransparentOrigami {
 	}
 
 	public TransparentOrigami foldHorizontal(int y) {
-		List<Coordinates> newCoordinates = coordinatesSet.stream()
+		List<CoordinatesXY> newCoordinates = coordinatesSet.stream()
 				.filter(co -> co.y() != y)
 				.map(co -> co.withHorizontalReflection(y))
 				.toList();
@@ -29,7 +29,7 @@ public class TransparentOrigami {
 
 
 	public TransparentOrigami foldVertical(int x) {
-		List<Coordinates> newCoordinates = coordinatesSet.stream()
+		List<CoordinatesXY> newCoordinates = coordinatesSet.stream()
 				.filter(co -> co.x() != x)
 				.map(co -> co.withVerticalReflection(x))
 				.toList();
@@ -37,18 +37,18 @@ public class TransparentOrigami {
 	}
 
 	public void toPrettyString(){
-		Map<Integer, List<Coordinates>> collect = coordinatesSet.stream()
-				.collect(Collectors.groupingBy(Coordinates::y));
+		Map<Integer, List<CoordinatesXY>> collect = coordinatesSet.stream()
+				.collect(Collectors.groupingBy(CoordinatesXY::y));
 		int maxY = collect.keySet().stream()
 				.mapToInt(Integer::intValue)
 				.max().orElse(-1);
 		int maxX = collect.values().stream()
 				.flatMap(List::stream)
-				.mapToInt(Coordinates::x)
+				.mapToInt(CoordinatesXY::x)
 				.max().orElse(-1);
 		for (int i = 0; i <= maxY; i++) {
 			List<Integer> xCoordinates = collect.get(i).stream()
-					.mapToInt(Coordinates::x)
+					.mapToInt(CoordinatesXY::x)
 					.sorted()
 					.boxed()
 					.toList();

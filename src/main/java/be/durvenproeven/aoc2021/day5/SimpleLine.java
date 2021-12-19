@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day5;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,14 +10,14 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public record SimpleLine(Coordinates first, Coordinates second, Direction direction) {
+public record SimpleLine(CoordinatesXY first, CoordinatesXY second, Direction direction) {
 
-	public static Optional<SimpleLine> create(Coordinates first, Coordinates second) {
+	public static Optional<SimpleLine> create(CoordinatesXY first, CoordinatesXY second) {
 		return getDirection(first, second)
 				.map(d -> new SimpleLine(first, second, d));
 	}
 
-	private static Optional<Direction> getDirection(Coordinates first, Coordinates second) {
+	private static Optional<Direction> getDirection(CoordinatesXY first, CoordinatesXY second) {
 		if (first.x() == second.x()) {
 			return Optional.of(Direction.VERTICAL);
 		}
@@ -30,32 +30,32 @@ public record SimpleLine(Coordinates first, Coordinates second, Direction direct
 		return Optional.empty();
 	}
 
-	public List<Coordinates> getCoordinatesOnLine() {
+	public List<CoordinatesXY> getCoordinatesOnLine() {
 		if (direction == Direction.HORIZONTAL) {
-			return getIntStream(Coordinates::x)
-					.mapToObj(x -> new Coordinates(x, first.y()))
+			return getIntStream(CoordinatesXY::x)
+					.mapToObj(x -> new CoordinatesXY(x, first.y()))
 					.toList();
 		}
 		if (direction == Direction.VERTICAL) {
-			return getIntStream(Coordinates::y)
-					.mapToObj(y -> new Coordinates(first.x(), y))
+			return getIntStream(CoordinatesXY::y)
+					.mapToObj(y -> new CoordinatesXY(first.x(), y))
 					.toList();
 		}
 		return getCoordinatesOnLineForDiagonal();
 
 	}
 
-	private List<Coordinates> getCoordinatesOnLineForDiagonal() {
+	private List<CoordinatesXY> getCoordinatesOnLineForDiagonal() {
 		int dif = second.x() - first.x();
 		int signX = dif > 0 ? 1 : -1;
 		int signY = second.y() > first.y() ? 1 : -1;
 
 		return IntStream.rangeClosed(0, Math.abs(dif))
-				.mapToObj(i -> new Coordinates(first.x() + (i * signX), first.y() + (i * signY)))
+				.mapToObj(i -> new CoordinatesXY(first.x() + (i * signX), first.y() + (i * signY)))
 				.collect(toList());
 	}
 
-	private IntStream getIntStream(ToIntFunction<Coordinates> a) {
+	private IntStream getIntStream(ToIntFunction<CoordinatesXY> a) {
 		int[] ints = Stream.of(first, second)
 				.mapToInt(a)
 				.sorted()

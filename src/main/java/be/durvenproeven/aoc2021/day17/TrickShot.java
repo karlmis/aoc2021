@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day17;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +10,22 @@ import java.util.stream.IntStream;
 
 public class TrickShot {
 
-	private final Coordinates minValue;
-	private final Coordinates maxValue;
+	private final CoordinatesXY minValue;
+	private final CoordinatesXY maxValue;
 
-	public TrickShot(Coordinates minValue, Coordinates maxValue) {
+	public TrickShot(CoordinatesXY minValue, CoordinatesXY maxValue) {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 	}
 
-	public List<Coordinates> getLaunchCoordinates() {
+	public List<CoordinatesXY> getLaunchCoordinates() {
 		List<Integer> xValuesThatEndAtTArget = IntStream.iterate(1, x -> x + 1)
 				.limit(20)
 				.filter(x -> x * (x + 1) / 2 >= minValue.x())
 				.filter(x -> x * (x + 1) / 2 <= maxValue.x())
 				.boxed()
 				.toList();
-		List<Coordinates> res = getTheseWithChanceOfMaximalHeight(xValuesThatEndAtTArget);
+		List<CoordinatesXY> res = getTheseWithChanceOfMaximalHeight(xValuesThatEndAtTArget);
 		xValuesThatEndAtTArget.stream()
 				.flatMap(x -> addExtraForXCoordanatesThatStayInRegion(x).stream())
 				.forEach(res::add);
@@ -34,14 +34,14 @@ public class TrickShot {
 		return res;
 	}
 
-	private List<Coordinates> addExtraForXCoordanatesThatStayInRegion(int minimalNr) {
+	private List<CoordinatesXY> addExtraForXCoordanatesThatStayInRegion(int minimalNr) {
 		return IntStream.range(minValue.y(), Math.abs(maxValue.y()) - 1)
 				.mapToObj(y1 -> toYRanges(y1, minimalNr))
 				.flatMap(List::stream)
 				.filter(yRange -> yRange.getValue() <= maxValue.y())
 				.filter(yRange -> yRange.getValue() >= minValue.y())
 				.map(YRange::getEnd)
-				.map(y -> new Coordinates(minimalNr, y))
+				.map(y -> new CoordinatesXY(minimalNr, y))
 				.collect(Collectors.toList());
 	}
 
@@ -54,16 +54,16 @@ public class TrickShot {
 		return yRanges;
 	}
 
-	private List<Coordinates> getTheseWithChanceOfMaximalHeight(List<Integer> xValues) {
+	private List<CoordinatesXY> getTheseWithChanceOfMaximalHeight(List<Integer> xValues) {
 		List<Integer> yValues = IntStream.rangeClosed(minValue.y(), maxValue.y())
 				.map(x -> x * -1)
 				.map(x -> x - 1)
 				.boxed()
 				.toList();
-		List<Coordinates> res = new ArrayList<>();
+		List<CoordinatesXY> res = new ArrayList<>();
 		for (Integer xValue : xValues) {
 			for (Integer yValue : yValues) {
-				res.add(new Coordinates(xValue, yValue));
+				res.add(new CoordinatesXY(xValue, yValue));
 			}
 		}
 		return res;
@@ -117,8 +117,8 @@ public class TrickShot {
 
 	public record LaunchCoordinates(XRange xRange, YRange yRange) {
 
-		public Coordinates getStartingCoordinates() {
-			return new Coordinates(xRange().getEnd(), yRange.getEnd());
+		public CoordinatesXY getStartingCoordinates() {
+			return new CoordinatesXY(xRange().getEnd(), yRange.getEnd());
 		}
 	}
 

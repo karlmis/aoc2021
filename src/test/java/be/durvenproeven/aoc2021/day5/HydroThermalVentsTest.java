@@ -1,7 +1,7 @@
 package be.durvenproeven.aoc2021.day5;
 
 import be.durvenproeven.aoc2021.LineResolver;
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -19,16 +19,16 @@ class HydroThermalVentsTest {
 	@Test
 	void getNrOfOverlaps_SimpleExample() {
 		List<SimpleLine> lines = Stream.of(
-				SimpleLine.create(new Coordinates(0, 9), new Coordinates(5, 9)),
-				SimpleLine.create(new Coordinates(8, 0), new Coordinates(0, 8)),
-				SimpleLine.create(new Coordinates(9, 4), new Coordinates(3, 4)),
-				SimpleLine.create(new Coordinates(2, 2), new Coordinates(2, 1)),
-				SimpleLine.create(new Coordinates(7, 0), new Coordinates(7, 4)),
-				SimpleLine.create(new Coordinates(6, 4), new Coordinates(2, 0)),
-				SimpleLine.create(new Coordinates(0, 9), new Coordinates(2, 9)),
-				SimpleLine.create(new Coordinates(3, 4), new Coordinates(1, 4)),
-				SimpleLine.create(new Coordinates(0, 0), new Coordinates(8, 8)),
-				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
+				SimpleLine.create(new CoordinatesXY(0, 9), new CoordinatesXY(5, 9)),
+				SimpleLine.create(new CoordinatesXY(8, 0), new CoordinatesXY(0, 8)),
+				SimpleLine.create(new CoordinatesXY(9, 4), new CoordinatesXY(3, 4)),
+				SimpleLine.create(new CoordinatesXY(2, 2), new CoordinatesXY(2, 1)),
+				SimpleLine.create(new CoordinatesXY(7, 0), new CoordinatesXY(7, 4)),
+				SimpleLine.create(new CoordinatesXY(6, 4), new CoordinatesXY(2, 0)),
+				SimpleLine.create(new CoordinatesXY(0, 9), new CoordinatesXY(2, 9)),
+				SimpleLine.create(new CoordinatesXY(3, 4), new CoordinatesXY(1, 4)),
+				SimpleLine.create(new CoordinatesXY(0, 0), new CoordinatesXY(8, 8)),
+				SimpleLine.create(new CoordinatesXY(5, 5), new CoordinatesXY(8, 2))
 		)
 				.flatMap(Optional::stream)
 				.toList();
@@ -52,16 +52,16 @@ class HydroThermalVentsTest {
 	@Test
 	void getNrOfOverlaps_Part2_SimpleExample() {
 		List<SimpleLine> lines = Stream.of(
-				SimpleLine.create(new Coordinates(0, 9), new Coordinates(5, 9)),
-				SimpleLine.create(new Coordinates(8, 0), new Coordinates(0, 8)),
-				SimpleLine.create(new Coordinates(9, 4), new Coordinates(3, 4)),
-				SimpleLine.create(new Coordinates(2, 2), new Coordinates(2, 1)),
-				SimpleLine.create(new Coordinates(7, 0), new Coordinates(7, 4)),
-				SimpleLine.create(new Coordinates(6, 4), new Coordinates(2, 0)),
-				SimpleLine.create(new Coordinates(0, 9), new Coordinates(2, 9)),
-				SimpleLine.create(new Coordinates(3, 4), new Coordinates(1, 4)),
-				SimpleLine.create(new Coordinates(0, 0), new Coordinates(8, 8)),
-				SimpleLine.create(new Coordinates(5, 5), new Coordinates(8, 2))
+				SimpleLine.create(new CoordinatesXY(0, 9), new CoordinatesXY(5, 9)),
+				SimpleLine.create(new CoordinatesXY(8, 0), new CoordinatesXY(0, 8)),
+				SimpleLine.create(new CoordinatesXY(9, 4), new CoordinatesXY(3, 4)),
+				SimpleLine.create(new CoordinatesXY(2, 2), new CoordinatesXY(2, 1)),
+				SimpleLine.create(new CoordinatesXY(7, 0), new CoordinatesXY(7, 4)),
+				SimpleLine.create(new CoordinatesXY(6, 4), new CoordinatesXY(2, 0)),
+				SimpleLine.create(new CoordinatesXY(0, 9), new CoordinatesXY(2, 9)),
+				SimpleLine.create(new CoordinatesXY(3, 4), new CoordinatesXY(1, 4)),
+				SimpleLine.create(new CoordinatesXY(0, 0), new CoordinatesXY(8, 8)),
+				SimpleLine.create(new CoordinatesXY(5, 5), new CoordinatesXY(8, 2))
 		).flatMap(Optional::stream)
 				.toList();
 
@@ -88,10 +88,10 @@ class HydroThermalVentsTest {
 		return SimpleLine.create(getCoordinates(coordinatesParts[0]), getCoordinates(coordinatesParts[1]));
 	}
 
-	private Coordinates getCoordinates(String coordinatesPart) {
+	private CoordinatesXY getCoordinates(String coordinatesPart) {
 		List<Integer> integersFirst = Arrays.stream(coordinatesPart.trim().split(","))
 				.map(Integer::parseInt)
 				.toList();
-		return new Coordinates(integersFirst.get(0), integersFirst.get(1));
+		return new CoordinatesXY(integersFirst.get(0), integersFirst.get(1));
 	}
 }

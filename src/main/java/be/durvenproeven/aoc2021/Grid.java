@@ -11,39 +11,39 @@ import java.util.stream.Collectors;
 
 public class Grid {
 	private final List<List<Integer>> riskLevels;
-	private final Coordinates maxCoordinates;
+	private final CoordinatesXY maxCoordinates;
 
 
 	public Grid(List<String> listRiskLevels) {
 		riskLevels = listRiskLevels.stream()
 				.map(NumberUtils::toIntList)
 				.collect(Collectors.toList());
-		maxCoordinates = new Coordinates(riskLevels.size() - 1, riskLevels.get(0).size() - 1);
+		maxCoordinates = new CoordinatesXY(riskLevels.size() - 1, riskLevels.get(0).size() - 1);
 	}
 
-	private Grid(List<List<Integer>> riskLevels, Coordinates maxCoordinates) {
+	private Grid(List<List<Integer>> riskLevels, CoordinatesXY maxCoordinates) {
 		this.riskLevels = riskLevels;
 		this.maxCoordinates = maxCoordinates;
 	}
 
-	private boolean isValid(Coordinates coordinates) {
+	private boolean isValid(CoordinatesXY coordinates) {
 		return coordinates.isInFirstQuadrant() && coordinates.isEqualOrSmallerThen(maxCoordinates);
 	}
 
-	public int getValue(Coordinates coordinates) {
+	public int getValue(CoordinatesXY coordinates) {
 		if (isValid(coordinates)) {
 			return riskLevels.get(coordinates.x()).get(coordinates.y());
 		}
 		throw new IllegalArgumentException(coordinates.toString());
 	}
 
-	public List<Coordinates> getCardinalNeighbours(Coordinates coordinates) {
+	public List<CoordinatesXY> getCardinalNeighbours(CoordinatesXY coordinates) {
 		return coordinates.getCardinalNeighbours().stream()
 				.filter(this::isValid)
 				.toList();
 	}
 
-	public List<Coordinates> getAllNeighbours(Coordinates coordinates) {
+	public List<CoordinatesXY> getAllNeighbours(CoordinatesXY coordinates) {
 		return coordinates.getAllNeighbours().stream()
 				.filter(this::isValid)
 				.toList();
@@ -53,7 +53,7 @@ public class Grid {
 		return (maxCoordinates.x() + 1) * (maxCoordinates.y() + 1);
 	}
 
-	public Coordinates getMaxCoordinates() {
+	public CoordinatesXY getMaxCoordinates() {
 		return maxCoordinates;
 	}
 
@@ -69,7 +69,7 @@ public class Grid {
 			res.add(integers);
 
 		}
-		return new Grid(res, new Coordinates((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
+		return new Grid(res, new CoordinatesXY((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
 	}
 
 	public Grid increase(int horizontal, int vertical, IntUnaryOperator intUnaryOperator) {
@@ -88,7 +88,7 @@ public class Grid {
 			res.add(integers);
 
 		}
-		return new Grid(res, new Coordinates((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
+		return new Grid(res, new CoordinatesXY((maxCoordinates.x() + 1) * horizontal - 1, (maxCoordinates.y() + 1) * vertical - 1));
 	}
 
 	private Function<Integer, Integer> times(IntUnaryOperator intUnaryOperator, int times) {
@@ -113,8 +113,8 @@ public class Grid {
 				.allMatch(i -> i==nr);
 	}
 
-	public List<Coordinates> withLevel(IntPredicate predicate){
-		return Coordinates.getAllCoordinates(maxCoordinates).stream()
+	public List<CoordinatesXY> withLevel(IntPredicate predicate){
+		return CoordinatesXY.getAllCoordinates(maxCoordinates).stream()
 				.filter(c -> predicate.test(getValue(c)))
 				.toList();
 	}
@@ -127,14 +127,14 @@ public class Grid {
 		}
 	}
 
-	public void setValue(Coordinates co, int nr){
+	public void setValue(CoordinatesXY co, int nr){
 		if (!isValid(co)) {
 			throw new IllegalArgumentException();
 		}
 		riskLevels.get(co.x()).set(co.y(), nr);
 	}
 
-	public void updateValue(Coordinates co, IntUnaryOperator operator){
+	public void updateValue(CoordinatesXY co, IntUnaryOperator operator){
 		if (!isValid(co)) {
 			throw new IllegalArgumentException();
 		}

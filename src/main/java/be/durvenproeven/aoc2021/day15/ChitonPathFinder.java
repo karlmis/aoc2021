@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day15;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 import be.durvenproeven.aoc2021.Grid;
 
 import java.util.Comparator;
@@ -25,10 +25,10 @@ public class ChitonPathFinder {
 	}
 
 	public ChitonPath findShortestPathFromStartToEnd(){
-		ChitonPath chitonPath = new ChitonPath(new Coordinates(0, 0), riskLevels.getValue(new Coordinates(0, 0)));
+		ChitonPath chitonPath = new ChitonPath(new CoordinatesXY(0, 0), riskLevels.getValue(new CoordinatesXY(0, 0)));
 
-		Map<Coordinates, ChitonPath> shortestPath= new HashMap<>();
-		shortestPath.put(new Coordinates(0,0), chitonPath);
+		Map<CoordinatesXY, ChitonPath> shortestPath= new HashMap<>();
+		shortestPath.put(new CoordinatesXY(0,0), chitonPath);
 
 		PriorityQueue<ChitonPath> queue = new PriorityQueue<>(Comparator.comparing(ChitonPath::getRiskAfterFirst));
 		queue.add(chitonPath);
@@ -36,7 +36,7 @@ public class ChitonPathFinder {
 
 		while (shortestPath.size() < riskLevels.getSize() && !shortestPath.containsKey(riskLevels.getMaxCoordinates())) {
 			ChitonPath nextShortestPath = queue.poll();
-			Map<Coordinates, ChitonPath> map = riskLevels.getCardinalNeighbours(nextShortestPath.getLastCoordinates()).stream()
+			Map<CoordinatesXY, ChitonPath> map = riskLevels.getCardinalNeighbours(nextShortestPath.getLastCoordinates()).stream()
 					.filter(o -> !shortestPath.containsKey(o))
 					.collect(Collectors.toMap(Function.identity(), co -> getShortestPath(co, shortestPath), this::getSmallest));
 
@@ -51,7 +51,7 @@ public class ChitonPathFinder {
 		return Stream.of(cp1, cp2).min(Comparator.comparing(ChitonPath::getRiskAfterFirst)).orElseThrow();
 	}
 
-	private ChitonPath getShortestPath(Coordinates co, Map<Coordinates, ChitonPath> shortestPath) {
+	private ChitonPath getShortestPath(CoordinatesXY co, Map<CoordinatesXY, ChitonPath> shortestPath) {
 		ChitonPath chitonPath = co.getCardinalNeighbours().stream()
 				.map(shortestPath::get)
 				.filter(Objects::nonNull)

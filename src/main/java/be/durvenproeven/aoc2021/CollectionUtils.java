@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Set;
 
 public class CollectionUtils {
-	public static Set<Coordinates> mutableSetOf(Coordinates value) {
-		Set<Coordinates> basin = new HashSet<>();
+	public static Set<CoordinatesXY> mutableSetOf(CoordinatesXY value) {
+		Set<CoordinatesXY> basin = new HashSet<>();
 		basin.add(value);
 		return basin;
 	}
 
-	public static Set<Coordinates> createMutableSetWith(Set<Coordinates> alreadyDone, Coordinates coordinates) {
-		HashSet<Coordinates> newAlreadyDone = new HashSet<>(alreadyDone);
+	public static Set<CoordinatesXY> createMutableSetWith(Set<CoordinatesXY> alreadyDone, CoordinatesXY coordinates) {
+		HashSet<CoordinatesXY> newAlreadyDone = new HashSet<>(alreadyDone);
 		newAlreadyDone.add(coordinates);
 		return newAlreadyDone;
 	}

@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day13;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 import be.durvenproeven.aoc2021.LineResolver;
 import org.junit.jupiter.api.Test;
 
@@ -13,24 +13,24 @@ class TransparentOrigamiTest {
 	@Test
 	void foldHorizontal() {
 		TransparentOrigami transparentOrigami = new TransparentOrigami(List.of(
-				new Coordinates(6, 10),
-				new Coordinates(0, 14),
-				new Coordinates(9, 10),
-				new Coordinates(0, 3),
-				new Coordinates(10, 4),
-				new Coordinates(4, 11),
-				new Coordinates(6, 0),
-				new Coordinates(6, 12),
-				new Coordinates(4, 1),
-				new Coordinates(0, 13),
-				new Coordinates(10, 12),
-				new Coordinates(3, 4),
-				new Coordinates(3, 0),
-				new Coordinates(8, 4),
-				new Coordinates(1, 10),
-				new Coordinates(2, 14),
-				new Coordinates(8, 10),
-				new Coordinates(9, 0)
+				new CoordinatesXY(6, 10),
+				new CoordinatesXY(0, 14),
+				new CoordinatesXY(9, 10),
+				new CoordinatesXY(0, 3),
+				new CoordinatesXY(10, 4),
+				new CoordinatesXY(4, 11),
+				new CoordinatesXY(6, 0),
+				new CoordinatesXY(6, 12),
+				new CoordinatesXY(4, 1),
+				new CoordinatesXY(0, 13),
+				new CoordinatesXY(10, 12),
+				new CoordinatesXY(3, 4),
+				new CoordinatesXY(3, 0),
+				new CoordinatesXY(8, 4),
+				new CoordinatesXY(1, 10),
+				new CoordinatesXY(2, 14),
+				new CoordinatesXY(8, 10),
+				new CoordinatesXY(9, 0)
 		));
 
 		TransparentOrigami afterHorizontalFold = transparentOrigami.foldHorizontal(7);
@@ -45,9 +45,9 @@ class TransparentOrigamiTest {
 
 	@Test
 	void folding_FirstInput() {
-		List<Coordinates> coordinatesList = LineResolver.getStringStreamOfFile("day13origami.txt")
+		List<CoordinatesXY> coordinatesList = LineResolver.getStringStreamOfFile("day13origami.txt")
 				.map(s -> s.split(","))
-				.map(s -> new Coordinates(Integer.parseInt(s[0]), Integer.parseInt(s[1])))
+				.map(s -> new CoordinatesXY(Integer.parseInt(s[0]), Integer.parseInt(s[1])))
 				.toList();
 		TransparentOrigami transparentOrigami = new TransparentOrigami(coordinatesList);
 
@@ -57,9 +57,9 @@ class TransparentOrigamiTest {
 
 	@Test
 	void folding_SecondPart() {
-		List<Coordinates> coordinatesList = LineResolver.getStringStreamOfFile("day13origami.txt")
+		List<CoordinatesXY> coordinatesList = LineResolver.getStringStreamOfFile("day13origami.txt")
 				.map(s -> s.split(","))
-				.map(s -> new Coordinates(Integer.parseInt(s[0]), Integer.parseInt(s[1])))
+				.map(s -> new CoordinatesXY(Integer.parseInt(s[0]), Integer.parseInt(s[1])))
 				.toList();
 		TransparentOrigami transparentOrigami = new TransparentOrigami(coordinatesList);
 

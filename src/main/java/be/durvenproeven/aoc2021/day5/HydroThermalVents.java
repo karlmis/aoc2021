@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day5;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class HydroThermalVents {
 	}
 
 	public int getNrOfOverlaps(Predicate<SimpleLine> predicate) {
-		Map<Coordinates, Long> collect = lines.stream()
+		Map<CoordinatesXY, Long> collect = lines.stream()
 				.filter(predicate)
 				.flatMap(l -> l.getCoordinatesOnLine().stream())
 				.collect(groupingBy(Function.identity(), counting()));

@@ -2,7 +2,7 @@ package be.durvenproeven.aoc2021.day9;
 
 
 import be.durvenproeven.aoc2021.CollectionUtils;
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 import be.durvenproeven.aoc2021.Grid;
 
 import java.util.Collection;
@@ -14,7 +14,7 @@ public class HeightMap {
 
 	private static final int MAX_HEIGHT = 9;
 	private static final Comparator<Integer> INTEGER_COMPARATOR = Integer::compare;
-	private final List<Coordinates> lowPoints;
+	private final List<CoordinatesXY> lowPoints;
 	private final Grid grid;
 
 	public HeightMap(List<String> input) {
@@ -22,13 +22,13 @@ public class HeightMap {
 		lowPoints = calculateLowPoints();
 	}
 
-	private List<Coordinates> calculateLowPoints() {
+	private List<CoordinatesXY> calculateLowPoints() {
 		return grid.withLevel(t-> true).stream()
 				.filter(co -> grid.getValue(co) < minOfNeighbours(co))
 				.toList();
 	}
 
-	private int minOfNeighbours(Coordinates co) {
+	private int minOfNeighbours(CoordinatesXY co) {
 		return grid.getCardinalNeighbours(co).stream()
 				.mapToInt(grid::getValue)
 				.min().orElseThrow();
@@ -46,11 +46,11 @@ public class HeightMap {
 				.toList();
 	}
 
-	private Set<Coordinates> getBasin(Coordinates coordinates, Set<Coordinates> alreadyDone) {
+	private Set<CoordinatesXY> getBasin(CoordinatesXY coordinates, Set<CoordinatesXY> alreadyDone) {
 		if (grid.getValue(coordinates) == MAX_HEIGHT) {
 			return alreadyDone;
 		}
-		Set<Coordinates> newAlreadyDone = CollectionUtils.createMutableSetWith(alreadyDone, coordinates);
+		Set<CoordinatesXY> newAlreadyDone = CollectionUtils.createMutableSetWith(alreadyDone, coordinates);
 
 		grid.getCardinalNeighbours(coordinates).stream()
 				.filter(neighbour -> !newAlreadyDone.contains(neighbour))

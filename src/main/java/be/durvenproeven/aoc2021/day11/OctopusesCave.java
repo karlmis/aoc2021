@@ -1,6 +1,6 @@
 package be.durvenproeven.aoc2021.day11;
 
-import be.durvenproeven.aoc2021.Coordinates;
+import be.durvenproeven.aoc2021.CoordinatesXY;
 import be.durvenproeven.aoc2021.Grid;
 
 import java.util.ArrayList;
@@ -27,46 +27,46 @@ public class OctopusesCave {
 	int nextStep() {
 		grid.apply(nr -> nr+1);
 
-		List<Coordinates> lightningCoordinates = grid.withLevel(i-> i>9);
+		List<CoordinatesXY> lightningCoordinates = grid.withLevel(i-> i>9);
 
-		List<Coordinates> allLightenedUp = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
+		List<CoordinatesXY> allLightenedUp = getAllLightenedUp(lightningCoordinates, new ArrayList<>());
 		allLightenedUp.forEach(this::resetValue);
 		return allLightenedUp.size();
 	}
 
-	private List<Coordinates> getAllLightenedUp(List<Coordinates> newLightenedUp, List<Coordinates> allLightenedUp) {
+	private List<CoordinatesXY> getAllLightenedUp(List<CoordinatesXY> newLightenedUp, List<CoordinatesXY> allLightenedUp) {
 		if (newLightenedUp.isEmpty()) {
 			return allLightenedUp;
 		}
 		allLightenedUp.addAll(newLightenedUp);
 
-		Map<Coordinates, Long> neighboursWithNrToAdd = newLightenedUp.stream()
+		Map<CoordinatesXY, Long> neighboursWithNrToAdd = newLightenedUp.stream()
 				.flatMap(co -> getNeighbours(co).stream())
 				.filter(co -> !allLightenedUp.contains(co))
 				.collect(groupingBy(identity(), counting()));
 
 		neighboursWithNrToAdd.forEach(this::addToValue);
 
-		List<Coordinates> newChanged = neighboursWithNrToAdd.keySet().stream()
+		List<CoordinatesXY> newChanged = neighboursWithNrToAdd.keySet().stream()
 				.filter(co -> getValue(co) > 9)
 				.toList();
 
 		return getAllLightenedUp(newChanged, allLightenedUp);
 	}
 
-	private void addToValue(Coordinates coordinates, Long toAdd){
+	private void addToValue(CoordinatesXY coordinates, Long toAdd){
 		grid.updateValue(coordinates, nr -> nr+ toAdd.intValue());
 	}
 
-	private List<Coordinates> getNeighbours(Coordinates co) {
+	private List<CoordinatesXY> getNeighbours(CoordinatesXY co) {
 		return grid.getAllNeighbours(co);
 	}
 
-	private int getValue(Coordinates co) {
+	private int getValue(CoordinatesXY co) {
 		return grid.getValue(co);
 	}
 
-	private void resetValue(Coordinates co) {
+	private void resetValue(CoordinatesXY co) {
 		grid.setValue(co, 0);
 	}
 

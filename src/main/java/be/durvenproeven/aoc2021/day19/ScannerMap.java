@@ -61,6 +61,10 @@ public class ScannerMap {
 		return new Coordinates(coordinates.x(), coordinates.y(), zSummaryStatistics.getMax() - coordinates.z());
 	}
 
+	public int getSize(){
+		return coordinatesList.size();
+	}
+
 	//List<CoordinatesWithPosition
 	public MatchResult getMatching(List<Coordinates> otherCo, int minNr){
 		Map<Coordinates, List<Pair>> diffWithPairs = coordinatesList.stream()

@@ -1,9 +1,11 @@
 package be.durvenproeven.aoc2021.day19;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ScannerMapMatcher {
 
@@ -18,10 +20,10 @@ public class ScannerMapMatcher {
 	}
 
 	public static int getNrOfBeacons(List<ScannerMap> scannerMaps, int minNr) {
-		Map<ScannerMap, List<Pair>> map = new HashMap<>();
+		LinkedHashMap<ScannerMap, List<Pair>> map = new LinkedHashMap<>();
 		for (int i = 0; i < scannerMaps.size(); i++) {
 			List<Pair> pairs = new ArrayList<>();
-			for (int i1 = i; i1 < scannerMaps.size(); i1++) {
+			for (int i1 = i+1; i1 < scannerMaps.size(); i1++) {
 				MatchResult match = match(scannerMaps.get(i), scannerMaps.get(i1), minNr);
 				if (match.hasMatch()) {
 					pairs.add(new Pair(scannerMaps.get(i1), match));
@@ -29,8 +31,23 @@ public class ScannerMapMatcher {
 			}
 			map.put(scannerMaps.get(i), pairs);
 		}
-
-		throw new UnsupportedOperationException("implement me!");
+		System.out.println(map);
+		int total=0;
+		for (ScannerMap scannerMap : map.keySet()) {
+			List<Pair> pairs = map.values().stream()
+					.flatMap(Collection::stream)
+					.filter(p -> p.map == scannerMap)
+					.toList();
+			Preconditions.checkArgument(pairs.size()<2);
+			if (pairs.size()==0){
+				total+= scannerMap.getSize();
+			}
+			if (pairs.size()==1){
+				total += scannerMap.getSize()-pairs.get(0).matchResult.nr();
+			}
+		}
+		return total;
+//		throw new UnsupportedOperationException("implement me!");
 	}
 
 	private static record Pair(ScannerMap map, MatchResult matchResult) {

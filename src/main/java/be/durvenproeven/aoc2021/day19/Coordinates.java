@@ -28,6 +28,33 @@ public record Coordinates(int x, int y, int z) {
 		return coordinates;
 	}
 
+	public Coordinates limitTo(int min, int max){
+		return new Coordinates(
+				limit(min, max, x),
+				limit(min, max, y),
+				limit(min, max, z)
+		);
+	}
+
+	public static boolean hasOneSizeOutsideRange(Coordinates co1, Coordinates co2, int min, int max){
+		return (co1.x() < min && co2.x() < min)
+				|| (co1.y() < min && co2.y() < min)
+				|| (co1.z() < min && co2.z() < min) ||
+				(co1.x() > max && co2.x() > max)
+				|| (co1.y() > max && co2.y() > max)
+				|| (co1.z() > max && co2.z() > max);
+	}
+
+	private int limit(int min, int max, int nr){
+		if (nr > max){
+			return max;
+		}
+		if (nr < min){
+			return min;
+		}
+		return nr;
+	}
+
 	private static int nrOf(int nr, int divider) {
 		int i = nr % (divider * 2);
 		if (i > divider) {

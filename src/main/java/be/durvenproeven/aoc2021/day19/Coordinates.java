@@ -1,5 +1,7 @@
 package be.durvenproeven.aoc2021.day19;
 
+import be.durvenproeven.aoc2021.day22.IntegerRange;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,5 +65,14 @@ public record Coordinates(int x, int y, int z) {
 		return -1;
 	}
 
+	public enum Axes{X,Y,Z}
+
+	public IntegerRange getIntegerRange(Coordinates other, Axes ax){
+		return switch (ax) {
+			case X -> new IntegerRange(x(), other.x());
+			case Y -> new IntegerRange(y(), other.y());
+			case Z -> new IntegerRange(z(), other.z());
+		};
+	}
 
 }

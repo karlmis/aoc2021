@@ -47,7 +47,7 @@ class CubeTest {
 		Cube other = new Cube(new Coordinates(4, 4, 4), new Coordinates(8, 8, 8));
 
 		List<Cube> difference = cube.difference(other);
-		assertThat(difference.stream().mapToInt(Cube::getSize).sum()).isEqualTo(cube.getSize() -
+		assertThat(difference.stream().mapToLong(Cube::getSize).sum()).isEqualTo(cube.getSize() -
 				new Cube(new Coordinates(4, 4, 4), new Coordinates(5, 5, 5)).getSize());
 		assertThat(difference).allMatch(cube::contains);
 		assertThat(difference).allMatch(dif -> other.intersection(dif).isEmpty());
@@ -66,7 +66,7 @@ class CubeTest {
 		Cube other = new Cube(new Coordinates(3, 4, 5), new Coordinates(8, 8, 8));
 
 		List<Cube> difference = cube.difference(other);
-		assertThat(difference.stream().mapToInt(Cube::getSize).sum()).isEqualTo(cube.getSize() -
+		assertThat(difference.stream().mapToLong(Cube::getSize).sum()).isEqualTo(cube.getSize() -
 				new Cube(new Coordinates(3, 4, 5), new Coordinates(5, 5, 5)).getSize());
 		assertThat(difference).allMatch(cube::contains);
 		assertThat(difference).allMatch(dif -> other.intersection(dif).isEmpty());

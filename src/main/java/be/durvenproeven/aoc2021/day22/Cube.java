@@ -33,10 +33,10 @@ public class Cube {
 				new Coordinates(xRange.getMax(), yRange.getMax(), zRange.getMax()));
 	}
 
-	public int getSize(){
+	public long getSize(){
 		return Arrays.stream(Axes.values())
 				.map(this::getIntegerRange)
-				.mapToInt(IntegerRange::getSize)
+				.mapToLong(IntegerRange::getSize)
 				.reduce(1, (a, b) -> a * b);
 	}
 

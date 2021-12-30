@@ -13,4 +13,8 @@ public enum AmphipodType {
 		this.symbol = symbol;
 		this.energyRequiredForStep = energyRequiredForStep;
 	}
+
+	public int getEnergyRequiredForStep() {
+		return energyRequiredForStep;
+	}
 }

@@ -1,18 +1,54 @@
 package be.durvenproeven.aoc2021.day23;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AmphipodSystem {
-	private final List<Room> rooms;
-	private final List<List<AmphipodType>> freeSpacesInHallWay;
 	private final int acquiredWeight;
 
+	private final LinkedHashMap<AmphipodType, Integer> amphipodTypeWithIndexOfRoom;
+	private final LinkedHashMap<AmphipodType, Room> amphipodTypeWithRoom;
+
+	private final SortedMap<Integer, AmphipodType> occupiedPlaces;
+	private final int maxNr;
+
+
 	AmphipodSystem(List<Room> rooms, List<List<AmphipodType>> freeSpacesInHallWay, int acquiredWeight) {
-		this.rooms = rooms;
-		this.freeSpacesInHallWay = freeSpacesInHallWay;
 		this.acquiredWeight = acquiredWeight;
+
+		int counter = 0;
+		int roomIndex = 0;
+		amphipodTypeWithIndexOfRoom = new LinkedHashMap<>();
+		amphipodTypeWithRoom = new LinkedHashMap<>();
+		for (List<AmphipodType> amphipodTypes : freeSpacesInHallWay) {
+			counter += amphipodTypes.size();
+			if (roomIndex < rooms.size()) {
+				Room room = rooms.get(roomIndex++);
+				amphipodTypeWithIndexOfRoom.put(room.getAmphipodTypeNeeded(), counter++);
+				amphipodTypeWithRoom.put(room.getAmphipodTypeNeeded(), room);
+			}
+		}
+		maxNr = counter;
+		occupiedPlaces = new TreeMap<>();
+	}
+
+	public AmphipodSystem(Map<Room, Integer> locationRooms, int acquiredWeight, Map<Integer, AmphipodType> occupiedPlaces, int maxNr) {
+		amphipodTypeWithIndexOfRoom = locationRooms.entrySet().stream()
+				.collect(Collectors.toMap(e -> e.getKey().getAmphipodTypeNeeded(), Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
+		amphipodTypeWithRoom = locationRooms.entrySet().stream()
+				.collect(Collectors.toMap(e -> e.getKey().getAmphipodTypeNeeded(), Map.Entry::getKey, (a, b) -> a, LinkedHashMap::new));
+
+		this.acquiredWeight = acquiredWeight;
+		this.occupiedPlaces = new TreeMap<>(occupiedPlaces);
+		this.maxNr = maxNr;
+
+
 	}
 
 	public static AmphipodSystem createWithFreeSpaces(List<Room> rooms, List<Integer> freespacesBetweenRooms) {
@@ -31,68 +67,33 @@ public class AmphipodSystem {
 
 
 	public double getWeight() {
-		double res = acquiredWeight;
-		for (Room room : rooms) {
-			res += room.getWrongLocated().stream()
-					.mapToDouble(e -> weightForLocatedInRoom(room, e))
-					.sum();
-		}
-		for (int indexOfFreeSpaces = 0, freeSpacesInHallWaySize = freeSpacesInHallWay.size(); indexOfFreeSpaces < freeSpacesInHallWaySize; indexOfFreeSpaces++) {
-			List<AmphipodType> amphipodTypes = freeSpacesInHallWay.get(indexOfFreeSpaces);
-			for (int i = 0; i < amphipodTypes.size(); i++) {
-				if (amphipodTypes.get(i) != null) {
-					res += weightForLocatedNotInRoom(indexOfFreeSpaces, amphipodTypes, i);
-				}
-			}
-		}
-		return res;
+		double weightForInWrongRoom = amphipodTypeWithRoom.values().stream()
+				.mapToDouble(this::getWeightForWrongLocated)
+				.sum();
+		double weightForBetweenRooms = occupiedPlaces.entrySet().stream()
+				.mapToDouble(this::getDistanceToCorrectRoom)
+				.sum();
+
+
+		return weightForInWrongRoom + weightForBetweenRooms + acquiredWeight;
 	}
 
-	
-
-	private double weightForLocatedNotInRoom(int indexOfFreeSpaces, List<AmphipodType> amphipodTypesBlock, int indexInAmpiPodTypesBlock) {
-		AmphipodType amphipodType = amphipodTypesBlock.get(indexInAmpiPodTypesBlock);
-		int indexOfRoom = indexOfRoom(amphipodType);
-		if (indexOfFreeSpaces <= indexOfRoom) {//next
-			int distanceInRooms = IntStream.rangeClosed(indexOfFreeSpaces + 1, indexOfRoom)
-					.map(i -> freeSpacesInHallWay.get(i).size() + 1)
-					.sum();
-
-			double distance = distanceInRooms + 1 + 1.5 + (amphipodTypesBlock.size() - 1 - indexInAmpiPodTypesBlock);
-			return distance * amphipodType.getEnergyRequiredForStep();
-		}
-		if (indexOfFreeSpaces > indexOfRoom ) { //previous
-			//look at the +1
-			int distanceInRooms = IntStream.range(indexOfRoom+1, indexOfFreeSpaces)
-					.map(i -> freeSpacesInHallWay.get(i).size() + 1)
-					.sum();
-
-			double distance = distanceInRooms + 1 + 1.5 + indexInAmpiPodTypesBlock;
-			return distance * amphipodType.getEnergyRequiredForStep();
-		}
-
-		throw new IllegalArgumentException();
-	}
-
-	private double weightForLocatedInRoom(Room room, Room.AmphipodWithWeight e) {
-		double v = e.weight() + distanceFromTo(room.getAmphipodTypeNeeded(), e.type()) + 1.5;
-		return v * e.type().getEnergyRequiredForStep();
-	}
-
-	private double distanceFromTo(AmphipodType toRoom, AmphipodType fromRoom) {
-		int from = indexOfRoom(fromRoom);
-		int to = indexOfRoom(toRoom);
-		if (from == to) {
-			return 0;
-		}
-		return IntStream.rangeClosed(Math.min(from, to) + 1, Math.max(from, to))
-				.map(i -> freeSpacesInHallWay.get(i).size() + 1)
+	private double getWeightForWrongLocated(Room room) {
+		return room.getWrongLocated().stream()
+				.mapToDouble(aw -> getDistanceBetweenRooms(aw, room.getAmphipodTypeNeeded()))
 				.sum();
 	}
 
-	private int indexOfRoom(AmphipodType fromRoom) {
-		return IntStream.range(0, rooms.size())
-				.filter(i -> rooms.get(i).getAmphipodTypeNeeded() == fromRoom)
-				.findFirst().orElseThrow();
+	private double getDistanceBetweenRooms(Room.AmphipodWithWeight e, AmphipodType amphipodTypeNeeded) {
+		double abs = Math.abs(amphipodTypeWithIndexOfRoom.get(amphipodTypeNeeded) - amphipodTypeWithIndexOfRoom.get(e.type()));
+		double v = e.weight() + abs + 1.5;
+		return v * e.type().getEnergyRequiredForStep();
 	}
+
+	private double getDistanceToCorrectRoom(Map.Entry<Integer, AmphipodType> e) {
+		double v = Math.abs(amphipodTypeWithIndexOfRoom.get(e.getValue()) - e.getKey()) + 1.5;
+		return v * e.getValue().getEnergyRequiredForStep();
+	}
+
+
 }

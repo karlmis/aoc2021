@@ -1,8 +1,6 @@
 package be.durvenproeven.aoc2021.day23;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Room {

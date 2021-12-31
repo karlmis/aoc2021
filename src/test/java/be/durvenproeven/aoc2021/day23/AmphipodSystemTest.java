@@ -1,5 +1,6 @@
 package be.durvenproeven.aoc2021.day23;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Map;
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Amber;
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Bronze;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AmphipodSystemTest {
@@ -29,7 +29,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Bronze)), 1,
-						new Room(Bronze, asList(null, Amber)),3
+						new Room(Bronze, asList(null, Amber)), 3
 				),
 				0,
 				Map.of(2, Amber),
@@ -44,7 +44,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Bronze)), 1,
-						new Room(Bronze, asList(null, Amber)),3
+						new Room(Bronze, asList(null, Amber)), 3
 				),
 				1000,
 				Map.of(2, Amber),
@@ -59,7 +59,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(null, Bronze)), 1,
-						new Room(Bronze, asList(Amber, Amber)),3
+						new Room(Bronze, asList(Amber, Amber)), 3
 				),
 				0,
 				Map.of(2, Bronze),
@@ -73,7 +73,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Bronze)), 1,
-						new Room(Bronze, asList(null, Amber)),4
+						new Room(Bronze, asList(null, Amber)), 4
 				),
 				0,
 				Map.of(2, Amber),
@@ -87,7 +87,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Bronze)), 1,
-						new Room(Bronze, asList(null, Amber)),4
+						new Room(Bronze, asList(null, Amber)), 4
 				),
 				0,
 				Map.of(3, Amber),
@@ -101,7 +101,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(null, Bronze)), 1,
-						new Room(Bronze, asList(Amber, Amber)),4
+						new Room(Bronze, asList(Amber, Amber)), 4
 				),
 				0,
 				Map.of(2, Bronze),
@@ -115,7 +115,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(null, Bronze)), 1,
-						new Room(Bronze, asList(Amber, Amber)),4
+						new Room(Bronze, asList(Amber, Amber)), 4
 				),
 				0,
 				Map.of(3, Bronze),
@@ -129,7 +129,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(//TODO vanaf hier & kijken naar de indexen
 				Map.of(
 						new Room(Amber, asList(null, Bronze)), 2,
-						new Room(Bronze, asList(Amber, Amber)),5
+						new Room(Bronze, asList(Amber, Amber)), 5
 				),
 				0,
 				Map.of(0, Bronze),
@@ -143,7 +143,7 @@ class AmphipodSystemTest {
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Bronze)), 1,
-						new Room(Bronze, asList(null, Amber)),4
+						new Room(Bronze, asList(null, Amber)), 4
 				),
 				0,
 				Map.of(5, Amber),
@@ -151,7 +151,6 @@ class AmphipodSystemTest {
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 * 10 + (6.5 + 5.5));
 	}
-
 
 	@Test
 	void getWeight_MoreRoomsBetween() {
@@ -165,4 +164,65 @@ class AmphipodSystemTest {
 	}
 
 
+	@Disabled
+	@Test
+	void toNextTurn() {
+		AmphipodSystem amphipodSystem = AmphipodSystem.createWithFreeSpaces(
+				List.of(new Room(Amber, List.of(Bronze, Bronze)),
+						new Room(Bronze, List.of(Amber, Amber))),
+				List.of(1, 1, 1)
+		);
+
+		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(null, Bronze)), 1,
+								new Room(Bronze, List.of(Amber, Amber)), 3
+						), 0,
+						Map.of(0, Bronze),
+						5
+				),
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(null, Bronze)), 1,
+								new Room(Bronze, List.of(Amber, Amber)), 3
+						), 0,
+						Map.of(2, Bronze),
+						5
+				),
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(null, Bronze)), 1,
+								new Room(Bronze, List.of(Amber, Amber)), 3
+						), 0,
+						Map.of(4, Bronze),
+						5
+				),
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(Bronze, Bronze)), 1,
+								new Room(Bronze, List.of(null, Amber)), 3
+						), 0,
+						Map.of(0, Amber),
+						5
+				),
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(Bronze, Bronze)), 1,
+								new Room(Bronze, List.of(null, Amber)), 3
+						), 0,
+						Map.of(2, Amber),
+						5
+				),
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, List.of(Bronze, Bronze)), 1,
+								new Room(Bronze, List.of(null, Amber)), 3
+						), 0,
+						Map.of(4, Amber),
+						5
+				)
+
+		);
+	}
 }

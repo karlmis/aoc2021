@@ -13,7 +13,9 @@ public class Room {
 		this.occupations = occupations;
 	}
 
-
+	public AmphipodType getTop(){
+		return occupations.get(0);
+	}
 
 	List<AmphipodWithWeight> getWrongLocated() {
 		//assumption: first element in list is never correct if second is not

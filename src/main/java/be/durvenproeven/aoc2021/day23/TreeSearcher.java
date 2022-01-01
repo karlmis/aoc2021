@@ -36,7 +36,7 @@ public class TreeSearcher<T> {
 		ts.add(starting);
 		T nextitem = ts.poll();
 		while (nextitem != null){
-			System.out.println(((AmphipodSystem) nextitem).toPrettyString());
+			System.out.println(((WeightedAmphipodeSystem) nextitem).getAmphipodSystem().toPrettyString());
 			if (isFinishedPredicate.test(nextitem)){
 				return nextitem;
 			}

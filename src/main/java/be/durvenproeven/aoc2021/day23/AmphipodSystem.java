@@ -4,6 +4,7 @@ import be.durvenproeven.aoc2021.CollectionUtils;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,16 +17,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AmphipodSystem {
-	private final int acquiredWeight;
 	private final int maxNr;
 	private AmphipodSystem previous;
 
 	private SortedMap<Room, Integer> locationRooms;
 	private final SortedMap<Integer, AmphipodType> occupiedPlaces;
 
-	public AmphipodSystem(Map<Room, Integer> locationRooms, int acquiredWeight, Map<Integer, AmphipodType> occupiedPlaces, int maxNr, AmphipodSystem previous) {
+	public AmphipodSystem(Map<Room, Integer> locationRooms, Map<Integer, AmphipodType> occupiedPlaces, int maxNr, AmphipodSystem previous) {
 		this.locationRooms = new TreeMap<>(locationRooms);
-		this.acquiredWeight = acquiredWeight;
 		this.occupiedPlaces = new TreeMap<>(occupiedPlaces);
 		this.maxNr = maxNr;
 		this.previous = previous;
@@ -47,7 +46,7 @@ public class AmphipodSystem {
 			}
 		}
 
-		return new AmphipodSystem(locationRooms, 0, new TreeMap<>(), counter, null);
+		return new AmphipodSystem(locationRooms, new TreeMap<>(), counter, null);
 	}
 
 	private static List<AmphipodType> arrayListWithNullsAndSize(Integer size) {
@@ -66,7 +65,7 @@ public class AmphipodSystem {
 				.sum();
 
 
-		return weightForInWrongRoom + weightForBetweenRooms + acquiredWeight;
+		return weightForInWrongRoom + weightForBetweenRooms;
 	}
 
 	private double getWeightForWrongLocated(Room room) {
@@ -94,8 +93,8 @@ public class AmphipodSystem {
 		return v * e.getValue().getEnergyRequiredForStep();
 	}
 
-	public List<AmphipodSystem> toNextTurn() {
-		List<AmphipodSystem> amphipodSystems = new ArrayList<>();
+	public Map<AmphipodSystem,Double> toNextTurn() {
+		Map<AmphipodSystem, Double> amphipodSystems = new HashMap<>();//assumpiton no duplicates possible
 		for (Map.Entry<Room, Integer> entry : locationRooms.entrySet()) {
 			Room room = entry.getKey();
 			if (!room.hasWrongValues()) {
@@ -106,8 +105,7 @@ public class AmphipodSystem {
 				Map<Room, Integer> newLocationRooms = locationRooms.entrySet().stream()
 						.map(e -> removeTopFromCorrectRoom(e, room))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-				int newAcquiredWeight = this.acquiredWeight + weightedDistanceForTop(room, freeSpace);
-				amphipodSystems.add(new AmphipodSystem(newLocationRooms, newAcquiredWeight, newOccupiedPlaces, maxNr, this));
+				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr, this), (double) weightedDistanceForTop(room, freeSpace));
 			}
 		}
 		for (Map.Entry<Room, Integer> entry : locationRooms.entrySet()) {
@@ -134,8 +132,8 @@ public class AmphipodSystem {
 				Map<Integer, AmphipodType> newOccupiedPlaces =
 						CollectionUtils.createMapWithout(occupiedPlaces, entry.getKey(), entry.getValue());
 				int distanceBetweenIndexes = Math.abs(roomWithIndex.getValue() - entry.getKey());
-				int newAcquiredWeight = acquiredWeight + entry.getValue().getEnergyRequiredForStep() * (distanceToFreePlace.getAsInt() + distanceBetweenIndexes);//TODO
-				amphipodSystems.add(new AmphipodSystem(newLocationRooms, newAcquiredWeight, newOccupiedPlaces, maxNr, this));
+				double newExtraWeight = entry.getValue().getEnergyRequiredForStep() * (distanceToFreePlace.getAsInt() + distanceBetweenIndexes);//TODO
+				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr, this), newExtraWeight);
 			}
 		}
 		return amphipodSystems;
@@ -158,7 +156,7 @@ public class AmphipodSystem {
 		stringBuilder.append(IntStream.range(0,maxNr)
 				.mapToObj(occupiedPlaces::get)
 				.map(t -> Optional.ofNullable(t).map(AmphipodType::getSymbol).orElse("."))
-				.collect(Collectors.joining())).append(" "+acquiredWeight).append("\n");
+				.collect(Collectors.joining())).append("\n");
 		stringBuilder.append("  ").append(locationRooms.keySet().stream()
 				.map(r -> r.getAtLocation(0).map(AmphipodType::getSymbol).orElse("."))
 				.collect(Collectors.joining("#"))).append("+\n");
@@ -226,7 +224,6 @@ public class AmphipodSystem {
 	@Override
 	public String toString() {
 		return "AmphipodSystem{" +
-				"acquiredWeight=" + acquiredWeight +
 				", maxNr=" + maxNr +
 				", locationRooms=" + locationRooms +
 				", occupiedPlaces=" + occupiedPlaces +

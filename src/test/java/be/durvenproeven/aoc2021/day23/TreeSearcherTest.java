@@ -19,7 +19,7 @@ class TreeSearcherTest {
 	@Disabled
 	@Test
 	void calculate() {
-		TreeSearcher<WeightedAmphipodeSystem> treeSearcher = new TreeSearcher<>(WeightedAmphipodeSystem::toNextTurn, Comparator.comparing(WeightedAmphipodeSystem::getWeight), WeightedAmphipodeSystem::isComplete, WeightedAmphipodeSystem::getWeight);
+		TreeSearcher treeSearcher = new TreeSearcher(WeightedAmphipodeSystem::toNextTurn, Comparator.comparing(WeightedAmphipodeSystem::getWeight), WeightedAmphipodeSystem::isComplete, WeightedAmphipodeSystem::getWeight);
 
 		WeightedAmphipodeSystem result = treeSearcher.calculate(new WeightedAmphipodeSystem( new AmphipodSystem(
 				Map.of(

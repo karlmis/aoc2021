@@ -18,16 +18,14 @@ import java.util.stream.IntStream;
 
 public class AmphipodSystem {
 	private final int maxNr;
-	private AmphipodSystem previous;
 
 	private SortedMap<Room, Integer> locationRooms;
 	private final SortedMap<Integer, AmphipodType> occupiedPlaces;
 
-	public AmphipodSystem(Map<Room, Integer> locationRooms, Map<Integer, AmphipodType> occupiedPlaces, int maxNr, AmphipodSystem previous) {
+	public AmphipodSystem(Map<Room, Integer> locationRooms, Map<Integer, AmphipodType> occupiedPlaces, int maxNr) {
 		this.locationRooms = new TreeMap<>(locationRooms);
 		this.occupiedPlaces = new TreeMap<>(occupiedPlaces);
 		this.maxNr = maxNr;
-		this.previous = previous;
 	}
 
 	public static AmphipodSystem createWithFreeSpaces(List<Room> rooms, List<Integer> freespacesBetweenRooms) {
@@ -46,7 +44,7 @@ public class AmphipodSystem {
 			}
 		}
 
-		return new AmphipodSystem(locationRooms, new TreeMap<>(), counter, null);
+		return new AmphipodSystem(locationRooms, new TreeMap<>(), counter);
 	}
 
 	private static List<AmphipodType> arrayListWithNullsAndSize(Integer size) {
@@ -54,7 +52,6 @@ public class AmphipodSystem {
 				.mapToObj(ign -> (AmphipodType) null)
 				.toList();
 	}
-
 
 	public double getWeight() {
 		double weightForInWrongRoom = locationRooms.keySet().stream()
@@ -105,7 +102,7 @@ public class AmphipodSystem {
 				Map<Room, Integer> newLocationRooms = locationRooms.entrySet().stream()
 						.map(e -> removeTopFromCorrectRoom(e, room))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr, this), (double) weightedDistanceForTop(room, freeSpace));
+				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr), (double) weightedDistanceForTop(room, freeSpace));
 			}
 		}
 		for (Map.Entry<Room, Integer> entry : locationRooms.entrySet()) {
@@ -133,7 +130,7 @@ public class AmphipodSystem {
 						CollectionUtils.createMapWithout(occupiedPlaces, entry.getKey(), entry.getValue());
 				int distanceBetweenIndexes = Math.abs(roomWithIndex.getValue() - entry.getKey());
 				double newExtraWeight = entry.getValue().getEnergyRequiredForStep() * (distanceToFreePlace.getAsInt() + distanceBetweenIndexes);//TODO
-				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr, this), newExtraWeight);
+				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr), newExtraWeight);
 			}
 		}
 		return amphipodSystems;
@@ -164,10 +161,6 @@ public class AmphipodSystem {
 				.map(r -> r.getAtLocation(1).map(AmphipodType::getSymbol).orElse("."))
 				.collect(Collectors.joining("#"))).append("-\n");
 		return stringBuilder.toString();
-	}
-
-	public String toPrettyStringComplete(){
-		return toPrettyString()+Optional.ofNullable(previous).map(AmphipodSystem::toPrettyStringComplete).orElse("last");
 	}
 
 	private List<Integer> getFreeSpaces(Integer index) {
@@ -224,7 +217,7 @@ public class AmphipodSystem {
 	@Override
 	public String toString() {
 		return "AmphipodSystem{" +
-				", maxNr=" + maxNr +
+				"maxNr=" + maxNr +
 				", locationRooms=" + locationRooms +
 				", occupiedPlaces=" + occupiedPlaces +
 				'}';

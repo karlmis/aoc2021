@@ -1,6 +1,5 @@
 package be.durvenproeven.aoc2021.day23;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -12,11 +11,9 @@ import static be.durvenproeven.aoc2021.day23.AmphipodType.Bronze;
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Copper;
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Desert;
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TreeSearcherTest {
 
-	@Disabled
 	@Test
 	void calculate() {
 		TreeSearcher treeSearcher = new TreeSearcher(WeightedAmphipodeSystem::toNextTurn, Comparator.comparing(WeightedAmphipodeSystem::getWeight), WeightedAmphipodeSystem::isComplete, WeightedAmphipodeSystem::getWeight);
@@ -29,8 +26,8 @@ class TreeSearcherTest {
 						new Room(Desert, asList(Desert, Amber)), 8
 				),
 				Collections.emptyMap(),
-				11, null), 0));
+				11), 0, null));
 		System.out.println("result = " + result);
-		System.out.println("result weight = " + result.toPrettyStringComplete());
+		System.out.println("result weight = \n" + result.toPrettyStringComplete());
 	}
 }

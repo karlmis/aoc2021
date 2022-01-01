@@ -3,14 +3,18 @@ package be.durvenproeven.aoc2021.day23;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class WeightedAmphipodeSystem {
 	private AmphipodSystem amphipodSystem;
 	private double acquiredWeight;
 
-	public WeightedAmphipodeSystem(AmphipodSystem amphipodSystem, double acquiredWeight) {
+	private WeightedAmphipodeSystem previous;
+
+	public WeightedAmphipodeSystem(AmphipodSystem amphipodSystem, double acquiredWeight, WeightedAmphipodeSystem previous) {
 		this.amphipodSystem = amphipodSystem;
 		this.acquiredWeight = acquiredWeight;
+		this.previous = previous;
 	}
 
 	public AmphipodSystem getAmphipodSystem() {
@@ -28,7 +32,7 @@ public class WeightedAmphipodeSystem {
 	public List<WeightedAmphipodeSystem> toNextTurn(){
 		Map<AmphipodSystem, Double> amphipodSystemDoubleMap = amphipodSystem.toNextTurn();
 		return amphipodSystemDoubleMap.entrySet()
-				.stream().map(e -> new WeightedAmphipodeSystem(e.getKey(), acquiredWeight+ e.getValue()))
+				.stream().map(e -> new WeightedAmphipodeSystem(e.getKey(), acquiredWeight+ e.getValue(), this))
 				.toList();
 	}
 
@@ -37,7 +41,11 @@ public class WeightedAmphipodeSystem {
 	}
 
 	public String toPrettyStringComplete() {
-		return amphipodSystem.toPrettyStringComplete()+"\n"+acquiredWeight;
+		return toPrettyString()+"\n" + Optional.ofNullable(previous).map(WeightedAmphipodeSystem::toPrettyStringComplete).orElse("last");
+	}
+
+	private String toPrettyString() {
+		return amphipodSystem.toPrettyString()+"\n"+acquiredWeight;
 	}
 
 	@Override

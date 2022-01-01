@@ -34,8 +34,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Amber)), 3
 				),
 				Map.of(2, Amber),
-				5,
-				null);
+				5
+		);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(10 * 10 + (5.5 + 2.5));
 	}
@@ -48,8 +48,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Amber)), 3
 				),
 				Map.of(2, Amber),
-				5,
-				null);
+				5
+		);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(10 * 10 + (5.5 + 2.5));
 	}
@@ -62,7 +62,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(Amber, Amber)), 3
 				),
 				Map.of(2, Bronze),
-				5, null);
+				5);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(10 + 10 * (5.5 + 2.5));
 	}
@@ -75,7 +75,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Amber)), 4
 				),
 				Map.of(2, Amber),
-				6, null);
+				6);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 * 10 + (6.5 + 2.5));
 	}
@@ -88,7 +88,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Amber)), 4
 				),
 				Map.of(3, Amber),
-				6, null);
+				6);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 * 10 + (6.5 + 1 + 2.5));
 	}
@@ -101,7 +101,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(Amber, Amber)), 4
 				),
 				Map.of(2, Bronze),
-				6, null);
+				6);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 + 10 * (6.5 + 1 + 2.5));
 	}
@@ -114,7 +114,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(Amber, Amber)), 4
 				),
 				Map.of(3, Bronze),
-				0, null);
+				0);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 + 10 * (6.5 + 2.5));
 	}
@@ -127,7 +127,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(Amber, Amber)), 5
 				),
 				Map.of(0, Bronze),
-				7, null);
+				7);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 + 10 * (6.5 + 5.5 + 1));
 	}
@@ -140,7 +140,7 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Amber)), 4
 				),
 				Map.of(5, Amber),
-				7, null);
+				7);
 
 		assertThat(amphipodSystem.getWeight()).isEqualTo(12 * 10 + (6.5 + 5.5));
 	}
@@ -163,7 +163,7 @@ class AmphipodSystemTest {
 				List.of(new Room(Amber, List.of(Bronze, Bronze)),
 						new Room(Bronze, List.of(Amber, Amber))),
 				List.of(1, 1, 1)
-		), 0);
+		), 0, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -172,49 +172,49 @@ class AmphipodSystemTest {
 								new Room(Bronze, List.of(Amber, Amber)), 3
 						),
 						Map.of(0, Bronze),
-						5,
-						null), 20),
+						5
+				), 20, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Bronze)), 1,
 								new Room(Bronze, List.of(Amber, Amber)), 3
 						),
 						Map.of(2, Bronze),
-						5,
-						null), 20),
+						5
+				), 20, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Bronze)), 1,
 								new Room(Bronze, List.of(Amber, Amber)), 3
 						),
 						Map.of(4, Bronze),
-						5,
-						null), 40),
+						5
+				), 40, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, List.of(Bronze, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 3
 						),
 						Map.of(0, Amber),
-						5,
-						null), 4),
+						5
+				), 4, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, List.of(Bronze, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 3
 						),
 						Map.of(2, Amber),
-						5,
-						null), 2),
+						5
+				), 2, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, List.of(Bronze, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 3
 						),
 						Map.of(4, Amber),
-						5,
-						null)
-						, 2)
+						5
+				)
+						, 2, null)
 		);
 	}
 
@@ -226,8 +226,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, List.of(Amber, Amber)), 3
 				),
 				Map.of(2, Bronze),
-				5,
-				null), 20);
+				5
+		), 20, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -236,16 +236,16 @@ class AmphipodSystemTest {
 								new Room(Bronze, List.of(Amber, Amber)), 3
 						),
 						Map.of(2, Bronze, 0, Bronze),
-						5,
-						null), 20 + 30),
+						5
+				), 20 + 30, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 3
 						),
 						Map.of(2, Bronze, 4, Amber),
-						5,
-						null), 20 + 2)
+						5
+				), 20 + 2, null)
 		);
 	}
 
@@ -257,8 +257,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, List.of(Amber, Amber)), 5
 				),
 				Map.of(3, Bronze),
-				7,
-				null), 20);
+				7
+		), 20, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -267,33 +267,33 @@ class AmphipodSystemTest {
 								new Room(Bronze, List.of(Amber, Amber)), 5
 						),
 						Map.of(3, Bronze, 0, Bronze),
-						7,
-						null), 20 + 30),
+						7
+				), 20 + 30, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, null)), 1,
 								new Room(Bronze, List.of(Amber, Amber)), 5
 						),
 						Map.of(3, Bronze, 2, Bronze),
-						7,
-						null), 20 + 30),
+						7
+				), 20 + 30, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 5
 						),
 						Map.of(3, Bronze, 6, Amber),
-						7,
-						null), 20 + 2),
+						7
+				), 20 + 2, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Bronze)), 1,
 								new Room(Bronze, asList(null, Amber)), 5
 						),
 						Map.of(3, Bronze, 4, Amber),
-						7,
-						null)
-						, 20 + 2)
+						7
+				)
+						, 20 + 2, null)
 		);
 	}
 
@@ -305,8 +305,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, List.of(Amber, Amber)), 5
 				),
 				Map.of(3, Bronze, 2, Bronze),
-				7,
-				null), 20+30);
+				7
+		), 20+30, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -315,14 +315,14 @@ class AmphipodSystemTest {
 								new Room(Bronze, asList(null, Amber)), 5
 						),
 						Map.of(3, Bronze, 2, Bronze, 4, Amber),
-						7, null), 20 + 30 + 2),
+						7), 20 + 30 + 2, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, null)), 1,
 								new Room(Bronze, asList(null, Amber)), 5
 						),
 						Map.of(3, Bronze, 2, Bronze, 6, Amber),
-						7, null), 20 + 30 + 2)
+						7), 20 + 30 + 2, null)
 		);
 	}
 
@@ -334,8 +334,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Bronze)), 3
 				),
 				Map.of(0, Bronze, 4, Amber),
-				5,
-				null), 50);
+				5
+		), 50, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -344,14 +344,14 @@ class AmphipodSystemTest {
 								new Room(Bronze, asList(null, Bronze)), 3
 						),
 						Map.of(0, Bronze),
-						5, null), 50 + 4),
+						5), 50 + 4, null),
 				new WeightedAmphipodeSystem(new AmphipodSystem(
 						Map.of(
 								new Room(Amber, asList(null, Amber)), 1,
 								new Room(Bronze, asList(Bronze, Bronze)), 3
 						),
 						Map.of(4, Amber),
-						5, null), 50 + 40)
+						5), 50 + 40, null)
 		);
 	}
 
@@ -363,8 +363,8 @@ class AmphipodSystemTest {
 						new Room(Bronze, asList(null, Bronze)), 3
 				),
 				Map.of(2, Bronze, 4, Amber),
-				5,
-				null), 50);
+				5
+		), 50, null);
 
 		assertThat(amphipodSystem.toNextTurn()).containsExactlyInAnyOrder(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -373,7 +373,7 @@ class AmphipodSystemTest {
 								new Room(Bronze, asList(Bronze, Bronze)), 3
 						),
 						Map.of(4, Amber),
-						5, null), 50 + 20)
+						5), 50 + 20, null)
 		);
 	}
 
@@ -387,8 +387,8 @@ class AmphipodSystemTest {
 						new Room(Desert, asList(Desert, Amber)), 8
 				),
 				Map.of(),
-				11,
-				null);
+				11
+		);
 		Map<AmphipodSystem, Double> amphipodSystemDoubleMap = amphipodSystem.toNextTurn();
 		assertThat(amphipodSystemDoubleMap).containsKey(
 				new AmphipodSystem(
@@ -399,8 +399,8 @@ class AmphipodSystemTest {
 								new Room(Desert, asList(null, Amber)), 8
 						),
 						Map.of(9, Desert),
-						11,
-						null)
+						11
+				)
 		);
 	}
 
@@ -415,8 +415,8 @@ class AmphipodSystemTest {
 						new Room(Desert, asList(Desert, Amber)), 8
 				),
 				Map.of(3, Bronze),
-				11,
-				null), 0);
+				11
+		), 0, null);
 
 		assertThat(amphipodSystem.toNextTurn()).contains(
 				new WeightedAmphipodeSystem(new AmphipodSystem(
@@ -427,8 +427,8 @@ class AmphipodSystemTest {
 								new Room(Desert, asList(Desert, Amber)), 8
 						),
 						Map.of(3, Bronze),
-						11,
-						null),0)
+						11
+				),0, null)
 
 		);
 

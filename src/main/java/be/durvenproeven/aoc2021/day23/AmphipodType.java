@@ -17,4 +17,8 @@ public enum AmphipodType {
 	public int getEnergyRequiredForStep() {
 		return energyRequiredForStep;
 	}
+
+	public String getSymbol() {
+		return symbol;
+	}
 }

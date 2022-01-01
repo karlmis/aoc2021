@@ -32,4 +32,12 @@ public class CollectionUtils {
 		return res;
 	}
 
+	public static <K,V> Map<K,V> createMapWithout(Map<K,V> alreadyDone, K keyToAdd, V valueToAdd) {
+		LinkedHashMap<K, V> res = new LinkedHashMap<>(alreadyDone);
+		if (res.remove(keyToAdd, valueToAdd)) {
+			return res;
+		}
+		throw new IllegalArgumentException();
+	}
+
 }

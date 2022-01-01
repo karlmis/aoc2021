@@ -3,8 +3,10 @@ package be.durvenproeven.aoc2021.day23;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Amber;
 import static be.durvenproeven.aoc2021.day23.AmphipodType.Bronze;
@@ -379,6 +381,7 @@ class AmphipodSystemTest {
 
 	@Test
 	void nextTurn_1() {
+
 		AmphipodSystem amphipodSystem = new AmphipodSystem(
 				Map.of(
 						new Room(Amber, asList(Bronze, Amber)), 2,
@@ -390,14 +393,15 @@ class AmphipodSystemTest {
 				11
 		);
 		Map<AmphipodSystem, Double> amphipodSystemDoubleMap = amphipodSystem.toNextTurn();
-		assertThat(amphipodSystemDoubleMap).containsKey(
-				new AmphipodSystem(
-						Map.of(
-								new Room(Amber, asList(Bronze, Amber)), 2,
-								new Room(Bronze, asList(Copper, Desert)), 4,
-								new Room(Copper, asList(Bronze, Copper)), 6,
-								new Room(Desert, asList(null, Amber)), 8
-						),
+		assertThat(amphipodSystemDoubleMap)
+				.hasSize(7*4)
+				.containsKey(new AmphipodSystem(
+								Map.of(
+										new Room(Amber, asList(Bronze, Amber)), 2,
+										new Room(Bronze, asList(Copper, Desert)), 4,
+										new Room(Copper, asList(Bronze, Copper)), 6,
+										new Room(Desert, asList(null, Amber)), 8
+								),
 						Map.of(9, Desert),
 						11
 				)
@@ -432,5 +436,85 @@ class AmphipodSystemTest {
 
 		);
 
+	}
+
+	@Test
+	void nextTurn_OnlyGoToCorrectRoomIfAllAreOk() {
+		/*
+		.......B...
+          B#.#C#D+
+          A#D#C#A-
+		 */
+		AmphipodSystem amphipodSystem = new AmphipodSystem(
+				Map.of(
+						new Room(Amber, asList(Bronze, Amber)), 2,
+						new Room(Bronze, asList(null, Desert)), 4,
+						new Room(Copper, asList(Copper, Copper)), 6,
+						new Room(Desert, asList(Desert, Amber)), 8
+				),
+				Map.of(7, Bronze),
+				11
+		);
+
+		assertThat(amphipodSystem.toNextTurn()).doesNotContainKey(
+				new AmphipodSystem(
+						Map.of(
+								new Room(Amber, asList(Bronze, Amber)), 2,
+								new Room(Bronze, asList(Bronze, Desert)), 4,
+								new Room(Copper, asList(Copper, Copper)), 6,
+								new Room(Desert, asList(Desert, Amber)), 8
+						),
+						Collections.emptyMap(),
+						11
+				)
+
+		);
+
+	}
+
+	@Test
+	void equals() {
+		Map<Room, Integer> map0 = Map.of(
+				new Room(Amber, asList(Bronze, Amber)), 2,
+				new Room(Bronze, asList(Copper, Desert)), 4,
+				new Room(Copper, asList(null, Copper)), 6,
+				new Room(Desert, asList(Desert, Amber)), 8
+		);
+		AmphipodSystem amphipodSystem = new AmphipodSystem(
+				map0,
+				Map.of(3, Bronze),
+				11
+		);
+
+		Map<Room, Integer> map1 = Map.of(
+				new Room(Amber, asList(null, Amber)), 2,
+				new Room(Bronze, asList(Copper, Desert)), 4,
+				new Room(Copper, asList(Bronze, Copper)), 6,
+				new Room(Desert, asList(Desert, Amber)), 8
+		);
+		AmphipodSystem amphipodSystem1 = new AmphipodSystem(
+				map1,
+				Map.of(3, Bronze),
+				11
+		);
+		assertThat(map0).isNotEqualTo(map1);
+		assertThat(new TreeMap<>(map0)).isNotEqualTo(new TreeMap<>(map1));
+
+		assertThat(amphipodSystem).isNotEqualTo(amphipodSystem1);
+	}
+
+	@Test
+	void getWeight2() {
+		AmphipodSystem amphipodSystem = new AmphipodSystem(
+				Map.of(
+						new Room(Amber, asList(null, Bronze)), 2,
+						new Room(Bronze, asList(null, Copper)), 4,
+						new Room(Copper, asList(null, Copper)), 6,
+						new Room(Desert, asList(Desert, Desert)), 8
+				),
+				Map.of(0, Amber, 1, Amber, 9, Bronze),
+				11
+		);
+		assertThat(amphipodSystem.getWeight()).isEqualTo(626);
 	}
 }

@@ -35,7 +35,7 @@ public class TreeSearcher {
 		mapping.put(starting.getAmphipodSystem(), starting);
 		WeightedAmphipodeSystem nextitem = pq.poll();
 		while (nextitem != null){
-			System.out.println(nextitem.getAmphipodSystem().toPrettyString());
+			System.out.println(nextitem.getWeight()+","+ nextitem.getAcquiredWeight()+":\n"+ nextitem.getAmphipodSystem().toPrettyString());
 			if (isFinishedPredicate.test(nextitem)){
 				return nextitem;
 			}

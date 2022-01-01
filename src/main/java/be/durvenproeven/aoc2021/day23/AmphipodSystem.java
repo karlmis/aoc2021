@@ -66,14 +66,18 @@ public class AmphipodSystem {
 	}
 
 	private double getWeightForWrongLocated(Room room) {
-		return room.getWrongLocated().stream()
-				.mapToDouble(aw -> getDistanceBetweenRooms(aw, room.getAmphipodTypeNeeded()))
+		double sum = room.getWrongLocated().stream()
+				.mapToDouble(aw -> getDistanceBetweenRooms(aw, room.getAmphipodTypeNeeded(), room))
 				.sum();
+		return sum;
 	}
 
-	private double getDistanceBetweenRooms(Room.AmphipodWithDistance e, AmphipodType amphipodTypeNeeded) {
+	private double getDistanceBetweenRooms(Room.AmphipodWithDistance e, AmphipodType amphipodTypeNeeded, Room room) {
+		Room targetRoom = locationRooms.keySet().stream()
+				.filter(r -> r.getAmphipodTypeNeeded() == e.type())
+				.findFirst().orElseThrow();
 		double abs = Math.abs(locationIndexOf(amphipodTypeNeeded) - locationIndexOf(e.type()));
-		double v = e.weight() + abs + 1.5;
+		double v = e.weight() + abs + targetRoom.getAverageValue();
 		return v * e.type().getEnergyRequiredForStep();
 	}
 
@@ -86,7 +90,11 @@ public class AmphipodSystem {
 	}
 
 	private double getDistanceToCorrectRoom(Map.Entry<Integer, AmphipodType> e) {
-		double v = Math.abs(locationIndexOf(e.getValue()) - e.getKey()) + 1.5;
+		Room room = locationRooms.keySet().stream()
+				.filter(r -> r.getAmphipodTypeNeeded() == e.getValue())
+				.findFirst().orElseThrow();
+
+		double v = Math.abs(locationIndexOf(e.getValue()) - e.getKey()) + room.getAverageValue();
 		return v * e.getValue().getEnergyRequiredForStep();
 	}
 
@@ -102,19 +110,23 @@ public class AmphipodSystem {
 				Map<Room, Integer> newLocationRooms = locationRooms.entrySet().stream()
 						.map(e -> removeTopFromCorrectRoom(e, room))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-				amphipodSystems.put(new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr), (double) weightedDistanceForTop(room, freeSpace));
+				AmphipodSystem key = new AmphipodSystem(newLocationRooms, newOccupiedPlaces, maxNr);
+				amphipodSystems.put(key, (double) weightedDistanceForTop(room, freeSpace));
 			}
 		}
-		for (Map.Entry<Room, Integer> entry : locationRooms.entrySet()) {
-			Room room = entry.getKey();
-			if (!room.hasWrongValues()) {
-				continue;
-			}
-
-		}
+//		for (Map.Entry<Room, Integer> entry : locationRooms.entrySet()) {
+//			Room room = entry.getKey();
+//			if (!room.hasWrongValues()) {
+//				continue;
+//			}
+//
+//		}
 
 		for (Map.Entry<Integer, AmphipodType> entry : occupiedPlaces.entrySet()) {
-			if (noOccupiedPlacesBetweenLocationAndCorrectRoom(entry)) {
+			Room destinationRoom = locationRooms.keySet().stream()
+					.filter(r -> r.getAmphipodTypeNeeded() == entry.getValue())
+					.findFirst().orElseThrow();
+			if (noOccupiedPlacesBetweenLocationAndCorrectRoom(entry) && !destinationRoom.hasWrongValues()) {
 				Map.Entry<Room, Integer> roomWithIndex = locationRooms.entrySet().stream()
 						.filter(r -> r.getKey().getAmphipodTypeNeeded() == entry.getValue())
 						.findFirst().orElseThrow();

@@ -91,7 +91,10 @@ public class Room implements Comparable<Room>{
 
 	@Override
 	public int compareTo(Room o) {
-		return Comparator.comparing(Room::getAmphipodTypeNeeded).compare(this, o);
+		return Comparator.comparing(Room::getAmphipodTypeNeeded)
+				.thenComparing(r -> r.occupations.get(0), Comparator.nullsLast(AmphipodType::compareTo))
+				.thenComparing(r -> r.occupations.get(1), Comparator.nullsLast(AmphipodType::compareTo))
+				.compare(this, o);
 	}
 	//public boolean isAvailable
 
@@ -100,6 +103,13 @@ public class Room implements Comparable<Room>{
 
 	public AmphipodType getAmphipodTypeNeeded() {
 		return amphipodTypeNeeded;
+	}
+
+	double getAverageValue(){
+		if (occupations.get(1)== amphipodTypeNeeded){
+			return 1;
+		}
+		return 1.5;
 	}
 
 	@Override

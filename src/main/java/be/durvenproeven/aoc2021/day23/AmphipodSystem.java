@@ -18,12 +18,14 @@ import java.util.stream.IntStream;
 
 public class AmphipodSystem {
 	private final int maxNr;
+	private final int roomSize;
 
 	private SortedMap<Room, Integer> locationRooms;
 	private final SortedMap<Integer, AmphipodType> occupiedPlaces;
 
 	public AmphipodSystem(Map<Room, Integer> locationRooms, Map<Integer, AmphipodType> occupiedPlaces, int maxNr) {
 		this.locationRooms = new TreeMap<>(locationRooms);
+		roomSize = locationRooms.keySet().iterator().next().getSize();
 		this.occupiedPlaces = new TreeMap<>(occupiedPlaces);
 		this.maxNr = maxNr;
 	}
@@ -166,12 +168,12 @@ public class AmphipodSystem {
 				.mapToObj(occupiedPlaces::get)
 				.map(t -> Optional.ofNullable(t).map(AmphipodType::getSymbol).orElse("."))
 				.collect(Collectors.joining())).append("\n");
-		stringBuilder.append("  ").append(locationRooms.keySet().stream()
-				.map(r -> r.getAtLocation(0).map(AmphipodType::getSymbol).orElse("."))
-				.collect(Collectors.joining("#"))).append("+\n");
-		stringBuilder.append("  ").append(locationRooms.keySet().stream()
-				.map(r -> r.getAtLocation(1).map(AmphipodType::getSymbol).orElse("."))
-				.collect(Collectors.joining("#"))).append("-\n");
+		IntStream.range(0, roomSize).forEach( i ->
+			stringBuilder.append("  ").append(locationRooms.keySet().stream()
+					.map(r -> r.getAtLocation(i).map(AmphipodType::getSymbol).orElse("."))
+					.collect(Collectors.joining("#"))).append("+\n"));
+
+
 		return stringBuilder.toString();
 	}
 

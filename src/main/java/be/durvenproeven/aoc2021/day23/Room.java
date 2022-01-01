@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
-public class Room implements Comparable<Room>{
+public class Room implements Comparable<Room> {
 	private AmphipodType amphipodTypeNeeded;
 
 	private List<AmphipodType> occupations;
@@ -19,29 +19,34 @@ public class Room implements Comparable<Room>{
 		this.occupations = occupations;
 	}
 
-	Optional<AmphipodType> getAtLocation(int nr){
+	int getSize(){
+		return occupations.size();
+	}
+
+	Optional<AmphipodType> getAtLocation(int nr) {
 		return Optional.ofNullable(occupations.get(nr));
 	}
 
 	public boolean isComplete() {
-		return occupations.size() == 2 && occupations.stream().allMatch(at -> at == amphipodTypeNeeded);
+		return occupations.stream().allMatch(at -> at == amphipodTypeNeeded);
 	}
 
-	public OptionalInt getDistanceToFreePlace(){
-		if (occupations.get(1)==null){
-			return OptionalInt.of(2);
-		}
-		if (occupations.get(0)==null){
-			return OptionalInt.of(1);
-		}
-		return OptionalInt.empty();
+	public OptionalInt getDistanceToFreePlace() {
+		return IntStream.range(0, occupations.size())
+				.map(this::reverse)
+				.filter(i -> occupations.get(i) == null)
+				.map(i -> i + 1)
+				.findFirst();
 	}
 
-	public boolean hasWrongValues(){
+	private int reverse(int i) {
+		return occupations.size() - 1 - i;
+	}
+
+	public boolean hasWrongValues() {
 		return occupations.stream()
 				.filter(Objects::nonNull)
 				.anyMatch(at -> at != amphipodTypeNeeded);
-
 	}
 
 	public AmphipodType getTop() {
@@ -51,44 +56,50 @@ public class Room implements Comparable<Room>{
 	}
 
 	public Room withoutTop() {
+		int indexFirstNonNull = IntStream.range(0, occupations.size())
+				.filter(i -> occupations.get(i) != null)
+				.findFirst().orElseThrow();
 		List<AmphipodType> newOccupations = new ArrayList<>(occupations);
-		if (occupations.get(0) != null) {
-			newOccupations.set(0, null);
-			return new Room(amphipodTypeNeeded, newOccupations);
-		}
-		if (occupations.get(1) != null) {
-			newOccupations.set(1, null);
-			return new Room(amphipodTypeNeeded, newOccupations);
-		}
-		throw new IllegalArgumentException();
+		newOccupations.set(indexFirstNonNull, null);
+		return new Room(amphipodTypeNeeded, newOccupations);
 	}
 
 	public Room withCorrectTop() {
+		int indexLastNull = IntStream.range(0, occupations.size())
+				.map(this::reverse)
+				.filter(i -> occupations.get(i) == null)
+				.findFirst().orElseThrow();
+
 		List<AmphipodType> newOccupations = new ArrayList<>(occupations);
-		if (occupations.get(1) == null) {
-			newOccupations.set(1, amphipodTypeNeeded);
-			return new Room(amphipodTypeNeeded, newOccupations);
-		}
-		if (occupations.get(0) == null) {
-			newOccupations.set(0, amphipodTypeNeeded);
-			return new Room(amphipodTypeNeeded, newOccupations);
-		}
-		throw new IllegalArgumentException();
+		newOccupations.set(indexLastNull, amphipodTypeNeeded);
+		return new Room(amphipodTypeNeeded, newOccupations);
+
 	}
 
 	List<AmphipodWithDistance> getWrongLocated() {
-		if (occupations.get(1)== amphipodTypeNeeded){
-			if (occupations.get(0)== amphipodTypeNeeded || occupations.get(0)==null){
-				return Collections.emptyList();
-			}
-			return List.of(new AmphipodWithDistance(occupations.get(0),1));
+		int indexFurthestIncorrect = IntStream.range(0, occupations.size())
+				.map(this::reverse)
+				.filter(i -> occupations.get(i) != null && occupations.get(i) != amphipodTypeNeeded)
+				.findFirst().orElse(-1);
+		if (indexFurthestIncorrect == -1) {
+			return Collections.emptyList();
 		}
-		return IntStream.range(0,2)
-				.filter(i -> occupations.get(i)!= null)
-				.mapToObj(i -> new AmphipodWithDistance(occupations.get(i), i+1))
+		int indexStartIncorrect = IntStream.rangeClosed(0, indexFurthestIncorrect)
+				.filter(i -> occupations.get(i) != null)
+				.findFirst().orElse(0);
+
+		return IntStream.rangeClosed(indexStartIncorrect, indexFurthestIncorrect)
+				.mapToObj(i -> new AmphipodWithDistance(occupations.get(i), i + 1))
 				.toList();
 	}
 
+	double getAverageValue() {
+		int lastNotCorrect = IntStream.range(0, occupations.size())
+				.map(this::reverse)
+				.filter(i -> occupations.get(i) != amphipodTypeNeeded)
+				.findFirst().orElse(0);
+		return (lastNotCorrect+2.)/2;
+	}
 	@Override
 	public int compareTo(Room o) {
 		return Comparator.comparing(Room::getAmphipodTypeNeeded)
@@ -96,20 +107,14 @@ public class Room implements Comparable<Room>{
 				.thenComparing(r -> r.occupations.get(1), Comparator.nullsLast(AmphipodType::compareTo))
 				.compare(this, o);
 	}
-	//public boolean isAvailable
 
+	//public boolean isAvailable
 	public static record AmphipodWithDistance(AmphipodType type, int weight) {
+
 	}
 
 	public AmphipodType getAmphipodTypeNeeded() {
 		return amphipodTypeNeeded;
-	}
-
-	double getAverageValue(){
-		if (occupations.get(1)== amphipodTypeNeeded){
-			return 1;
-		}
-		return 1.5;
 	}
 
 	@Override
